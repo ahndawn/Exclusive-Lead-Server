@@ -31,15 +31,16 @@
 
 <div id="addDomainForm" style="display: none;">
   <form action="{{ url_for('domain.insert_domain') }}" method="post">
-      {{ form.hidden_tag() }}
-      
-      {{ form.label(class="domainInput", placeholder="Label") }}
-      {{ form.domain(class="domainInput", placeholder="Domain") }}
-      {{ form.d_phone_number(class="domainInput", placeholder="Phone Number") }}
-      
-      <button type="submit" class="btn btn-primary" style="border:none">{{ form.submit.label.text }}</button>
-      <button id="cancelButton" type="button" class="btn btn-danger">Cancel</button>
-  </form>
+    {{ form.hidden_tag() }}
+    {{ form.label }}
+    {{ form.domain }}
+    {{ form.d_phone_number }}
+    {{ form.send_to_leads_api }}
+    {{ form.send_to_google_sheet }}
+    {{ form.twilio_number_validation }}
+    {{ form.sms_texting }}
+    {{ form.submit }}
+</form>
 </div>
 
 <!-- Settings Modal -->
@@ -148,7 +149,7 @@
     height: auto;
     padding: 30px;
     border: 3px solid #ffffff;
-    width: 220px;
+    width: 300px;
     justify-content: space-between;
     text-align: center;
     height: fit-content;

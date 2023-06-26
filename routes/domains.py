@@ -7,8 +7,10 @@ domain_bp = Blueprint('domain', __name__)
 @login_required
 def show_domains():
     from models.domain import Domain
+    from forms.forms import DomainForm
+    form = DomainForm()
     domains = Domain.query.all()
-    return render_template('domains.html', domains=domains)
+    return render_template('domains.html', domains=domains, form=form)
 
 @domain_bp.route('/get_domain_info/<label>', methods=['GET'])
 def get_domain_info(label):
@@ -98,7 +100,7 @@ def insert_domain():
             for error in errors:
                 flash(f'Error in {getattr(form, field).label.text}: {error}', 'error')
 
-    return redirect(url_for('domain.show_domains'))
+    return redirect(url_for('domain.show_domains'), form=form)
 
 @domain_bp.route('/delete_domain/<label>', methods=['POST'])
 def delete_domain(label):

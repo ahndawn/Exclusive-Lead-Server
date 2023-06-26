@@ -1,0 +1,161 @@
+{% extends 'home.html' %}
+
+{% block content %}
+<div class="head">
+    <h1 style="color:white">Domains</h1>
+</div>
+<ul id="domainlist">
+  {% for domain in domains %}
+  <li id="domainitem">
+    <div class="domain-info">
+      <strong style="color:rgb(15, 50, 92); text-shadow: none">Label:</strong> {{ domain.label }}
+    </div>
+    <div class="domain-info">
+      <strong style="color:rgb(15, 50, 92); text-shadow: none">Domain:</strong> {{ domain.domain }}
+    </div>
+    <div class="domain-info">
+      <strong style="color:rgb(15, 50, 92); text-shadow: none">Phone Number:</strong> {{ domain.d_phone_number }}
+    </div>
+    <div>
+    <div class="settings-delete-container">
+      <button class="settings-button" data-label="{{ domain.label }}" title="Settings"><i class="fa-solid fa-gear" title="Settings" style="cursor:pointer"></i></button>
+    <form action="{{ url_for('domain.delete_domain', label=domain.label) }}" method="post">
+        <button type="submit" class="deleteBtn" onclick="return confirm('Are you sure you want to delete this domain?')"><i class="fa-solid fa-trash-can" title="Delete" style="cursor:pointer"></i></button>
+    </form>
+</div>
+  </li>
+  {% endfor %}
+  <button id="addDomainButton" class="btn btn-primary" style='border: none;'><i class="fa-solid fa-plus"></i> Add Domain</button>
+</ul>
+
+
+<div id="addDomainForm" style="display: none;">
+<form action="{{ url_for('domain.insert_domain') }}" method="post">
+    <input type="text" name="label" class ="domainInput" placeholder="Label" required>
+    <input type="text" name="domain" class ="domainInput" placeholder="Domain" required>
+    <input type="text" name="phone_number" class ="domainInput" placeholder="Phone Number" required>
+    <input type="hidden" name="send_to_leads_api">
+    <input type="hidden" name="send_to_google_sheet">
+    <input type="hidden" name="twilio_number_validation">
+    <input type="hidden" name="sms_texting">
+    <button type="submit" class="btn btn-primary" style='border:none' value="Add">Add</button>
+    <button id="cancelButton" class="btn btn-danger" value="Add">Cancel</button>
+</form>
+</div>
+
+<!-- Settings Modal -->
+<div id="settingsModal" class="modal">
+    <div class="modal-content">
+      <span class="close">&times;</span>
+      <form id="settingsForm">
+        <label for="labelInput"><b>Label:</b></label>
+        <input type="text" id="labelInput" name="label" class="domainInput" style="width: 198px; margin-top: 10px; margin-bottom: 10px" required>
+        
+        <label for="domainInput"><b>Domain:</b></label>
+        <input type="text" id="domainInput" name="domain" class="domainInput" style="width: 198px; margin-top: 10px; margin-bottom: 10px" required>
+        
+        <label for="phoneInput"><b>Phone-Number:</b></label>
+        <input type="text" id="phoneInput" name="phone_number" class="domainInput" style="width: 198px; margin-top: 10px; margin-bottom: 10px" required>
+        <hr>
+        <label for="sendToLeadsAPI">Send to GRONAT:</label>
+        <input type="checkbox" id="sendToLeadsAPI" name="send_to_leads_api" style="margin-right: 20px">
+        <hr>
+        <label for="sendToGoogleSheet" >Send to Google Sheet:</label>
+        <input type="checkbox" id="sendToGoogleSheet" name="send_to_google_sheet" style="margin-right: 10px">
+        <hr>
+        <label for="twilioNumberValidation">Twilio Number Validation:</label>
+        <input type="checkbox" id="twilioNumberValidation" name="twilio_number_validation">
+        <hr>
+        <label for="smsTexting" style=" margin-left: 50px;">SMS Texting:</label>
+        <input type="checkbox" id="smsTexting" name="sms_texting"style="margin-right: 50px;">
+        <hr>
+        <input type="submit" value="Save" class="btn btn-primary" style = 'margin-top: 10px; border:none'>
+      </form>
+    </div>
+  </div>
+
+  <style>
+     .settings-delete-container {
+    display: flex;
+  align-items: center;
+  flex-direction: row;
+  }
+
+  .settings-button {
+    background-color: transparent;
+    padding: 5px 10px;
+    text-align: center;
+    text-decoration: none;
+    cursor: pointer;
+    border: none;
+    color: #fefefe;
+    text-shadow: black 1px 1px 1px;
+    font-size: 30px;
+  }
+
+  .settings-button:hover {
+    color: #d3d3d3;
+    text-shadow: black 3px 3px 3px;
+  }
+  .settings {
+    background-color: transparent;
+    text-align: center;
+    text-decoration: none;
+    cursor: pointer;
+    border: none;
+    color: #9b9b9b;
+    text-shadow: rgb(61, 61, 61) 1px 1px 1px;
+    font-size: 20px;
+    margin:-5px;
+  }
+
+  .settings:hover {
+    color: #5e5e5e;
+    text-shadow: black 1px 1px 1px;
+  }
+
+  .deleteBtn {
+    background-color: transparent;
+    padding: 5px 10px;
+    text-align: center;
+    text-decoration: none;
+    cursor: pointer;
+    border: none;
+    color: hsl(0, 100%, 65%);
+    text-shadow: black 2px 2px 2px;
+    font-size: 25px;
+  }
+
+  .deleteBtn:hover {
+    color: #801616;
+    text-shadow: black 3px 3px 3px;
+  }
+
+  .modal {
+    display: none;
+    position: fixed;
+    z-index: 1;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0, 0, 0, 0.4);
+  }
+
+  .modal-content {
+    background-color: rgba(255, 255, 255, 0.89);
+    margin: 15% auto;
+    height: auto;
+    padding: 30px;
+    border: 3px solid #ffffff;
+    width: 220px;
+    justify-content: space-between;
+    text-align: center;
+    height: fit-content;
+    border-radius: 20px;
+  }
+  </style>
+   
+
+{% endblock %}

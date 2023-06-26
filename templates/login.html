@@ -1,0 +1,36 @@
+{% extends 'home.html' %}
+
+{% block content %}
+<div class="head">
+  <h1 style="color:white">Login</h1>
+</div>
+<br>
+<div class="container">
+  {% with messages = get_flashed_messages() %}
+    {% if messages %}
+      <ul class="messages">
+        {% for message in messages %}
+          {% if 'success' in message %}
+            <li class="success-message">{{ message }}</li>
+          {% else %}
+            <li>{{ message }}</li>
+          {% endif %}
+        {% endfor %}
+      </ul>
+    {% endif %}
+  {% endwith %}
+  <div class="form">
+    <form method="POST" action="{{ url_for('auth.login') }}">
+      {{ form.hidden_tag() }}
+      <div style="padding: 10px">
+        {{ form.username.label }} {{ form.username(size=32) }}
+      </div>
+      <div style="padding: 10px">
+        {{ form.password.label }} {{ form.password(size=32) }}
+      </div>
+      <div style="padding: 10px">
+        {{ form.submit() }}
+      </div>
+      
+  </form>
+{% endblock %}

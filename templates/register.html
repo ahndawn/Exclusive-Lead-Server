@@ -1,0 +1,55 @@
+{% extends 'home.html' %}
+
+{% block content %}
+
+<div class="head">
+    <h1 style="color:white">Register</h1>
+  </div>
+  <br>
+<div class="container">
+    {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            <ul class="messages">
+                {% for message in messages %}
+                    <li>{{ message }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+    {% endwith %}
+    <div class="form">
+        <form method="POST" action="{{ url_for('auth.register') }}">
+            {{ form.hidden_tag() }}
+            
+            {{ form.username.label }} {{ form.username(size=32) }}
+            {% if form.username.errors %}
+                <ul class="errors">
+                    {% for error in form.username.errors %}
+                        <li>{{ error }}</li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+        
+            {{ form.password.label }} {{ form.password(size=32) }}
+            {% if form.password.errors %}
+                <ul class="errors">
+                    {% for error in form.password.errors %}
+                        <li>{{ error }}</li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+        
+            {{ form.email.label }} {{ form.email(size=32) }}
+            {% if form.email.errors %}
+                <ul class="errors">
+                    {% for error in form.email.errors %}
+                        <li>{{ error }}</li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+            <br>
+            {{ form.submit() }}
+        </form>
+    <p>Already have an account? <a href="{{ url_for('auth.login') }}" style="color:rgb(103, 235, 255); text-decoration: none;">Login</a></p>
+</div>
+</div>
+{% endblock %}

@@ -100,7 +100,7 @@ def insert_domain():
             for error in errors:
                 flash(f'Error in {getattr(form, field).label.text}: {error}', 'error')
 
-    return redirect(url_for('domain.show_domains'), form=form)
+    return redirect(url_for('domain.show_domains'))
 
 @domain_bp.route('/delete_domain/<label>', methods=['POST'])
 def delete_domain(label):

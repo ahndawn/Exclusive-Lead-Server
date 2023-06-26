@@ -32,14 +32,14 @@
 <div id="addDomainForm" style="display: none;">
   <form action="{{ url_for('domain.insert_domain') }}" method="post">
     {{ form.hidden_tag() }}
-    {{ form.label }}
-    {{ form.domain }}
-    {{ form.d_phone_number }}
-    {{ form.send_to_leads_api }}
-    {{ form.send_to_google_sheet }}
-    {{ form.twilio_number_validation }}
-    {{ form.sms_texting }}
-    {{ form.submit }}
+    <div>Label: {{ form.label }}</div>
+    <div>Domain: {{ form.domain }}</div>
+    <div>Phone: {{ form.d_phone_number }}</div>
+    <div>{{ form.send_to_leads_api }}</div>
+    <div>{{ form.send_to_google_sheet }}</div>
+    <div>{{ form.twilio_number_validation }}</div>
+    <div>{{ form.sms_texting }}</div>
+    <div>{{ form.submit }}</div>
 </form>
 </div>
 

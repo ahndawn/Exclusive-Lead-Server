@@ -62,32 +62,41 @@ def update_domain(label):
 @domain_bp.route('/insert_domain', methods=['POST'])
 def insert_domain():
     from app import db
+    from forms.forms import DomainForm
     from models.domain import Domain
-    label = request.form['label']
-    domain_name = request.form['domain']
-    d_phone_number = request.form['phone_number']
-    send_to_leads_api = 1
-    send_to_google_sheet = 1
-    twilio_number_validation = 1
-    sms_texting = 1
+    form = DomainForm()
+    if form.validate_on_submit():
+        label = form.label.data
+        domain_name = form.domain.data
+        d_phone_number = form.d_phone_number.data
+        send_to_leads_api = 1
+        send_to_google_sheet = 1
+        twilio_number_validation = 1
+        sms_texting = 1
 
-    new_domain = Domain(
-        label=label,
-        domain=domain_name,
-        d_phone_number=d_phone_number,
-        send_to_leads_api=send_to_leads_api,
-        send_to_google_sheet=send_to_google_sheet,
-        twilio_number_validation=twilio_number_validation,
-        sms_texting=sms_texting
-    )
+        new_domain = Domain(
+            label=label,
+            domain=domain_name,
+            d_phone_number=d_phone_number,
+            send_to_leads_api=send_to_leads_api,
+            send_to_google_sheet=send_to_google_sheet,
+            twilio_number_validation=twilio_number_validation,
+            sms_texting=sms_texting
+        )
 
-    try:
-        db.session.add(new_domain)
-        db.session.commit()
-        flash('Domain added successfully', 'success')
-    except Exception as e:
-        db.session.rollback()
-        flash(f'Error: {str(e)}', 'error')
+        try:
+            db.session.add(new_domain)
+            db.session.commit()
+            flash('Domain added successfully', 'success')
+        except Exception as e:
+            db.session.rollback()
+            flash(f'Error: {str(e)}', 'error')
+
+    else:
+        # If the form is not valid, flash error messages
+        for field, errors in form.errors.items():
+            for error in errors:
+                flash(f'Error in {getattr(form, field).label.text}: {error}', 'error')
 
     return redirect(url_for('domain.show_domains'))
 

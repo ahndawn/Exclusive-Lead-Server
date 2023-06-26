@@ -30,17 +30,16 @@
 
 
 <div id="addDomainForm" style="display: none;">
-<form action="{{ url_for('domain.insert_domain') }}" method="post">
-    <input type="text" name="label" class ="domainInput" placeholder="Label" required>
-    <input type="text" name="domain" class ="domainInput" placeholder="Domain" required>
-    <input type="text" name="phone_number" class ="domainInput" placeholder="Phone Number" required>
-    <input type="hidden" name="send_to_leads_api">
-    <input type="hidden" name="send_to_google_sheet">
-    <input type="hidden" name="twilio_number_validation">
-    <input type="hidden" name="sms_texting">
-    <button type="submit" class="btn btn-primary" style='border:none' value="Add">Add</button>
-    <button id="cancelButton" class="btn btn-danger" value="Add">Cancel</button>
-</form>
+  <form action="{{ url_for('domain.insert_domain') }}" method="post">
+      {{ form.hidden_tag() }}
+      
+      {{ form.label(class="domainInput", placeholder="Label") }}
+      {{ form.domain(class="domainInput", placeholder="Domain") }}
+      {{ form.d_phone_number(class="domainInput", placeholder="Phone Number") }}
+      
+      <button type="submit" class="btn btn-primary" style="border:none">{{ form.submit.label.text }}</button>
+      <button id="cancelButton" type="button" class="btn btn-danger">Cancel</button>
+  </form>
 </div>
 
 <!-- Settings Modal -->

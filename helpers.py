@@ -88,7 +88,7 @@ def insert_data_into_db(data, sent_to_gronat, sent_to_sheets, validation):
         dstate = data.get('dstate', '')
         dzip = data.get('dzip', '')
         # Validate ref_no, it must not be an empty string
-        ref_no = data.get('ref_no', 'None')
+        ref_no = data.get('ref_no')
         if not ref_no or ref_no.strip() == '':
             print("Invalid ref_no, ref_no cannot be an empty string.")
             return jsonify({"message": "Invalid ref_no. ref_no cannot be an empty string."}), 400

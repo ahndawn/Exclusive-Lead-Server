@@ -38,7 +38,7 @@ def add_data():
         phone_number = data.get('phone1')
         first_name = data.get('firstname')
         # Validate ref_no, it must not be an empty string
-        ref_no = data.get('ref_no', 'None')
+        ref_no = data.get('ref_no')
         if not ref_no or ref_no.strip() == '':
             print("Invalid ref_no, ref_no cannot be an empty string.")
             return jsonify({"message": "Invalid ref_no. ref_no cannot be an empty string."}), 400

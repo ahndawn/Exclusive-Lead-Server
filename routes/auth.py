@@ -1,3 +1,4 @@
+#some imports are used within each required route and function in order to avoid 'circular imports'
 from flask import Blueprint, render_template, redirect, url_for, flash
 from flask_login import login_user, logout_user, login_required, LoginManager
 from forms.users import RegistrationForm, ForgotPasswordForm, ResetPasswordForm, LoginForm
@@ -63,6 +64,8 @@ def register():
 
     return render_template('register.html', form=form)
 
+
+#UNFINISHED
 @auth_bp.route('/forgot_password', methods=['GET', 'POST'])
 def forgot_password():
     from models.user import User

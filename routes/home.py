@@ -1,3 +1,4 @@
+#some imports are used within each required route and function in order to avoid 'circular imports'
 from flask import Blueprint, render_template, request, jsonify, render_template, session
 from sqlalchemy.exc import IntegrityError
 from googleapiclient.discovery import build
@@ -36,9 +37,15 @@ def add_data():
         label = data.get('label')
         phone_number = data.get('phone1')
         first_name = data.get('firstname')
+        # Validate ref_no, it must not be an empty string
+        ref_no = data.get('ref_no', 'None')
+        if not ref_no or ref_no.strip() == '':
+            print("Invalid ref_no, ref_no cannot be an empty string.")
+            return jsonify({"message": "Invalid ref_no. ref_no cannot be an empty string."}), 400
+        ref_no = unquote(ref_no)
         if not email or not phone_number or not first_name:
             print("PHONE, EMAIL, AND NAME ARE REQUIRED. SKIPPING INSERTION")
-            return jsonify({"message": "Email, phone number, and name are required."}), 201  # return code that doesn't trigger email nor error code, otherwise it would emailed and sent to gronat. these 'none' instances should be rare or non-existent
+            return jsonify({"message": "Email, phone number, and name are required."}), 400 
 
         # Check for duplicate post requests from the user
         data_without_notes = data.copy()
@@ -60,22 +67,24 @@ def add_data():
             print('EXISTING DATA, SKIPPING INSERTION')
             return jsonify({"message": "Duplicate data found in the database. Skipping insertion."}), 201
 
-        # Fetch domain settings from the database
+        # Fetch domain settings from the database. 1 means the checkbox is 'checked' for domain settings and makes the value true for the specific setting, 0 is false
         domain_settings = Domain.query.filter_by(label=label).first()
 
         if not domain_settings:
+            #automatically turn on all settings if label of a domain is not found in database
             print(f"No domain settings found for label: {label}")
             send_to_leads_api = 1
             send_to_google_sheet = 1
             twilio_number_validation = 1
             sms_texting = 1
         else:
+            #if label of domain is found in database, use settings specified for that domain 
             send_to_leads_api = domain_settings.send_to_leads_api
             send_to_google_sheet = domain_settings.send_to_google_sheet
             twilio_number_validation = domain_settings.twilio_number_validation
             sms_texting = domain_settings.sms_texting
 
-        # Prepare data for leads API POST request
+        # Prepare data for Gronat POST request
         sent_to_gronat = '0'
         api_url = "https://lead.hellomoving.com/LEADSGWHTTP.lidgw?&API_ID=5E3FD536C2D6"
         query_string = urlencode({
@@ -120,9 +129,6 @@ def add_data():
             if sms_texting == 1 and validation == '1':
                 send_message(first_name, phone_number)
 
-        ref_no = data.get('ref_no', 'None')
-        if ref_no:
-            ref_no = unquote(ref_no)
 
         timezone = pytz.timezone('America/New_York')
         current_datetime = datetime.now(timezone)

@@ -27,7 +27,7 @@ class ProcessedDataForm(FlaskForm):
     data = StringField('Data', validators=[DataRequired()])
     submit = SubmitField('Submit')
 
-
+#for insert_domain route
 class DomainForm(FlaskForm):
     label = StringField('Label')
     domain = StringField('Domain')

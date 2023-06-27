@@ -1,3 +1,4 @@
+#some imports are used within each required route and function in order to avoid 'circular imports'
 from flask import Blueprint, render_template, request, jsonify, render_template, redirect, url_for, flash
 from flask_login import login_required
 

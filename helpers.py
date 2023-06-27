@@ -1,4 +1,4 @@
-
+#some imports are used within each required route and function in order to avoid 'circular imports'
 from flask import jsonify
 from urllib.parse import unquote
 from googleapiclient.discovery import build
@@ -87,9 +87,12 @@ def insert_data_into_db(data, sent_to_gronat, sent_to_sheets, validation):
         dcity = data.get('dcity', '')
         dstate = data.get('dstate', '')
         dzip = data.get('dzip', '')
+        # Validate ref_no, it must not be an empty string
         ref_no = data.get('ref_no', 'None')
-        if ref_no:
-            ref_no = unquote(ref_no)
+        if not ref_no or ref_no.strip() == '':
+            print("Invalid ref_no, ref_no cannot be an empty string.")
+            return jsonify({"message": "Invalid ref_no. ref_no cannot be an empty string."}), 400
+        ref_no = unquote(ref_no)
         
         timezone = pytz.timezone('America/New_York')
         current_datetime = datetime.now(timezone)

@@ -154,23 +154,6 @@ def add_data():
                     data.get('notes')
                 ]]
             }
-        if spreadsheet_config == 'IQ Media':
-            body = {
-                'values': [[
-                    timestamp,
-                    first_name,
-                    ozip,
-                    dzip,
-                    dcity,
-                    dstate,
-                    data.get('movesize'),
-                    data.get('movedte'),
-                    ref_no,
-                    validation,
-                    data.get('notes'),
-                    phone_number
-                ]]
-            }
             # check domain setting (1 = checked box in settings)
             if send_to_google_sheet == 1:
                 try:

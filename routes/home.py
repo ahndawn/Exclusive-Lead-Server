@@ -154,23 +154,24 @@ def add_data():
                     data.get('notes')
                 ]]
             }
-            # check domain setting (1 = checked box in settings)
-            if send_to_google_sheet == 1:
-                try:
-                    service = build('sheets', 'v4', credentials=creds)
-                    print(body)
-                    result = service.spreadsheets().values().append(
-                        spreadsheetId=spreadsheet_config['spreadsheet_id'],
-                        range=spreadsheet_config['range'],
-                        valueInputOption='RAW',
-                        insertDataOption='INSERT_ROWS',
-                        body=body
-                    ).execute()
-                    sent_to_sheets = '1'
-                    print('Sent to Google Sheet Successfully')
-                except HttpError as error: 
-                    print('An error occurred while sending data to Google Sheets: ', error._get_reason())
-                    sent_to_sheets = '0'
+            if spreadsheet_config == 'IQ Media':
+                body['values'][0].append(phone_number)
+                if send_to_google_sheet == 1:
+                    try:
+                        service = build('sheets', 'v4', credentials=creds)
+                        print(body)
+                        result = service.spreadsheets().values().append(
+                            spreadsheetId=spreadsheet_config['spreadsheet_id'],
+                            range=spreadsheet_config['range'],
+                            valueInputOption='RAW',
+                            insertDataOption='INSERT_ROWS',
+                            body=body
+                        ).execute()
+                        sent_to_sheets = '1'
+                        print('Sent to Google Sheet Successfully')
+                    except HttpError as error: 
+                        print('An error occurred while sending data to Google Sheets:', error._get_reason())
+                        sent_to_sheets = '0'
 
         # Insert the data into the database
         db_insertion_success = insert_data_into_db(data, sent_to_gronat, sent_to_sheets, validation)

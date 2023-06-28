@@ -154,6 +154,8 @@ def add_data():
                     data.get('notes')
                 ]]
             }
+            if label == 'IQ Media':
+                body['values'][0].append(phone_number)
             # check domain setting (1 = checked box in settings)
             if send_to_google_sheet == 1:
                 try:

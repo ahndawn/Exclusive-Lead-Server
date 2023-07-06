@@ -13,10 +13,10 @@ import os
 
 # Access the environment variables
 database_url = os.environ.get('DATABASE_URL')
-##################################################################
 twilio_account_sid = os.environ.get('TWILIO_ACCOUNT_SID')
 twilio_auth_token = os.environ.get('TWILIO_AUTH_TOKEN')
 client = Client(twilio_account_sid, twilio_auth_token)
+
 
 
 ##################################################################

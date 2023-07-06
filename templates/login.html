@@ -22,14 +22,17 @@
   <div class="form">
     <form method="POST" action="{{ url_for('auth.login') }}">
       {{ form.hidden_tag() }}
-      <div style="padding: 10px">
+      <div>
         {{ form.username.label }} {{ form.username(size=32) }}
       </div>
-      <div style="padding: 10px">
+      <div>
         {{ form.password.label }} {{ form.password(size=32) }}
       </div>
-      <div style="padding: 10px">
-        {{ form.submit() }}
+      <div style="padding:15px; width:50%; margin:auto; text-align:center;">
+        {{ form.submit(style="background-color:green; border-radius: 10px; box-shadow: black 2px 2px 2px; color:white; font-weight:bolder") }}
+      </div>
+      <div>
+        <a href="{{ url_for('auth.forgot_password') }}">Forgot Password?</a>
       </div>
       
   </form>

@@ -1,10 +1,13 @@
 #some imports are used within each required route and function in order to avoid 'circular imports'
-from flask import Blueprint, render_template, redirect, url_for, flash
+from flask import Blueprint, render_template, redirect, url_for, flash, current_app
 from flask_login import login_user, logout_user, login_required, LoginManager
 from forms.users import RegistrationForm, ForgotPasswordForm, ResetPasswordForm, LoginForm
+from sendgrid import SendGridAPIClient
+from sendgrid.helpers.mail import Mail
 import bcrypt
-import datetime
+from datetime import datetime, timedelta
 import secrets
+import os
 
 auth_bp = Blueprint('auth', __name__)
 
@@ -16,6 +19,29 @@ def generate_reset_token():
 def is_reset_token_expired(token_expiration):
     expiration = datetime.strptime(token_expiration, '%Y-%m-%d %H:%M:%S.%f')
     return datetime.now() > expiration
+
+email_key = os.environ.get('EMAIL_KEY')
+certs = os.environ.get('REQUESTS_CA_BUNDLE')
+
+def send_password_reset_email(user):
+    token = user.reset_token
+    email = user.email
+    subject = 'Password Reset Request'
+    template = 'reset_email.html'
+
+    message = Mail(
+        from_email='<ahni@safeshipmoving.com>',
+        to_emails=[email],
+        subject=subject,
+        html_content=render_template(template, user=user, token=token)
+    )
+
+    try:
+        sg = SendGridAPIClient(api_key=current_app.config['SENDGRID_API_KEY'])
+        response = sg.send(message)
+        print('Password reset email sent successfully.')
+    except Exception as e:
+        print('An error occurred while sending the password reset email:', str(e))
 
 
 @login_manager.user_loader
@@ -35,7 +61,7 @@ def login():
         if user and bcrypt.checkpw(form.password.data.encode('utf-8'), user.password.encode('utf-8')):
             # Log the user in
             login_user(user)
-            flash('Login successful.', 'success')
+            flash('success: User is Logged In.', 'success')
             return redirect(url_for('app.home'))
         else:
             # If credentials are not valid, show an error message
@@ -43,7 +69,6 @@ def login():
 
     return render_template('login.html', form=form)
 
-# USER AUTH
 @auth_bp.route('/register', methods=['GET', 'POST'])
 def register():
     from app import db
@@ -53,19 +78,30 @@ def register():
     if form.validate_on_submit():
         salt = bcrypt.gensalt()
         hashed_password = bcrypt.hashpw(form.password.data.encode('utf-8'), salt).decode('utf-8')
-        
-        # Assuming your User model accepts username, password, and email
+
+        # Check if the username is already taken
+        existing_user = User.query.filter_by(username=form.username.data).first()
+        if existing_user:
+            flash('Username is already taken. Please choose a different username.', 'error')
+            return redirect(url_for('auth.register'))
+
+        # Check if the email is already taken
+        existing_email = User.query.filter_by(email=form.email.data).first()
+        if existing_email:
+            flash('Email is already registered. Please use a different email address.', 'error')
+            return redirect(url_for('auth.register'))
+
+        # Create a new user
         user = User(username=form.username.data, password=hashed_password, email=form.email.data)
         db.session.add(user)
         db.session.commit()
 
-        flash('User registered successfully', 'success')
+        flash('success: User registered', 'success')
         return redirect(url_for('auth.login'))
 
     return render_template('register.html', form=form)
 
 
-#UNFINISHED
 @auth_bp.route('/forgot_password', methods=['GET', 'POST'])
 def forgot_password():
     from models.user import User
@@ -77,14 +113,17 @@ def forgot_password():
 
         if user:
             reset_token = generate_reset_token()
-            reset_token_expiration = datetime.now() + datetime.timedelta(hours=1)
+            reset_token_expiration = datetime.now() + timedelta(hours=1)
             user.reset_token = reset_token
             user.reset_token_expiration = reset_token_expiration
             db.session.commit()
 
-            # ... send password reset email ...
+            send_password_reset_email(user)
 
-        flash('An email with instructions to reset your password has been sent.', 'success')
+            flash('success: An email with instructions to reset your password has been sent.', 'success')
+        else:
+            flash('Invalid username or email. Please try again.', 'error')
+
         return redirect(url_for('auth.login'))
 
     return render_template('forgot_password.html', form=form)
@@ -107,13 +146,12 @@ def reset_password(reset_token):
         user.reset_token_expiration = None
         db.session.commit()
 
-        flash('Your password has been successfully reset. You can now log in with your new password.', 'success')
+        flash('success: Your password has been successfully reset. You can now log in with your new password.', 'success')
         return redirect(url_for('auth.login'))
 
     return render_template('reset_password.html', form=form, reset_token=reset_token)
 
 @auth_bp.route('/logout')
-@login_required
 def logout():
     logout_user()
     return redirect(url_for('auth.login'))

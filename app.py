@@ -3,7 +3,7 @@ from flask import Flask
 from dotenv import load_dotenv
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
-from routes.auth import auth_bp, login_manager
+from routes.auth import auth_bp, login_manager, email_key
 from routes.home import app_bp
 from routes.domains import domain_bp
 from routes.table import table_bp
@@ -23,8 +23,10 @@ if database_url.startswith("postgres://"):
 app.config['SQLALCHEMY_DATABASE_URI'] = database_url
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SECRET_KEY'] = 'GdsfeG7_3f6dfwxI73_rh4'
+app.config['SENDGRID_API_KEY'] = email_key
 
 login_manager.login_view = 'auth.login'
+
 
 # used BluePrint for clean route management
 app.register_blueprint(auth_bp)
@@ -35,6 +37,7 @@ db.init_app(app)
 migrate = Migrate(app, db)
 
 login_manager.init_app(app)
+
 
 with app.app_context():
     db.create_all()

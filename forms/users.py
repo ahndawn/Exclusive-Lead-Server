@@ -1,20 +1,38 @@
+from flask import flash
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, SubmitField
-from wtforms.validators import DataRequired, Email, Length, Regexp, EqualTo
+from wtforms.validators import DataRequired, Email, Length, Regexp, EqualTo, ValidationError
+import re
 
 
 class RegistrationForm(FlaskForm):
     username = StringField('Username', validators=[DataRequired()])
     password = PasswordField('Password', validators=[
         DataRequired(),
-        Length(min=8, message='Password should be at least 8 characters long'),
-        Regexp(r'[A-Z]', message='Password should contain at least one capital letter')
+        Length(min=8),
+        Regexp(r'[A-Z]')
     ])
+
+    def validate_password(form, field):
+        if len(field.data) < 8:
+            flash('Password should be at least 8 characters long')
+            raise ValidationError()
+
+    def validate_password(form, field):
+        if not re.search(r'[A-Z]', field.data):
+            flash('Password should contain at least one capital letter')
+            raise ValidationError()
+    
     email = StringField('Email', validators=[
         DataRequired(),
         Email(),
-        Regexp(r'^[\w\.-]+@safeshipmoving\.com$', message='Please use a valid @safeshipmoving.com email address.')
+        Regexp(r'^[\w\.-]+@safeshipmoving\.com$')
     ])
+    def validate_email(form, field):
+        if not re.search(r'^[\w\.-]+@safeshipmoving\.com$', field.data):
+            flash('Please use a valid @safeshipmoving.com email address.')
+            raise ValidationError()
+        
     submit = SubmitField('Register')
 
 class ForgotPasswordForm(FlaskForm):

@@ -61,7 +61,6 @@ def login():
         if user and bcrypt.checkpw(form.password.data.encode('utf-8'), user.password.encode('utf-8')):
             # Log the user in
             login_user(user)
-            flash('success: User is Logged In.', 'success')
             return redirect(url_for('app.home'))
         else:
             # If credentials are not valid, show an error message

@@ -65,7 +65,7 @@ def login():
             return redirect(url_for('app.home'))
         else:
             # If credentials are not valid, show an error message
-            flash('Login Unsuccessful. Please check username and password', 'danger')
+            flash('Login Failed. Please check username and password', 'danger')
 
     return render_template('login.html', form=form)
 

@@ -120,8 +120,10 @@ def insert_data_into_db(data, sent_to_gronat, sent_to_sheets, validation):
         
         db.session.add(lead)
         db.session.commit()
-        
+
+        print('added successfully to Heroku')
         return True  # Return True if insertion was successful
+        
         
     except IntegrityError:
         db.session.rollback()

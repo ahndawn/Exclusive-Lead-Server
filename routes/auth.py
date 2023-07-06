@@ -109,7 +109,7 @@ def forgot_password():
     form = ForgotPasswordForm()
 
     if form.validate_on_submit():
-        user = User.query.filter_by(email=form.email.data, username=form.username.data).first()
+        user = User.query.filter_by(email=form.email.data).first()
 
         if user:
             reset_token = generate_reset_token()

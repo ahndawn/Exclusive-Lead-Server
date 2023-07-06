@@ -140,8 +140,9 @@ def reset_password(reset_token):
         return redirect(url_for('auth.login'))
 
     if form.validate_on_submit():
-        hashed_password = bcrypt.generate_password_hash(form.password.data).decode('utf-8')
-        user.password = hashed_password
+        salt = bcrypt.gensalt()
+        hashed_password = bcrypt.hashpw(form.password.data.encode(), salt)
+        user.password = hashed_password.decode('utf-8')
         user.reset_token = None
         user.reset_token_expiration = None
         db.session.commit()

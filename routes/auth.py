@@ -154,4 +154,5 @@ def reset_password(reset_token):
 @auth_bp.route('/logout')
 def logout():
     logout_user()
+    flash('User successfully logged out.')
     return redirect(url_for('auth.login'))

@@ -544,7 +544,7 @@ ul{
     padding:5px;
 
   }
-  nav, li{
+  nav, li, a{
     text-align: center;
     margin: auto;
   }

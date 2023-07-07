@@ -565,6 +565,10 @@ ul{
     font-size:14px;
   }
 
+  .pagination-info{
+    font-size:10px
+  }
+
   .nav-info{
     margin-left:30px !important;
   }

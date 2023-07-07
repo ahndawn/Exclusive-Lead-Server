@@ -566,7 +566,7 @@ ul{
   }
 
   .pagination-info{
-    font-size:10px
+    display:none
   }
 
   .nav-info{

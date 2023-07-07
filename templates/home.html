@@ -24,15 +24,15 @@
 {% block nav %}
     <nav>
       <ul class="clearfix">
-        <li><a href="/home"><img src="../static/images/safe-ship-white-icon.png" style="width:20px; height:20px; margin-bottom: 0px;"/>  Home</a></li>
-        <li><a href="/table"><i class="fa-regular fa-address-book"></i> Leads</a></li>
-        <li><a href="/domains"><i class="fa-solid fa-globe"></i> Domains</a></li>
+        <li><a href="/home"><img src="../static/images/safe-ship-white-icon.png" style="width:20px; height:20px; margin-bottom: 0px;"/>  <b class="nav-info">Home</b></a></li>
+        <li><a href="/table"><i class="fa-regular fa-address-book"></i> <b class="nav-info">Leads</b></a></li>
+        <li><a href="/domains"><i class="fa-solid fa-globe"></i> <b class="nav-info">Domains</b></a></li>
       {% if not current_user.is_authenticated %}
-        <li class="userBtn"><a href="{{ url_for('auth.login') }}"><i class="fa-solid fa-right-to-bracket"></i> Login</a></li>
-        <li class="userBtn"><a href="{{ url_for('auth.register') }}"><i class="fa-solid fa-user-plus"></i> Register</a></li>
+        <li class="userBtn"><a href="{{ url_for('auth.login') }}"><i class="fa-solid fa-right-to-bracket"></i> <b class="nav-info">Login</b></a></li>
+        <li class="userBtn"><a href="{{ url_for('auth.register') }}"><i class="fa-solid fa-user-plus"></i> <b class="nav-info">Registerv</a></li>
       {% endif %}
       {% if current_user.is_authenticated %}
-        <li class="userBtn"><a href="{{ url_for('auth.logout') }}"><i class="fa-solid fa-house-circle-xmark"></i> Logout</a></li>
+        <li class="userBtn"><a href="{{ url_for('auth.logout') }}"><i class="fa-solid fa-house-circle-xmark"></i> <b class="nav-info">Logout</b></a></li>
       {% endif %}
       </ul>
     </nav>

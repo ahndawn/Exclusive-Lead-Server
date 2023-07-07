@@ -565,6 +565,10 @@ ul{
     font-size:14px;
   }
 
+  .nav-info{
+    margin-left:10px !important;
+  }
+
   #addDomainForm{
     font-size:12px;
   }

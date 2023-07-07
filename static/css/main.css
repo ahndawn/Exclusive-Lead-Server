@@ -560,7 +560,8 @@ ul{
   #addDomainForm input{
     margin-bottom:20px;
   }
-  #pagination{
+  #pagination, .pagination-btn{
     font-size: 14px;
+    padding: -10px;
   }
 }

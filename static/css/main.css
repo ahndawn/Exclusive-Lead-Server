@@ -544,8 +544,9 @@ ul{
     padding:5px;
 
   }
-  nav{
+  nav, li{
     text-align: center;
+    margin: auto;
   }
   #search-input{
     width:189px;

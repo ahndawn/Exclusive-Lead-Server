@@ -544,11 +544,14 @@ ul{
     padding:5px;
 
   }
+  nav{
+    text-align: center;
+  }
   #search-input{
     width:189px;
     margin-left:-7px;
   }
-  .search-area{
+  .search-area, .search-bar{
     width:100%;
   }
   .domain-info{

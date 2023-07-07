@@ -553,13 +553,14 @@ ul{
   td, th{
     font-size:14px;
   }
-  .search-area{
-    margin-left:50px
-  }
+
   #addDomainForm{
     font-size:12px;
   }
   #addDomainForm input{
     margin-bottom:20px;
+  }
+  #pagination{
+    font-size: 14px;
   }
 }

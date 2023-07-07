@@ -561,7 +561,7 @@ ul{
     margin-bottom:20px;
   }
   #pagination, .pagination-btn{
-    font-size: 14px;
-    padding: -10px;
+    font-size: 13px;
+    margin: -5px;
   }
 }

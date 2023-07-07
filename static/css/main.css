@@ -569,6 +569,10 @@ ul{
     margin-left:30px !important;
   }
 
+  .clearfix{
+    margin-left:-20px !important;
+  }
+
   #addDomainForm{
     font-size:12px;
   }

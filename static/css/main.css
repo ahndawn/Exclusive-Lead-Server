@@ -585,7 +585,7 @@ ul{
   }
   #pagination, .pagination-btn{
     font-size: 12px;
-    margin: auto;
+    margin: 5px;
   }
   #pagination{
     margin-top:15px;

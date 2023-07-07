@@ -546,6 +546,7 @@ ul{
   }
   #search-input{
     width:189px;
+    margin-left:-7px;
   }
   .search-area{
     width:100%;

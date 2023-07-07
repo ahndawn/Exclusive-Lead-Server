@@ -544,6 +544,9 @@ ul{
     padding:5px;
 
   }
+  .search-area{
+    width:100%;
+  }
   .domain-info{
     padding-left:-10px !important;
     padding-right:-10px !important;

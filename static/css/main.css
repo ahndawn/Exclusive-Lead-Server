@@ -575,4 +575,7 @@ ul{
     font-size: 12px;
     margin: auto;
   }
+  #pagination{
+    margin-top:15px;
+  }
 }

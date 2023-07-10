@@ -532,6 +532,9 @@ ul{
   .form{
     width: 70%;
   }
+  .messages li{
+    margin-top: 26%;
+  }
   h1{
     font-size: 24px !important;
   }

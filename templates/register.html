@@ -16,7 +16,7 @@
             </ul>
         {% endif %}
     {% endwith %}
-    <div class="form">
+    <div class="form" style="margin-top:80px">
         <form method="POST" action="{{ url_for('auth.register') }}">
             {{ form.hidden_tag() }}
             

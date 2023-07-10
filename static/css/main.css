@@ -533,7 +533,7 @@ ul{
     width: 70%;
   }
   .messages li{
-    margin-top: 30%;
+    margin-top: 5% !important;
   }
   h1{
     font-size: 24px !important;

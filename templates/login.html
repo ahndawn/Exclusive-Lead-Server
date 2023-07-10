@@ -25,15 +25,16 @@
       <div>
         {{ form.username.label }} {{ form.username(size=32) }}
       </div>
-      <div>
+      <div style="padding-top:15px;">
         {{ form.password.label }} {{ form.password(size=32) }}
       </div>
-      <div style="padding:15px; width:50%; margin:auto; text-align:center;">
+      <div style="padding:15px; width:fit-content; margin:auto; text-align:center;">
         {{ form.submit(style="background-color:green; border-radius: 10px; box-shadow: black 2px 2px 2px; color:white; font-weight:bolder") }}
       </div>
       <div>
         <a href="{{ url_for('auth.forgot_password') }}" style="color:rgb(103, 235, 255); text-decoration: none;">Forgot Password?</a>
       </div>
+      <p style="font-size:14px; font-weight:lighter"><a href="{{ url_for('auth.register') }}" style="color:white; text-decoration:none;">Sign Up</a></p>
   </form>
   </div>
 </div>

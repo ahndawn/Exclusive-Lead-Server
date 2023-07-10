@@ -59,29 +59,29 @@
             </tr>
         </thead>
         <tbody>
-                            {% for row in data %}
-                                <tr>
-                                    <td>{{ row.label }}</td>
-                                    <td>{{ row.timestamp }}</td>
-                                    <td>{{ row.firstname }}</td>
-                                    <td>{{ row.email }}</td>
-                                    <td>{{ row.phone1 }}</td>
-                                    <td>{{ row.ozip }}</td>
-                                    <td>{{ row.dzip }}</td>
-                                    <td>{{ row.dcity }}</td>
-                                    <td>{{ row.dstate }}</td>
-                                    <td>{{ row.movesize }}</td>
-                                    <td>{{ row.movedte }}</td>
-                                    <td>{{ row.conversion }}</td>
-                                    <td {% if row.validation == '0' %}style="color: rgb(216, 0, 0);"{% elif row.validation == '-1' %}style="color: rgb(150, 150, 150);"{% elif row.validation == '1' %}style="color: green;"{% endif %}>{{ row.validation }}</td>
-                                    <td>{{ row.notes }}</td>
-                                    <td {% if row.sent_to_gronat == '0' %}style="color: rgb(216, 0, 0);"{% elif row.sent_to_gronat == '1' %}style="color: green;"{% endif %}>{{ row.sent_to_gronat }}</td>
-                                    <td {% if row.sent_to_sheets == '0' %}style="color: rgb(216, 0, 0);"{% elif row.sent_to_sheets == '1' %}style="color: green;"{% endif %}>{{ row.sent_to_sheets }}</td>
-                                </tr>
-                            {% endfor %}
-                        </tbody>
-                    </table>
-                </div>
+            {% for row in data %}
+                <tr>
+                    <td>{{ row.label }}</td>
+                    <td>{{ row.timestamp }}</td>
+                    <td>{{ row.firstname }}</td>
+                    <td>{{ row.email }}</td>
+                    <td>{{ row.phone1 }}</td>
+                    <td>{{ row.ozip }}</td>
+                    <td>{{ row.dzip }}</td>
+                    <td>{{ row.dcity }}</td>
+                    <td>{{ row.dstate }}</td>
+                    <td>{{ row.movesize }}</td>
+                    <td>{{ row.movedte }}</td>
+                    <td>{{ row.conversion }}</td>
+                    <td {% if row.validation == '0' %}style="color: rgb(216, 0, 0);"{% elif row.validation == '-1' %}style="color: rgb(150, 150, 150);"{% elif row.validation == '1' %}style="color: green;"{% endif %}>{{ row.validation }}</td>
+                    <td>{{ row.notes }}</td>
+                    <td {% if row.sent_to_gronat == '0' %}style="color: rgb(216, 0, 0);"{% elif row.sent_to_gronat == '1' %}style="color: green;"{% endif %}>{{ row.sent_to_gronat }}</td>
+                    <td {% if row.sent_to_sheets == '0' %}style="color: rgb(216, 0, 0);"{% elif row.sent_to_sheets == '1' %}style="color: green;"{% endif %}>{{ row.sent_to_sheets }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
             
 
 <!-- <div class="status-bar">

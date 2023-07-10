@@ -3,6 +3,7 @@ from flask import Blueprint, render_template, request, jsonify, render_template
 from flask_login import login_required, current_user
 from helpers import creds
 from googleapiclient.discovery import build
+from operator import attrgetter
 
 table_bp = Blueprint('table', __name__)
 
@@ -45,7 +46,7 @@ def show_table():
         column_attribute = filter_columns.get(filter_by)
         if column_attribute:
             filter_value = request.args.get('filter_value', default="")
-            filtered_data = Lead.query.filter(column_attribute == filter_value).all()
+            filtered_data = [row for row in all_data if attrgetter(column_attribute)(row) == filter_value]
         else:
             # Invalid filter selected, show all data
             filtered_data = all_data
@@ -57,6 +58,7 @@ def show_table():
     # Pagination
     per_page = 15
     page = request.args.get('page', 1, type=int)
+    filtered_data = sorted(filtered_data, key=attrgetter('timestamp'), reverse=True)
 
     if show_all:
         data = filtered_data

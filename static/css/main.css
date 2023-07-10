@@ -61,16 +61,22 @@ html, body{
   }
 
   .messages li {
+    position: absolute;
+    top: 24%;
+    left: 50%;
+    transform: translate(-50%, -50%);
     background-color: #ff4646;
     color: #ffffff;
     text-align: center;
     width: fit-content;
     padding: 10px;
-    margin: auto;
+    margin: auto !important;
+    min-width: 300px;
     border-radius: 15px;
     list-style: none;
     margin-top: 15px;
-    font-weight: bolder;
+    font-weight: lighter;
+    margin-left: -13px;
   }
   
   ul.messages li.success-message {
@@ -95,16 +101,20 @@ h1{
   color: #ffffff;
   font-weight: bolder;
   text-shadow: #000000 2px 2px 2px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+  position: absolute;
+  top: 42%;
+  left: 50%;
+  transform: translate(-50%, -50%);
   background-color: rgba(123, 123, 123, 0.65);
   box-shadow: #272727 0px 0px 13px 3px;
   margin: auto;
   height: auto;
-  margin-top: 50px;
+  margin-top: 70px;
   border-radius: 15px;
-  padding: 20px;
+  padding-left: 50px;
+  padding-right: 50px;
+  padding-top:10px;
+  padding-bottom:10px;
   width: 30%;
   min-width: 30%;
   justify-content: space-between;
@@ -522,8 +532,11 @@ ul{
   .form{
     width: 70%;
   }
+  h1{
+    font-size: 24px !important;
+  }
   .head{
-    margin-top:65px
+    margin-top:45px;
   }
   #domainitem{
     padding-left:-10px !important;
@@ -547,6 +560,7 @@ ul{
   nav, li, a, .clearfix{
     text-align: center;
     margin: auto;
+    width:100%
   }
   #search-input{
     width:189px;
@@ -574,7 +588,7 @@ ul{
   }
 
   .clearfix{
-    margin-left:-15px !important;
+    margin-left:-25px !important;
   }
 
   #addDomainForm{

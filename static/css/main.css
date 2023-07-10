@@ -539,8 +539,14 @@ ul{
     font-size: 24px !important;
   }
   .head{
-    margin-top:40px;
+    margin-top:49px;
+    
   }
+  .head h1{
+    margin-top: 10px;
+    font-size: 18px !important;
+  }
+
   #domainitem{
     padding-left:-10px !important;
     padding-right:-10px !important;
@@ -560,7 +566,7 @@ ul{
     padding:5px;
 
   }
-  nav, li{
+  nav, nav li{
     text-align: center;
     margin: auto;
     width:100%;
@@ -569,7 +575,7 @@ ul{
     padding-bottom:5px;
   }
 
-  li{
+  nav li{
     margin-left:-11px !important;
   }
 

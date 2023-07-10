@@ -539,7 +539,7 @@ ul{
     font-size: 24px !important;
   }
   .head{
-    margin-top:45px;
+    margin-top:40px;
   }
   #domainitem{
     padding-left:-10px !important;
@@ -560,10 +560,24 @@ ul{
     padding:5px;
 
   }
-  nav, li, a, .clearfix{
+  nav, li{
     text-align: center;
     margin: auto;
-    width:100%
+    width:105%;
+    font-size:14px;
+    padding-top:5px;
+    padding-bottom:5px;
+  }
+
+  li{
+    margin-left:-19px !important;
+  }
+
+  .clearfix{
+    padding-left:20px !important
+  }
+  a, .clearfix {
+    padding:0px
   }
   #search-input{
     width:189px;

@@ -589,5 +589,7 @@ ul{
   }
   #pagination{
     margin-top:15px;
+    margin-left:50% !important;
+    margin-right:50% !important
   }
 }

@@ -531,6 +531,7 @@ ul{
 @media(max-width:796px){
   .form{
     width: 70%;
+    top: 45%;
   }
   .messages li{
     margin-top: 5% !important;

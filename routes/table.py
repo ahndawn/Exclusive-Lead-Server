@@ -58,7 +58,7 @@ def show_table():
     # Pagination
     per_page = 15
     page = request.args.get('page', 1, type=int)
-    filtered_data = sorted(filtered_data, key=attrgetter('timestamp'), reverse=True)
+    filtered_data = sorted(filtered_data, key=attrgetter('id'), reverse=True)
 
     if show_all:
         data = filtered_data

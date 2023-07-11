@@ -531,10 +531,10 @@ ul{
 @media(max-width:796px){
   .form{
     width: 70%;
-    top: 45%;
+    top: 50% !important
   }
   .messages li{
-    margin-top: 5% !important;
+    margin-top: 15% !important;
   }
   h1{
     font-size: 24px !important;

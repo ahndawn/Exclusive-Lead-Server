@@ -598,9 +598,9 @@ ul{
   }
   .domain-info{
     padding-left:-15px !important;
-    padding-right:-15px !important;
-    margin-left:-22px !important;
-    margin-right:-22px !important;
+    padding-right:-45px !important;
+    margin-left:-19px !important;
+    margin-right:-19px !important;
   }
   td, th{
     font-size:14px;

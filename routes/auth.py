@@ -1,5 +1,5 @@
 #some imports are used within each required route and function in order to avoid 'circular imports'
-from flask import Blueprint, render_template, redirect, url_for, flash, current_app
+from flask import Blueprint, render_template, redirect, url_for, flash, current_app, request
 from flask_login import login_user, logout_user, login_required, LoginManager
 from forms.users import RegistrationForm, ForgotPasswordForm, ResetPasswordForm, LoginForm
 from sendgrid import SendGridAPIClient
@@ -68,6 +68,12 @@ def login():
 
     return render_template('login.html', form=form)
 
+def collect_error_messages(form_errors):
+    error_messages = []
+    for field_errors in form_errors.values():
+        error_messages.extend(field_errors)
+    return ', '.join(error_messages)
+
 @auth_bp.route('/register', methods=['GET', 'POST'])
 def register():
     from app import db
@@ -81,22 +87,29 @@ def register():
         # Check if the username is already taken
         existing_user = User.query.filter_by(username=form.username.data).first()
         if existing_user:
-            flash('Username is already taken. Please choose a different username.', 'error')
+            flash('Username is already taken. Please choose a different username.')
             return redirect(url_for('auth.register'))
 
         # Check if the email is already taken
         existing_email = User.query.filter_by(email=form.email.data).first()
         if existing_email:
-            flash('Email is already registered. Please use a different email address.', 'error')
+            flash('Email is already registered. Please use a different email address.')
             return redirect(url_for('auth.register'))
 
         # Create a new user
-        user = User(username=form.username.data, password=hashed_password, email=form.email.data)
-        db.session.add(user)
-        db.session.commit()
-
-        flash('success: User registered', 'success')
-        return redirect(url_for('auth.login'))
+        try:
+            user = User(username=form.username.data, password=hashed_password, email=form.email.data)
+            db.session.add(user)
+            db.session.commit()
+            flash('success: User registered', 'success')
+            return redirect(url_for('auth.login'))
+        except Exception as e:
+            print(f"Error adding user to database: {e}")
+            db.session.rollback()
+    elif request.method == 'POST':
+        error_messages = collect_error_messages(form.errors)
+        flash(f'There were errors with your submission: {error_messages}')
+        print(form.errors)
 
     return render_template('register.html', form=form)
 
@@ -121,7 +134,7 @@ def forgot_password():
 
             flash('success: An email with instructions to reset your password has been sent.', 'success')
         else:
-            flash('Invalid username or email. Please try again.', 'error')
+            flash('Invalid username or email. Please try again.', 'danger')
 
         return redirect(url_for('auth.login'))
 
@@ -135,7 +148,7 @@ def reset_password(reset_token):
     user = User.query.filter_by(reset_token=reset_token).first()
 
     if not user or is_reset_token_expired(user.reset_token_expiration):
-        flash('Invalid or expired password reset link.', 'error')
+        flash('Invalid or expired password reset link.', 'danger')
         return redirect(url_for('auth.login'))
 
     if form.validate_on_submit():

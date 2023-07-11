@@ -287,6 +287,15 @@ nav {
     height: 100vh;
   }
 
+  .passwordRevealBtn{
+    color:white;
+    text-shadow: #000000 1px 1px 1px;
+  }
+
+  .passwordRevealBtn:hover{
+    color: #979797;
+  }
+
   .carousel-item:nth-child(1) {
     background-image: url('https://mdbootstrap.com/img/Photos/Others/images/76.jpg');
     background-repeat: no-repeat;
@@ -532,6 +541,14 @@ ul{
   .form{
     width: 70%;
     top: 50% !important
+  }
+  .passwordDiv{
+    margin-left:3% !important;
+    margin-right: -3% !important
+  }
+  .passwordRevealBtn{
+    margin-left:2px !important;
+    font-size:12px !important
   }
   .messages li{
     margin-top: 15% !important;

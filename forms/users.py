@@ -8,30 +8,16 @@ import re
 class RegistrationForm(FlaskForm):
     username = StringField('Username', validators=[DataRequired()])
     password = PasswordField('Password', validators=[
-        DataRequired(),
-        Length(min=8),
-        Regexp(r'[A-Z]')
+        DataRequired(message="Password field is required."),
+        Length(min=8, message="Password should be at least 8 characters long."),
+        Regexp(r'.*[A-Z].*', message="Password should contain at least one uppercase letter.")
     ])
-
-    def validate_password(form, field):
-        if len(field.data) < 8:
-            flash('Password should be at least 8 characters long')
-            raise ValidationError()
-
-    def validate_password(form, field):
-        if not re.search(r'[A-Z]', field.data):
-            flash('Password should contain at least one capital letter')
-            raise ValidationError()
     
     email = StringField('Email', validators=[
         DataRequired(),
         Email(),
-        Regexp(r'^[\w\.-]+@safeshipmoving\.com$')
+        Regexp(r'^[\w\.-]+@safeshipmoving\.com$', message='Please use a valid @safeshipmoving.com email address.')
     ])
-    def validate_email(form, field):
-        if not re.search(r'^[\w\.-]+@safeshipmoving\.com$', field.data):
-            flash('Please use a valid @safeshipmoving.com email address.')
-            raise ValidationError()
         
     submit = SubmitField('Register')
 

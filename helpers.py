@@ -123,8 +123,7 @@ def insert_data_into_db(data, sent_to_gronat, sent_to_sheets, validation):
 
         print('added successfully to Heroku')
         return True  # Return True if insertion was successful
-        
-        
+    
     except IntegrityError:
         db.session.rollback()
         print('Error: Duplicate data in lead table.')

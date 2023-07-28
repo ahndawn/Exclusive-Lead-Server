@@ -44,7 +44,7 @@ def send_message(first_name, phone_number):
     try:
         message = client.messages.create(
             to=phone_number,
-            from_="15614646484", 
+            from_="15614851468", 
             body=body
         )
         print("Message sent successfully!")

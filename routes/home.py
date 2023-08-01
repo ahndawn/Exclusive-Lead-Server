@@ -47,26 +47,6 @@ def add_data():
             print("PHONE, EMAIL, AND NAME ARE REQUIRED. SKIPPING INSERTION")
             return jsonify({"message": "Email, phone number, and name are required."}), 400 
 
-        # Check for duplicate post requests from the user
-        data_without_notes = data.copy()
-        # remove 'notes' because the icid is the value for the notes and it is random and assigned with every POST request
-        data_without_notes.pop('notes', None)
-        data_str = json.dumps(data_without_notes, sort_keys=True)
-        existing_data = ProcessedData.query.filter_by(data=data_str).first()
-        if existing_data:
-            print('EXISTING DATA, SKIPPING INSERTION')
-            return jsonify({"message": "Duplicate data found in the database. Skipping insertion."}), 201
-
-        # Insert the data into the database
-        try:
-            processed_data = ProcessedData(data=data_str)
-            db.session.add(processed_data)
-            db.session.commit()
-        except IntegrityError:
-            db.session.rollback()
-            print('EXISTING DATA, SKIPPING INSERTION')
-            return jsonify({"message": "Duplicate data found in the database. Skipping insertion."}), 201
-
         # Fetch domain settings from the database. 1 means the checkbox is 'checked' for domain settings and makes the value true for the specific setting, 0 is false
         domain_settings = Domain.query.filter_by(label=label).first()
 

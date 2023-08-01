@@ -86,11 +86,10 @@ def add_data():
         if send_to_leads_api == 1:
             response = requests.post(api_url, data=query_string)
             if response.status_code >= 200 and response.status_code < 300:
-                print("Data sent to Gronat successfully.")
-                # change value in table to '1' on successful post
+                print(f"Response code: {response.status_code}, Response message: {response.text}")
                 sent_to_gronat = '1'
             else:
-                print("Failed to send data to Gronat.")
+                print(f"Response code: {response.status_code}, Response message: {response.text}")
 
 
         # default value if validation is not ran '-1'

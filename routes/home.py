@@ -86,9 +86,11 @@ def add_data():
         if send_to_leads_api == 1:
             response = requests.post(api_url, data=query_string)
             if response.status_code >= 200 and response.status_code < 300:
+                print("Sent to Gronat")
                 print(f"Response code: {response.status_code}, Response message: {response.text}")
                 sent_to_gronat = '1'
             else:
+                print("Gronat posting failed")
                 print(f"Response code: {response.status_code}, Response message: {response.text}")
 
 
@@ -163,7 +165,7 @@ def add_data():
             print('Successfully Submitted to Heroku database')
             return jsonify({"message": "Data sent to Heroku successfully."}), 200
         
-        if not db_insertion_success and sent_to_gronat == '0' and not existing_data:
+        if not db_insertion_success and sent_to_gronat == '0':
             print("Database insertion failed. Sending data to the leads API...")
             response = requests.post(api_url, data=query_string)
             # If the insertion fails, send the data to the leads API

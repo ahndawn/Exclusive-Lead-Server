@@ -127,7 +127,9 @@ def add_data():
                 # change value in table to '0' if number is invalid
                 validation = '0'
             if sms_texting == 1 and validation == '1':
-                send_message(first_name, phone_number)
+                success = send_message(first_name, phone_number)
+                if not success:
+                    print(f"Failed to send sms to {phone_number}")
 
 
         timezone = pytz.timezone('America/New_York')

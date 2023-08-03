@@ -5,11 +5,12 @@ from googleapiclient.discovery import build
 from googleapiclient.errors import HttpError
 from flask_login import current_user
 from urllib.parse import urlencode, unquote
-from helpers import client, send_message, creds, spreadsheet_ids_and_ranges
+from helpers import client, send_message, creds, spreadsheet_ids_and_ranges, format_phone_number
 from datetime import datetime
 import pytz
 import json
 import requests
+
 
 app_bp = Blueprint('app', __name__)
 
@@ -35,7 +36,8 @@ def add_data():
         dzip = data.get('dzip', '')
         email = data.get('email')
         label = data.get('label')
-        phone_number = data.get('phone1')
+        phnumber = data.get('phone1')
+        phone_number = format_phone_number(phnumber)
         first_name = data.get('firstname')
         # Validate ref_no, it must not be an empty string
         ref_no = data.get('ref_no')
@@ -156,7 +158,7 @@ def add_data():
                 except HttpError as error: 
                     print('An error occurred while sending data to Google Sheets: ', error._get_reason())
                     sent_to_sheets = '0'
-
+    
         # Insert the data into the database
         db_insertion_success = insert_data_into_db(data, sent_to_gronat, sent_to_sheets, validation)
         

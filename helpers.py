@@ -17,8 +17,23 @@ twilio_account_sid = os.environ.get('TWILIO_ACCOUNT_SID')
 twilio_auth_token = os.environ.get('TWILIO_AUTH_TOKEN')
 client = Client(twilio_account_sid, twilio_auth_token)
 
+#format phone
+#################################################################
+def format_phone_number(phone_number):
+    # Remove all non-numeric characters
+    phone_number = ''.join(filter(str.isdigit, phone_number))
 
+    # Check if phone number has the correct length for international format
+    if len(phone_number) < 10 or len(phone_number) > 12:
+        return 'Invalid phone number'
 
+    # Add the dashes
+    if len(phone_number) == 10:  # US number without country code
+        return f'{phone_number[:3]}-{phone_number[3:6]}-{phone_number[6:]}'
+    elif len(phone_number) == 11:  # International number with 1 digit country code
+        return f'{phone_number[:1]}-{phone_number[1:4]}-{phone_number[4:7]}-{phone_number[7:]}'
+    elif len(phone_number) == 12:  # International number with 2 digits country code
+        return f'{phone_number[:2]}-{phone_number[2:5]}-{phone_number[5:8]}-{phone_number[8:]}'
 ##################################################################
 # Google Sheets API credentials
 google_sheets_credentials = os.environ.get('GOOGLE_SHEETS_CREDENTIALS')

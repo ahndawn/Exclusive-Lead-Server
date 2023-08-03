@@ -27,13 +27,13 @@ def format_phone_number(phone_number):
     if len(phone_number) < 10 or len(phone_number) > 12:
         return 'Invalid phone number'
 
-    # Add the dashes
+    # Return the phone number without any dashes
     if len(phone_number) == 10:  # US number without country code
-        return f'{phone_number[:3]}-{phone_number[3:6]}-{phone_number[6:]}'
+        return f'{phone_number[:3]}{phone_number[3:6]}{phone_number[6:]}'
     elif len(phone_number) == 11:  # International number with 1 digit country code
-        return f'{phone_number[:1]}-{phone_number[1:4]}-{phone_number[4:7]}-{phone_number[7:]}'
+        return f'{phone_number[:1]}{phone_number[1:4]}{phone_number[4:7]}{phone_number[7:]}'
     elif len(phone_number) == 12:  # International number with 2 digits country code
-        return f'{phone_number[:2]}-{phone_number[2:5]}-{phone_number[5:8]}-{phone_number[8:]}'
+        return f'{phone_number[:2]}{phone_number[2:5]}{phone_number[5:8]}{phone_number[8:]}'
 ##################################################################
 # Google Sheets API credentials
 google_sheets_credentials = os.environ.get('GOOGLE_SHEETS_CREDENTIALS')

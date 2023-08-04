@@ -31,7 +31,8 @@ class ProcessedDataForm(FlaskForm):
 class DomainForm(FlaskForm):
     label = StringField('Label')
     domain = StringField('Domain')
-    d_phone_number = StringField('D Phone Number')
+    lead_cost = StringField('Lead Cost')
+    d_phone_number = StringField('Phone Number')
     send_to_leads_api = IntegerField('Send to Leads API')
     send_to_google_sheet = IntegerField('Send to Google Sheet')
     twilio_number_validation = IntegerField('Twilio Number Validation')

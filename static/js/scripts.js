@@ -130,6 +130,7 @@ function showTitle(element) {
              console.log("Received domain info:", domainInfo);
              // Set the values in the modal form
              document.getElementById("labelInput").value = domainInfo.label;
+             document.getElementById("leadCostInput").value = domainInfo.lead_cost;
              document.getElementById("domainInput").value = domainInfo.domain;
              document.getElementById("phoneInput").value = domainInfo.d_phone_number;
              document.getElementById("sendToLeadsAPI").checked = (domainInfo.send_to_leads_api == "1");
@@ -154,49 +155,51 @@ function showTitle(element) {
      }
  });
 
- // Handle form submission
  form.addEventListener("submit", function (event) {
-     event.preventDefault();
+    event.preventDefault();
 
-     // Retrieve the form field values
-     var label = document.getElementById("labelInput").value;
-     var domain = document.getElementById("domainInput").value;
-     var phone = document.getElementById("phoneInput").value;
-     var sendToLeadsAPI = document.getElementById("sendToLeadsAPI").checked;
-     var sendToGoogleSheet = document.getElementById("sendToGoogleSheet").checked;
-     var twilioNumberValidation = document.getElementById("twilioNumberValidation").checked;
-     var smsTexting = document.getElementById("smsTexting").checked;
+    // Retrieve the form field values
+    var label = document.getElementById("labelInput").value;
+    var domain = document.getElementById("domainInput").value;
+    var phone = document.getElementById("phoneInput").value;
+    var sendToLeadsAPI = document.getElementById("sendToLeadsAPI").checked;
+    var sendToGoogleSheet = document.getElementById("sendToGoogleSheet").checked;
+    var twilioNumberValidation = document.getElementById("twilioNumberValidation").checked;
+    var smsTexting = document.getElementById("smsTexting").checked;
+    var leadCost = document.getElementById("leadCostInput").value; // Added 'leadCost' field
 
-     // Perform an AJAX request to update the domain properties on the server
-     var xhr = new XMLHttpRequest();
-     xhr.open("POST", "/update_domain/" + label, true);
-     xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-     xhr.onreadystatechange = function () {
-         if (xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200) {
-             // Handle the response if needed
-             console.log("Domain settings updated successfully");
-             modal.style.display = "none";
-         }
-     };
-     var params =
-         "original_label=" +
-         encodeURIComponent(label) +
-         "&label=" +
-         encodeURIComponent(label) +
-         "&domain=" +
-         encodeURIComponent(domain) +
-         "&phone_number=" +
-         encodeURIComponent(phone) +
-         "&send_to_leads_api=" +
-         (sendToLeadsAPI ? "1" : "0") +
-         "&send_to_google_sheet=" +
-         (sendToGoogleSheet ? "1" : "0") +
-         "&twilio_number_validation=" +
-         (twilioNumberValidation ? "1" : "0") +
-         "&sms_texting=" +
-         (smsTexting ? "1" : "0");
-     xhr.send(params);
- });
+    // Perform an AJAX request to update the domain properties on the server
+    var xhr = new XMLHttpRequest();
+    xhr.open("POST", "/update_domain/" + label, true);
+    xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+    xhr.onreadystatechange = function () {
+        if (xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200) {
+            // Handle the response if needed
+            console.log("Domain settings updated successfully");
+            modal.style.display = "none";
+        }
+    };
+    var params =
+        "original_label=" +
+        encodeURIComponent(label) +
+        "&label=" +
+        encodeURIComponent(label) +
+        "&domain=" +
+        encodeURIComponent(domain) +
+        "&phone_number=" +
+        encodeURIComponent(phone) +
+        "&send_to_leads_api=" +
+        (sendToLeadsAPI ? "1" : "0") +
+        "&send_to_google_sheet=" +
+        (sendToGoogleSheet ? "1" : "0") +
+        "&twilio_number_validation=" +
+        (twilioNumberValidation ? "1" : "0") +
+        "&sms_texting=" +
+        (smsTexting ? "1" : "0") +
+        "&lead_cost=" +
+        encodeURIComponent(leadCost); // Added 'lead_cost' field
+    xhr.send(params);
+});
 
  document.getElementById("addDomainButton").addEventListener("click", function() {
    this.style.display = "none";

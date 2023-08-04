@@ -22,10 +22,11 @@ def get_domain_info(label):
             'label': domain.label,
             'domain': domain.domain,
             'd_phone_number': domain.d_phone_number,
+            'lead_cost' : domain.lead_cost,
             'send_to_leads_api': domain.send_to_leads_api,
             'send_to_google_sheet': domain.send_to_google_sheet,
             'twilio_number_validation': domain.twilio_number_validation,
-            'sms_texting': domain.sms_texting
+            'sms_texting': domain.sms_texting,
         })
     else:
         return jsonify({'error': 'Domain not found'}), 404
@@ -37,11 +38,13 @@ def update_domain(label):
     original_label = request.form['original_label']
     label = request.form['label']
     domain = request.form['domain']
+    lead_cost = request.form['lead_cost']
     d_phone_number = request.form['phone_number']
     send_to_leads_api = request.form.get('send_to_leads_api', '0') == '1'
     send_to_google_sheet = request.form.get('send_to_google_sheet', '0') == '1'
     twilio_number_validation = request.form.get('twilio_number_validation', '0') == '1'
     sms_texting = request.form.get('sms_texting', '0') == '1'
+    
 
     # Convert the values to integer 1 if they are True, 0 if they are False
     send_to_leads_api = int(send_to_leads_api)
@@ -53,6 +56,7 @@ def update_domain(label):
     if domain_object:
         domain_object.label = label
         domain_object.domain = domain
+        domain_object.lead_cost = lead_cost
         domain_object.d_phone_number = d_phone_number
         domain_object.send_to_leads_api = send_to_leads_api
         domain_object.send_to_google_sheet = send_to_google_sheet
@@ -71,6 +75,7 @@ def insert_domain():
     if form.validate_on_submit():
         label = form.label.data
         domain_name = form.domain.data
+        lead_cost = form.lead_cost
         d_phone_number = form.d_phone_number.data
         send_to_leads_api = 1
         send_to_google_sheet = 1
@@ -81,6 +86,7 @@ def insert_domain():
             label=label,
             domain=domain_name,
             d_phone_number=d_phone_number,
+            lead_cost=lead_cost,
             send_to_leads_api=send_to_leads_api,
             send_to_google_sheet=send_to_google_sheet,
             twilio_number_validation=twilio_number_validation,

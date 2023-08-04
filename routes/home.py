@@ -123,24 +123,29 @@ def add_data():
         # default value '0' if not sent to sheet, '1' if sent. use spreadsheet_config dictionary
         spreadsheet_config = spreadsheet_ids_and_ranges.get(label)
         sent_to_sheets = '0'
+        lead_cost = domain_settings.lead_cost if domain_settings else "110"
         if spreadsheet_config:
-            body = {
-                'values': [[
-                    timestamp,
-                    first_name,
-                    ozip,
-                    dzip,
-                    dcity,
-                    dstate,
-                    data.get('movesize'),
-                    data.get('movedte'),
-                    ref_no,
-                    validation,
-                    data.get('notes')
-                ]]
-            }
-            if label == 'IQ Media' or 'Spot Tower':
-                body['values'][0].append(phone_number)
+            values_to_append = [
+                timestamp,
+                first_name,
+                ozip,
+                dzip,
+                dcity,
+                dstate,
+                data.get('movesize'),
+                data.get('movedte'),
+                ref_no,
+                validation,
+                data.get('notes')
+            ]
+
+            # Append phone_number and lead_cost together for specific labels
+            if label in ['IQ Media', 'Spot Tower']:
+                values_to_append.extend([phone_number, str(lead_cost)])
+            else:
+                values_to_append.append(str(lead_cost))
+
+            body = {'values': [values_to_append]}
             # check domain setting (1 = checked box in settings)
             if send_to_google_sheet == 1:
                 try:

@@ -5,7 +5,7 @@ from googleapiclient.discovery import build
 from googleapiclient.errors import HttpError
 from flask_login import current_user
 from urllib.parse import urlencode, unquote
-from helpers import client, send_message, creds, spreadsheet_ids_and_ranges, format_phone_number
+from helpers import client, send_message, creds, spreadsheet_ids_and_ranges, format_phone_number, format_move_date
 from datetime import datetime
 import pytz
 import json
@@ -36,8 +36,13 @@ def add_data():
         dzip = data.get('dzip', '')
         email = data.get('email')
         label = data.get('label')
+
         phnumber = data.get('phone1')
         phone_number = format_phone_number(phnumber)
+
+        movedate = data.get('movedte')
+        movedte = format_move_date(movedate)
+
         first_name = data.get('firstname')
         # Validate ref_no, it must not be an empty string
         ref_no = data.get('ref_no')
@@ -80,7 +85,7 @@ def add_data():
             'dcity': dcity,
             'dstate': dstate,
             'movesize': data.get('movesize'),
-            'movedte': data.get('movedte'),
+            'movedte': movedte,
             'notes': 'ICID: ' + data.get('notes'),
         })
 

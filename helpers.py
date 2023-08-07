@@ -17,6 +17,25 @@ twilio_account_sid = os.environ.get('TWILIO_ACCOUNT_SID')
 twilio_auth_token = os.environ.get('TWILIO_AUTH_TOKEN')
 client = Client(twilio_account_sid, twilio_auth_token)
 
+
+###########################    format date
+def format_move_date(movedate):
+    try:
+        # Try to parse the input date string as MM/DD/YYYY format
+        date_obj = datetime.strptime(movedate, '%m/%d/%Y')
+        # If parsing is successful, return the input date as is
+        return movedate
+    except ValueError:
+        try:
+            # Try to parse the input date string as YYYY-MM-DD format
+            date_obj = datetime.strptime(movedate, '%Y-%m-%d')
+            # Format the datetime object as MM/DD/YYYY
+            formatted_date = date_obj.strftime('%m/%d/%Y')
+            return formatted_date
+        except ValueError:
+            # If the date_string is not in either format, return an empty string or handle the error as needed
+            return ''
+        
 #format phone
 #################################################################
 def format_phone_number(phone_number):

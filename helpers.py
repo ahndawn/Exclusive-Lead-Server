@@ -21,11 +21,10 @@ client = Client(twilio_account_sid, twilio_auth_token)
 ###########################    format date
 def format_move_date(movedate):
     try:
-        # Try to parse the input date string as MM/DD/YY format
-        date_obj = datetime.strptime(movedate, '%m/%d/%y')  # Note the lowercase 'y' for two-digit year
-        # Format the datetime object as MM/DD/YYYY
-        formatted_date = date_obj.strftime('%m/%d/%Y')
-        return formatted_date
+        # Try to parse the input date string as MM/DD/YYYY format
+        date_obj = datetime.strptime(movedate, '%m/%d/%Y')
+        # If parsing is successful, return the input date as is
+        return movedate
     except ValueError:
         try:
             # Try to parse the input date string as YYYY-MM-DD format

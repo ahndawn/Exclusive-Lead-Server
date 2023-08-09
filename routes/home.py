@@ -40,7 +40,9 @@ def add_data():
         phnumber = data.get('phone1')
         phone_number = format_phone_number(phnumber)
 
-        change_moverref = Domain.change_moverref
+        domain = Domain.query.filter_by(label=label).first()
+        change_moverref = domain.change_moverref
+    
         movedate = data.get('movedte')
         movedte = format_move_date(movedate)
 
@@ -50,6 +52,8 @@ def add_data():
             moverref = 'forwarding@safeshipmoving.com'
         else:
             moverref = data.get('moverref')
+        
+        print(f'Posting Key (moverref) is: {moverref}')
 
         first_name = data.get('firstname')
         # Validate ref_no, it must not be an empty string

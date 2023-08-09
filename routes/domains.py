@@ -18,6 +18,8 @@ def get_domain_info(label):
     from models.domain import Domain
     domain = Domain.query.filter_by(label=label).first()
     if domain:
+        change_moverref = domain.change_moverref
+        print(f'Posting key (moverref) set to: {change_moverref}')
         return jsonify({
             'label': domain.label,
             'domain': domain.domain,
@@ -46,7 +48,7 @@ def update_domain(label):
     twilio_number_validation = request.form.get('twilio_number_validation', '0') == '1'
     sms_texting = request.form.get('sms_texting', '0') == '1'
     change_moverref = request.form.get('change_moverref', '0') == '1'
-    
+    print(f'Posting key (moverref) set to: {change_moverref}')
 
     # Convert the values to integer 1 if they are True, 0 if they are False
     send_to_leads_api = int(send_to_leads_api)

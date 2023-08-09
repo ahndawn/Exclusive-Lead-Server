@@ -137,6 +137,7 @@ function showTitle(element) {
              document.getElementById("sendToGoogleSheet").checked = (domainInfo.send_to_google_sheet == "1");
              document.getElementById("twilioNumberValidation").checked = (domainInfo.twilio_number_validation == "1");
              document.getElementById("smsTexting").checked = (domainInfo.sms_texting == "1");
+             document.getElementById("changeMoverRefInput").checked = (domainInfo.change_moverref == "1");
          });
 
          modal.style.display = "block";
@@ -166,7 +167,8 @@ function showTitle(element) {
     var sendToGoogleSheet = document.getElementById("sendToGoogleSheet").checked;
     var twilioNumberValidation = document.getElementById("twilioNumberValidation").checked;
     var smsTexting = document.getElementById("smsTexting").checked;
-    var leadCost = document.getElementById("leadCostInput").value; // Added 'leadCost' field
+    var leadCost = document.getElementById("leadCostInput").value;
+    var changeMoverRef = document.getElementById("changeMoverRefInput").checked;
 
     // Perform an AJAX request to update the domain properties on the server
     var xhr = new XMLHttpRequest();
@@ -197,7 +199,9 @@ function showTitle(element) {
         "&sms_texting=" +
         (smsTexting ? "1" : "0") +
         "&lead_cost=" +
-        encodeURIComponent(leadCost); // Added 'lead_cost' field
+        encodeURIComponent(leadCost);
+        "&change_moverref=" + 
+        encodeURIComponent(changeMoverRef);
     xhr.send(params);
 });
 

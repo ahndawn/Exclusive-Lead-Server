@@ -40,8 +40,16 @@ def add_data():
         phnumber = data.get('phone1')
         phone_number = format_phone_number(phnumber)
 
+        change_moverref = Domain.change_moverref
         movedate = data.get('movedte')
         movedte = format_move_date(movedate)
+
+        movesize = data.get('movesize')
+
+        if '1' not in movesize and '2' not in movesize and 'studio' not in movesize and change_moverref == True:
+            moverref = 'forwarding@safeshipmoving.com'
+        else:
+            moverref = data.get('moverref')
 
         first_name = data.get('firstname')
         # Validate ref_no, it must not be an empty string
@@ -76,7 +84,7 @@ def add_data():
         api_url = "https://lead.hellomoving.com/LEADSGWHTTP.lidgw?&API_ID=5E3FD536C2D6"
         query_string = urlencode({
             'label': label,
-            'moverref': data.get('moverref'),
+            'moverref': moverref,
             'firstname': first_name,
             'email': email,
             'phone1': phone_number,

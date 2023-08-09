@@ -44,6 +44,7 @@ def update_domain(label):
     send_to_google_sheet = request.form.get('send_to_google_sheet', '0') == '1'
     twilio_number_validation = request.form.get('twilio_number_validation', '0') == '1'
     sms_texting = request.form.get('sms_texting', '0') == '1'
+    change_moverref = request.form.get('change_moverref', '0') == '1'
     
 
     # Convert the values to integer 1 if they are True, 0 if they are False
@@ -62,6 +63,7 @@ def update_domain(label):
         domain_object.send_to_google_sheet = send_to_google_sheet
         domain_object.twilio_number_validation = twilio_number_validation
         domain_object.sms_texting = sms_texting
+        domain_object.change_moverref = change_moverref
         db.session.commit()
 
     return redirect(url_for('domain.show_domains'))

@@ -27,6 +27,7 @@ def get_domain_info(label):
             'send_to_google_sheet': domain.send_to_google_sheet,
             'twilio_number_validation': domain.twilio_number_validation,
             'sms_texting': domain.sms_texting,
+            'change_moverref': domain.change_moverref
         })
     else:
         return jsonify({'error': 'Domain not found'}), 404

@@ -53,6 +53,7 @@ def update_domain(label):
     send_to_google_sheet = int(send_to_google_sheet)
     twilio_number_validation = int(twilio_number_validation)
     sms_texting = int(sms_texting)
+    change_moverref = int(change_moverref)
 
     domain_object = Domain.query.filter_by(label=original_label).first()
     if domain_object:

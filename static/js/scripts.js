@@ -201,7 +201,7 @@ function showTitle(element) {
         "&lead_cost=" +
         encodeURIComponent(leadCost);
         "&change_moverref=" + 
-        encodeURIComponent(changeMoverRef);
+        (changeMoverRef ? "1" : "0");   
     xhr.send(params);
 });
 

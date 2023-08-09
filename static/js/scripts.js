@@ -168,7 +168,7 @@ function showTitle(element) {
     var twilioNumberValidation = document.getElementById("twilioNumberValidation").checked;
     var smsTexting = document.getElementById("smsTexting").checked;
     var leadCost = document.getElementById("leadCostInput").value;
-    var changeMoverRef = document.getElementById("changeMoverRefInput").checked = domainInfo.change_moverref;
+    document.getElementById("changeMoverRefInput").checked = domainInfo.change_moverref;
 
     // Perform an AJAX request to update the domain properties on the server
     var xhr = new XMLHttpRequest();

@@ -157,7 +157,7 @@ def add_data():
             ]
 
             # Append phone_number and lead_cost together for specific labels
-            if label in ['IQ Media', 'Spot Tower']:
+            if label in ['IQ Media', 'Spot Tower', 'Top10']:
                 values_to_append.extend([phone_number, str(lead_cost)])
             else:
                 values_to_append.append(str(lead_cost))

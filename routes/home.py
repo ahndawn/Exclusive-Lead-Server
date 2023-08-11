@@ -48,7 +48,7 @@ def add_data():
 
         movesize = data.get('movesize')
 
-        if '1' not in movesize and '2' not in movesize and 'studio' not in movesize and change_moverref == True:
+        if '1' not in movesize and '2' not in movesize and 'Studio' not in movesize and change_moverref == True:
             moverref = 'forwarding@safeshipmoving.com'
         else:
             moverref = data.get('moverref')

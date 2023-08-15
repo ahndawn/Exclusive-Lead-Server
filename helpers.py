@@ -6,6 +6,8 @@ from datetime import datetime
 from sqlalchemy.exc import IntegrityError
 from twilio.rest import Client
 from google.oauth2 import service_account
+from email.mime.text import MIMEText
+from email.mime.multipart import MIMEMultipart
 import pytz
 import json
 import os
@@ -17,6 +19,45 @@ twilio_account_sid = os.environ.get('TWILIO_ACCOUNT_SID')
 twilio_auth_token = os.environ.get('TWILIO_AUTH_TOKEN')
 client = Client(twilio_account_sid, twilio_auth_token)
 
+
+##################################
+ # Construct the email message
+subject = f"New {str(label)} Lead"
+from_email = "quoteform@safeship-moving.com"
+to_email = "admin@safeshipmoving.com, ahni@safeshipmoving.com"
+ # Determine the destination value
+destination = dzip if dzip else f'{dcity}, {dstate}'
+
+msg = MIMEMultipart()
+msg['From'] = from_email
+msg['To'] = to_email
+msg['Subject'] = subject
+
+# Format the email body
+email_body = f"""
+    From: (Name) {first_name} <{email}>
+    Phone: {phone_number}
+    Pickup Zip: {ozip}
+    Destination: {destination}
+    Move Size: {data.get('movesize')}
+    Move Date: {movedte}
+    ICID: {icid}
+    Conversion ID: (ref_no) {ref_no}
+    Conversion Time: {datetime.now().strftime('%m/%d/%Y %I:%M:%S %p')}
+"""
+msg.attach(MIMEText(email_body, 'plain'))
+
+# Send the email
+try:
+    with smtplib.SMTP('smtp-relay.gmail.com', 587) as server:
+        server.ehlo()
+        server.starttls()
+        server.ehlo()
+        server.login('chris@safeshipmoving.com', 'nnvpmhfptxhcsywr')
+        server.sendmail(from_email, to_email.split(','), msg.as_string())
+        print("Email sent successfully.")
+except Exception as e:
+    print(f"Failed to send email: {e}")
 
 ###########################    format date
 def format_move_date(movedate):

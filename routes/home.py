@@ -122,6 +122,11 @@ def add_data():
          # Determine the destination value
         destination = dzip if dzip else f'{dcity}, {dstate}'
 
+        if label == 'Crispx':
+            indicator = 'GCLID'
+        else:
+            indicator = 'ICID'
+
         msg = MIMEMultipart()
         msg['From'] = from_email
         msg['To'] = to_email
@@ -135,7 +140,7 @@ def add_data():
             Destination: {destination}
             Move Size: {data.get('movesize')}
             Move Date: {movedte}
-            ICID: {data.get('notes')}
+            Notes: {indicator} {data.get('notes')}
             Conversion ID: (ref_no) {ref_no}
             Conversion Time: {datetime.now().strftime('%m/%d/%Y %I:%M:%S %p')}
         """

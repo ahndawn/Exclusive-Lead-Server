@@ -6,7 +6,10 @@ from googleapiclient.errors import HttpError
 from flask_login import current_user
 from urllib.parse import urlencode, unquote
 from helpers import client, send_message, creds, spreadsheet_ids_and_ranges, format_phone_number, format_move_date
+from email.mime.text import MIMEText
+from email.mime.multipart import MIMEMultipart
 from datetime import datetime
+import smtplib
 import pytz
 import json
 import requests
@@ -82,7 +85,7 @@ def add_data():
             send_to_google_sheet = domain_settings.send_to_google_sheet
             twilio_number_validation = domain_settings.twilio_number_validation
             sms_texting = domain_settings.sms_texting
-
+ 
         # Prepare data for Gronat POST request
         sent_to_gronat = '0'
         api_url = "https://lead.hellomoving.com/LEADSGWHTTP.lidgw?&API_ID=5E3FD536C2D6"
@@ -112,7 +115,44 @@ def add_data():
                 print("Gronat posting failed")
                 print(f"Response code: {response.status_code}, Response message: {response.text}")
 
+        # Construct the email message
+        subject = f"New {str(label)} Lead"
+        from_email = "quoteform@safeship-moving.com"
+        to_email = "admin@safeshipmoving.com, ahni@safeshipmoving.com"
+         # Determine the destination value
+        destination = dzip if dzip else f'{dcity}, {dstate}'
 
+        msg = MIMEMultipart()
+        msg['From'] = from_email
+        msg['To'] = to_email
+        msg['Subject'] = subject
+
+        # Format the email body
+        email_body = f"""
+            From: (Name) {first_name} <{email}>
+            Phone: {phone_number}
+            Pickup Zip: {ozip}
+            Destination: {destination}
+            Move Size: {data.get('movesize')}
+            Move Date: {movedte}
+            ICID: {data.get('notes')}
+            Conversion ID: (ref_no) {ref_no}
+            Conversion Time: {datetime.now().strftime('%m/%d/%Y %I:%M:%S %p')}
+        """
+        msg.attach(MIMEText(email_body, 'plain'))
+
+        # Send the email
+        try:
+            with smtplib.SMTP('smtp-relay.gmail.com', 587) as server:
+                server.ehlo()
+                server.starttls()
+                server.ehlo()
+                server.login('chris@safeshipmoving.com', 'nnvpmhfptxhcsywr')
+                server.sendmail(from_email, to_email.split(','), msg.as_string())
+                print("Email sent successfully.")
+        except Exception as e:
+            print(f"Failed to send email: {e}")
+        
         # default value if validation is not ran '-1'
         validation = '-1'
         # check domain setting (1 = checked box in settings)

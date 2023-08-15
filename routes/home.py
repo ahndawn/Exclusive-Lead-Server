@@ -123,7 +123,7 @@ def add_data():
         destination = dzip if dzip else f'{dcity}, {dstate}'
 
         if label == 'Crispx':
-            indicator = f'GCLID {data.get("ref_no")}\nICID: {data.get("notes")}'
+            indicator = f'GCLID {data.get("ref_no")}\n                ICID: {data.get("notes")}'
         else:
             indicator = f'ICID {data.get("notes")}'
 

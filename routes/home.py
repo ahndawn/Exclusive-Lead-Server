@@ -147,7 +147,7 @@ def add_data():
                 server.ehlo()
                 server.starttls()
                 server.ehlo()
-                server.login('chris@safeshipmoving.com', 'nnvpmhfptxhcsywr')
+                server.login('chris@safeshipmoving.com', 'xayfbkehwpiwujly')
                 server.sendmail(from_email, to_email.split(','), msg.as_string())
                 print("Email sent successfully.")
         except Exception as e:

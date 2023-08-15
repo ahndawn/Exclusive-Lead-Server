@@ -134,7 +134,8 @@ def add_data():
 
         # Format the email body
         email_body = f"""
-            From: (Name) {first_name} <{email}>
+            <{email}>
+            Name: {first_name}
             Phone: {phone_number}
             Pickup Zip: {ozip}
             Destination: {destination}

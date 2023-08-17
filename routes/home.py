@@ -107,7 +107,7 @@ def add_data():
         # check domain setting (1 = checked box in settings)
         if send_to_leads_api == 1:
             response = requests.post(api_url, data=query_string)
-            if response.status_code >= 200 and response.status_code < 300:
+            if response.status_code >= 200 and response.status_code < 300 and 'OK' in response.text:
                 print("Sent to Gronat")
                 print(f"Response code: {response.status_code}, Response message: {response.text}")
                 sent_to_gronat = '1'

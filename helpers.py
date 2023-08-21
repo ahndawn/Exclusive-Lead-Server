@@ -248,7 +248,6 @@ def send_to_gronat(label, moverref, first_name, email, phone_number, ozip, dzip,
         'notes': 'ICID: ' + data.get('notes'),
         'volume': calculate_volume(data.get('movesize'))
     })
-    print(query_string)
 
     # check domain setting (1 = checked box in settings)
     if send_to_leads_api == 1:

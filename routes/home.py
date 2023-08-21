@@ -52,7 +52,7 @@ def add_data():
             moverref = 'forwarding@safeshipmoving.com'
         else:
             moverref = data.get('moverref')
-        
+
         print(f'Posting Key (moverref) is: {moverref}')
 
         first_name = data.get('firstname')
@@ -88,7 +88,7 @@ def add_data():
         sent_gronat = send_to_gronat(label, moverref, first_name, email, phone_number, ozip, dzip, dcity, dstate, data, movedte, send_to_leads_api)
         if sent_gronat:
             sent_to_gronat = '1'
-            
+
         #send to email function from helpers.py
         send_email(label,dzip,dcity,dstate,ref_no, email, data, movedte, ozip, phone_number, first_name)
         
@@ -139,7 +139,7 @@ def add_data():
             if label in ['IQ Media', 'Spot Tower', 'Top10', 'ConAdsP1']:
                 values_to_append.extend([phone_number, str(lead_cost)])
             else:
-                values_to_append.append(str(lead_cost))
+                values_to_append.append(str(lead_cost))   
 
             body = {'values': [values_to_append]}
             # check domain setting (1 = checked box in settings)

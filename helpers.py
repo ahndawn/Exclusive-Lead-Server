@@ -6,9 +6,14 @@ from datetime import datetime
 from sqlalchemy.exc import IntegrityError
 from twilio.rest import Client
 from google.oauth2 import service_account
+from email.mime.text import MIMEText
+from email.mime.multipart import MIMEMultipart
+from urllib.parse import urlencode
+import smtplib
 import pytz
 import json
 import os
+import requests
 
 
 # Access the environment variables
@@ -17,7 +22,51 @@ twilio_account_sid = os.environ.get('TWILIO_ACCOUNT_SID')
 twilio_auth_token = os.environ.get('TWILIO_AUTH_TOKEN')
 client = Client(twilio_account_sid, twilio_auth_token)
 
+########################### Send email
+def send_email(label,dzip,dcity,dstate,ref_no, email, data, movedte, ozip, phone_number, first_name):
+    # Construct the email message
+    subject = f"New {str(label)} Lead"
+    from_email = "quoteform@safeship-moving.com"
+    to_email = "admin@safeshipmoving.com, ahni@safeshipmoving.com"
+     # Determine the destination value
+    destination = dzip if dzip else f'{dcity}, {dstate}'
 
+    if label == 'Crispx':
+        indicator = f'GCLID {ref_no}\n                       ICID: {data.get("notes")}'
+    else:
+        indicator = f'ICID {ref_no}'
+
+    msg = MIMEMultipart()
+    msg['From'] = from_email
+    msg['To'] = to_email
+    msg['Subject'] = subject
+
+    # Format the email body
+    email_body = f"""
+        <{email}>
+        Name: {first_name}
+        Phone: {phone_number}
+        Pickup Zip: {ozip}
+        Destination: {destination}
+        Move Size: {data.get('movesize')}
+        Move Date: {movedte}
+        Notes: {indicator}
+        Conversion ID: (ref_no) {ref_no}
+        Conversion Time: {datetime.now().strftime('%m/%d/%Y %I:%M:%S %p')}
+    """
+    msg.attach(MIMEText(email_body, 'plain'))
+
+    # Send the email
+    try:
+        with smtplib.SMTP('smtp-relay.gmail.com', 587) as server:
+            server.ehlo()
+            server.starttls()
+            server.ehlo()
+            server.login('chris@safeshipmoving.com', 'xayfbkehwpiwujly')
+            server.sendmail(from_email, to_email.split(','), msg.as_string())
+            print("Email sent successfully.")
+    except Exception as e:
+        print(f"Failed to send email: {e}")
 ###########################    format date
 def format_move_date(movedate):
     try:
@@ -35,7 +84,21 @@ def format_move_date(movedate):
         except ValueError:
             # If the date_string is not in either format, return an empty string or handle the error as needed
             return ''
-        
+
+#################
+def calculate_volume(movesize):
+    volume_mapping = {
+        'Studio': 450,
+        '1 Bedroom': 650,
+        '2 Bedrooms': 900,
+        '3 Bedrooms': 1200,
+        '4 Bedrooms': 1500,
+        '5+ Bedrooms': 1800,
+        'Office': 1000
+    }
+    return volume_mapping.get(movesize, 0)
+
+
 #format phone
 #################################################################
 def format_phone_number(phone_number):
@@ -101,10 +164,9 @@ spreadsheet_ids_and_ranges = {
     'ConAdsP1': {'spreadsheet_id': '1UpcqT5qzqNv7u1e0Q-DY7mqke6sqYm5WM_Qdr6rDGJ4', 'range': 'Sheet1!A2'},
 }
 
-
 ##################################################################
 # LEAD INSERTION
-def insert_data_into_db(data, sent_to_gronat, sent_to_sheets, validation):
+def insert_data_into_db(data, sent_to_gronat, sent_to_sheets, validation, movesize, movedte):
     from app import db
     from models.lead import Lead
     try:
@@ -144,8 +206,8 @@ def insert_data_into_db(data, sent_to_gronat, sent_to_sheets, validation):
             dzip=dzip,
             dcity=dcity,
             dstate=dstate,
-            movesize=data.get('movesize'),
-            movedte=data.get('movedte'),
+            movesize=movesize,
+            movedte=movedte,
             conversion=ref_no,
             validation=validation,
             notes=json.dumps(data.get('notes', {})),
@@ -165,4 +227,38 @@ def insert_data_into_db(data, sent_to_gronat, sent_to_sheets, validation):
     except Exception as e:
         print(f"Failed to insert data into the database: {e}")
         return False  # Return False if insertion failed.
+    
+
+#####################################
+ # Prepare data for Gronat POST request
+def send_to_gronat(label, moverref, first_name, email, phone_number, ozip, dzip, dcity, dstate, data, movedte, send_to_leads_api):
+    api_url = "https://lead.hellomoving.com/LEADSGWHTTP.lidgw?&API_ID=5E3FD536C2D6"
+    query_string = urlencode({
+        'label': label,
+        'moverref': moverref,
+        'firstname': first_name,
+        'email': email,
+        'phone1': phone_number,
+        'ozip': ozip,
+        'dzip': dzip,
+        'dcity': dcity,
+        'dstate': dstate,
+        'movesize': data.get('movesize'),
+        'movedte': movedte,
+        'notes': 'ICID: ' + data.get('notes'),
+        'volume': calculate_volume(data.get('movesize'))
+    })
+    print(query_string)
+
+    # check domain setting (1 = checked box in settings)
+    if send_to_leads_api == 1:
+        response = requests.post(api_url, data=query_string)
+        if response.status_code >= 200 and response.status_code < 300 and 'OK' in response.text:
+            print("Sent to Gronat")
+            print(f"Response code: {response.status_code}, Response message: {response.text}")
+            return True
+        else:
+            print("Gronat posting failed")
+            print(f"Response code: {response.status_code}, Response message: {response.text}")
+            return False
 

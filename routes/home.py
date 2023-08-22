@@ -127,13 +127,12 @@ def add_data():
     
         if db_insertion_success:
             session['submitted'] = True
-            print('Successfully Submitted to Heroku database')
             return jsonify({"message": "Data sent to Heroku successfully."}), 200
         
         if not db_insertion_success and sent_to_gronat == '0':
             print("Database insertion failed. Sending data to the leads API...")
             send_to_gronat(label, moverref, first_name, email, phone_number, ozip, dzip, dcity, dstate, data, movedte, send_to_leads_api, sent_to_gronat)
-            # If the insertion fails, send the data to the leads API
+            # If the insertion fails, send the data to the leads API as long as it wasn't sent already
 
         # Render the template with the updated data and message
         return render_template('home.html', current_user=current_user, data=data)

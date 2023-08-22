@@ -1,15 +1,10 @@
 #some imports are used within each required route and function in order to avoid 'circular imports'
 from flask import Blueprint, render_template, request, jsonify, render_template, session
-from sqlalchemy.exc import IntegrityError
-from googleapiclient.discovery import build
-from googleapiclient.errors import HttpError
 from flask_login import current_user
-from urllib.parse import urlencode, unquote
-from helpers import client, send_message, creds, spreadsheet_ids_and_ranges, format_phone_number, format_move_date, send_email, send_to_gronat
+from urllib.parse import unquote
+from helpers import client, send_message, format_phone_number, format_move_date, send_email, send_to_gronat, send_to_sheets
 from datetime import datetime
 import pytz
-import json
-import requests
 
 
 app_bp = Blueprint('app', __name__)
@@ -36,6 +31,11 @@ def add_data():
         dzip = data.get('dzip', '')
         email = data.get('email')
         label = data.get('label')
+        
+        #create timestamp
+        timezone = pytz.timezone('America/New_York')
+        current_datetime = datetime.now(timezone)
+        timestamp = current_datetime.strftime('%Y-%m-%d')
 
         phnumber = data.get('phone1')
         phone_number = format_phone_number(phnumber)
@@ -82,15 +82,18 @@ def add_data():
             twilio_number_validation = domain_settings.twilio_number_validation
             sms_texting = domain_settings.sms_texting
 
-        sent_to_gronat = '0'
-        #send to gronat function from helpers.py
-        sent_gronat = send_to_gronat(label, moverref, first_name, email, phone_number, ozip, dzip, dcity, dstate, data, movedte, send_to_leads_api)
-        if sent_gronat:
+        
+        #############send to gronat function from helpers.py
+        sent_gronat_success = send_to_gronat(label, moverref, first_name, email, phone_number, ozip, dzip, dcity, dstate, data, movedte, send_to_leads_api)
+        if sent_gronat_success:
             sent_to_gronat = '1'
+        else:
+            sent_to_gronat = '0'
 
-        #send to email function from helpers.py
+        ################send to email function from helpers.py
         send_email(label,dzip,dcity,dstate,ref_no, email, data, movedte, ozip, phone_number, first_name)
         
+        ################## TWILIO
         # default value if validation is not ran '-1'
         validation = '-1'
         # check domain setting (1 = checked box in settings)
@@ -108,60 +111,18 @@ def add_data():
                 success = send_message(first_name, phone_number)
                 if not success:
                     print(f"Failed to send sms to {phone_number}")
-
-
-        timezone = pytz.timezone('America/New_York')
-        current_datetime = datetime.now(timezone)
-        timestamp = current_datetime.strftime('%Y-%m-%d')
         
-
+        ############################## Send to sheets
         # default value '0' if not sent to sheet, '1' if sent. use spreadsheet_config dictionary
-        spreadsheet_config = spreadsheet_ids_and_ranges.get(label)
-        sent_to_sheets = '0'
-        lead_cost = domain_settings.lead_cost if domain_settings else "110"
-        if spreadsheet_config:
-            values_to_append = [
-                timestamp,
-                first_name,
-                ozip,
-                dzip,
-                dcity,
-                dstate,
-                data.get('movesize'),
-                data.get('movedte'),
-                ref_no,
-                validation,
-                data.get('notes')
-            ]
-
-            # Append phone_number and lead_cost together for specific labels
-            if label in ['IQ Media', 'Spot Tower', 'Top10', 'ConAdsP1']:
-                values_to_append.extend([phone_number, str(lead_cost)])
-            else:
-                values_to_append.append(str(lead_cost))   
-
-            body = {'values': [values_to_append]}
-            # check domain setting (1 = checked box in settings)
-            if send_to_google_sheet == 1:
-                try:
-                    service = build('sheets', 'v4', credentials=creds)
-                    print(body)
-                    result = service.spreadsheets().values().append(
-                        spreadsheetId=spreadsheet_config['spreadsheet_id'],
-                        range=spreadsheet_config['range'],
-                        valueInputOption='RAW',
-                        insertDataOption='INSERT_ROWS',
-                        body=body
-                    ).execute()
-                    sent_to_sheets = '1'
-                    print('Sent to Google Sheet Successfully')
-                except HttpError as error: 
-                    print('An error occurred while sending data to Google Sheets: ', error._get_reason())
-                    sent_to_sheets = '0'
-    
-        # Insert the data into the database
-        db_insertion_success = insert_data_into_db(data, sent_to_gronat, sent_to_sheets, validation, movesize, movedte)
+        sent_to_sheets_success=send_to_sheets(timestamp,first_name,ozip,dzip,dcity,dstate,data,ref_no,validation,label, phone_number, send_to_google_sheet)
+        if sent_to_sheets_success:
+            sent_to_sheets='1'
+        else:
+            sent_to_sheets='0'
         
+        ############################### Insert the data into the database
+        db_insertion_success = insert_data_into_db(data, sent_to_gronat, sent_to_sheets, validation, movesize, movedte)
+    
         if db_insertion_success:
             session['submitted'] = True
             print('Successfully Submitted to Heroku database')

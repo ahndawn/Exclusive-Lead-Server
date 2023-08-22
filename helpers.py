@@ -263,7 +263,8 @@ def send_to_gronat(label, moverref, first_name, email, phone_number, ozip, dzip,
             return False
 
 ############################# send to google sheets
-def send_to_sheets(spreadsheet_config,timestamp,first_name,ozip,dzip,dcity,dstate,data,ref_no,validation,label, phone_number,lead_cost, send_to_google_sheet):
+def send_to_sheets(timestamp,first_name,ozip,dzip,dcity,dstate,data,ref_no,validation,label, phone_number,lead_cost, send_to_google_sheet):
+    spreadsheet_config = spreadsheet_ids_and_ranges.get(label)
     if spreadsheet_config:
         values_to_append = [
             timestamp,

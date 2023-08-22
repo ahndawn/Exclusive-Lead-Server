@@ -9,6 +9,7 @@ from google.oauth2 import service_account
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 from urllib.parse import urlencode
+from googleapiclient.errors import HttpError
 import smtplib
 import pytz
 import json
@@ -261,3 +262,43 @@ def send_to_gronat(label, moverref, first_name, email, phone_number, ozip, dzip,
             print(f"Response code: {response.status_code}, Response message: {response.text}")
             return False
 
+############################# send to google sheets
+def send_to_sheets(spreadsheet_config,timestamp,first_name,ozip,dzip,dcity,dstate,data,ref_no,validation,label, phone_number,lead_cost, send_to_google_sheet):
+    if spreadsheet_config:
+        values_to_append = [
+            timestamp,
+            first_name,
+            ozip,
+            dzip,
+            dcity,
+            dstate,
+            data.get('movesize'),
+            data.get('movedte'),
+            ref_no,
+            validation,
+            data.get('notes')
+        ]
+
+        # Append phone_number and lead_cost together for specific labels
+        if label in ['IQ Media', 'Spot Tower', 'Top10', 'ConAdsP1']:
+            values_to_append.extend([phone_number, str(lead_cost)])
+        else:
+            values_to_append.append(str(lead_cost))   
+
+        body = {'values': [values_to_append]}
+        # check domain setting (1 = checked box in settings)
+        if send_to_google_sheet == 1:
+            try:
+                service = build('sheets', 'v4', credentials=creds)
+                result = service.spreadsheets().values().append(
+                    spreadsheetId=spreadsheet_config['spreadsheet_id'],
+                    range=spreadsheet_config['range'],
+                    valueInputOption='RAW',
+                    insertDataOption='INSERT_ROWS',
+                    body=body
+                ).execute()
+                print('Sent to Google Sheet Successfully')
+                return True
+            except HttpError as error: 
+                print('An error occurred while sending data to Google Sheets: ', error._get_reason())
+                return False

@@ -220,7 +220,7 @@ def insert_data_into_db(data, sent_to_gronat, sent_to_sheets, validation, movesi
         db.session.add(lead)
         db.session.commit()
 
-        print('added successfully to Heroku')
+        print('SUCCESS')
         return True  # Return True if insertion was successful
     
     except IntegrityError:
@@ -255,11 +255,11 @@ def send_to_gronat(label, moverref, first_name, email, phone_number, ozip, dzip,
     if send_to_leads_api == 1:
         response = requests.post(api_url, data=query_string)
         if response.status_code >= 200 and response.status_code < 300 and 'OK' in response.text:
-            print("Sent to Gronat")
+            print("SUCCESS: Sent to Gronat")
             print(f"Response code: {response.status_code}, Response message: {response.text}")
             return True
         else:
-            print("Gronat posting failed")
+            print("Gronat posting FAILED")
             print(f"Response code: {response.status_code}, Response message: {response.text}")
             return False
 

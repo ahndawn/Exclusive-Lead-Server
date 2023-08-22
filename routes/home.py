@@ -127,7 +127,9 @@ def add_data():
     
         if db_insertion_success:
             session['submitted'] = True
+            print("END <--------")
             return jsonify({"message": "Data sent to Heroku successfully."}), 200
+            
         
         if not db_insertion_success and sent_to_gronat == '0':
             print("Database insertion failed. Sending data to the leads API...")

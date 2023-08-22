@@ -22,7 +22,7 @@ def add_data():
     from helpers import insert_data_into_db
     if request.method == 'POST':
         data = request.get_json()
-        print(f"Received data: {data}")
+        print(f"--------> INCOMING: {data}")
 
         # if form post request has start/end state/city or not
         ozip = data.get('ozip', '')

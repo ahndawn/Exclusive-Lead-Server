@@ -115,7 +115,8 @@ def add_data():
         ############################## Send to sheets
         # default value '0' if not sent to sheet, '1' if sent. use spreadsheet_config dictionary
         if send_to_google_sheet == 1:
-            sent_to_sheets_success=send_to_sheets(timestamp,first_name,ozip,dzip,dcity,dstate,data,ref_no,validation,label, phone_number)
+            lead_cost = domain_settings.lead_cost if domain_settings else "110"
+            sent_to_sheets_success=send_to_sheets(timestamp,first_name,ozip,dzip,dcity,dstate,data,ref_no,validation,label, phone_number, lead_cost)
             if sent_to_sheets_success:
                 sent_to_sheets='1'
             else:

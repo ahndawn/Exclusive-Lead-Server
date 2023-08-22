@@ -298,7 +298,7 @@ def send_to_sheets(timestamp,first_name,ozip,dzip,dcity,dstate,data,ref_no,valid
                 insertDataOption='INSERT_ROWS',
                 body=body
             ).execute()
-            print('SUCCESS: Sent to Google Sheets')
+            print('SUCCESS: Google Sheets')
             return True
         except HttpError as error: 
             print('FAILED POST to Google Sheets: ', error._get_reason())

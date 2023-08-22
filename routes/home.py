@@ -114,11 +114,12 @@ def add_data():
         
         ############################## Send to sheets
         # default value '0' if not sent to sheet, '1' if sent. use spreadsheet_config dictionary
-        sent_to_sheets_success=send_to_sheets(timestamp,first_name,ozip,dzip,dcity,dstate,data,ref_no,validation,label, phone_number, send_to_google_sheet)
-        if sent_to_sheets_success:
-            sent_to_sheets='1'
-        else:
-            sent_to_sheets='0'
+        if send_to_google_sheet == 1:
+            sent_to_sheets_success=send_to_sheets(timestamp,first_name,ozip,dzip,dcity,dstate,data,ref_no,validation,label, phone_number)
+            if sent_to_sheets_success:
+                sent_to_sheets='1'
+            else:
+                sent_to_sheets='0'
         
         ############################### Insert the data into the database
         db_insertion_success = insert_data_into_db(data, sent_to_gronat, sent_to_sheets, validation, movesize, movedte)

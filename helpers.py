@@ -86,6 +86,7 @@ def format_move_date(movedate):
             # If the date_string is not in either format, return an empty string or handle the error as needed
             return ''
 
+
 #################
 def calculate_volume(movesize):
     volume_mapping = {
@@ -262,6 +263,8 @@ def send_to_gronat(label, moverref, first_name, email, phone_number, ozip, dzip,
             print(f"Response code: {response.status_code}, Response message: {response.text}")
             return False
 
+
+
 ############################# send to google sheets
 def send_to_sheets(timestamp,first_name,ozip,dzip,dcity,dstate,data,ref_no,validation,label, phone_number,lead_cost, send_to_google_sheet):
     spreadsheet_config = spreadsheet_ids_and_ranges.get(label)
@@ -288,18 +291,17 @@ def send_to_sheets(timestamp,first_name,ozip,dzip,dcity,dstate,data,ref_no,valid
 
         body = {'values': [values_to_append]}
         # check domain setting (1 = checked box in settings)
-        if send_to_google_sheet == 1:
-            try:
-                service = build('sheets', 'v4', credentials=creds)
-                result = service.spreadsheets().values().append(
-                    spreadsheetId=spreadsheet_config['spreadsheet_id'],
-                    range=spreadsheet_config['range'],
-                    valueInputOption='RAW',
-                    insertDataOption='INSERT_ROWS',
-                    body=body
-                ).execute()
-                print('Sent to Google Sheet Successfully')
-                return True
-            except HttpError as error: 
-                print('An error occurred while sending data to Google Sheets: ', error._get_reason())
-                return False
+        try:
+            service = build('sheets', 'v4', credentials=creds)
+            result = service.spreadsheets().values().append(
+                spreadsheetId=spreadsheet_config['spreadsheet_id'],
+                range=spreadsheet_config['range'],
+                valueInputOption='RAW',
+                insertDataOption='INSERT_ROWS',
+                body=body
+            ).execute()
+            print('Sent to Google Sheet Successfully')
+            return True
+        except HttpError as error: 
+            print('An error occurred while sending data to Google Sheets: ', error._get_reason())
+            return False

@@ -65,9 +65,9 @@ def send_email(label,dzip,dcity,dstate,ref_no, email, data, movedte, ozip, phone
             server.ehlo()
             server.login('chris@safeshipmoving.com', 'xayfbkehwpiwujly')
             server.sendmail(from_email, to_email.split(','), msg.as_string())
-            print("Email sent successfully.")
+            print("SUCCESS: Email")
     except Exception as e:
-        print(f"Failed to send email: {e}")
+        print(f"FAILED to send email: {e}")
 ###########################    format date
 def format_move_date(movedate):
     try:
@@ -147,10 +147,10 @@ def send_message(first_name, phone_number):
             from_="8883053791", 
             body=body
         )
-        print("Message sent successfully!")
+        print("SUCCESS: Text Sent")
         return True
     except Exception as e:
-        print(f"Failed to send message: {e}")
+        print(f"FAILED to send message: {e}")
         return False
     
 
@@ -220,14 +220,14 @@ def insert_data_into_db(data, sent_to_gronat, sent_to_sheets, validation, movesi
         db.session.add(lead)
         db.session.commit()
 
-        print('SUCCESS')
+        print('SUCCESSFUL POST: Heroku')
         return True  # Return True if insertion was successful
     
     except IntegrityError:
         db.session.rollback()
         print('Error: Duplicate data in lead table.')
     except Exception as e:
-        print(f"Failed to insert data into the database: {e}")
+        print(f"FAILED to insert data into the database: {e}")
         return False  # Return False if insertion failed.
     
 
@@ -255,12 +255,10 @@ def send_to_gronat(label, moverref, first_name, email, phone_number, ozip, dzip,
     if send_to_leads_api == 1:
         response = requests.post(api_url, data=query_string)
         if response.status_code >= 200 and response.status_code < 300 and 'OK' in response.text:
-            print("SUCCESS: Sent to Gronat")
-            print(f"Response code: {response.status_code}, Response message: {response.text}")
+            print(f"GRONAT POST SUCCESS: {response.status_code}, Response message: {response.text}")
             return True
         else:
-            print("Gronat posting FAILED")
-            print(f"Response code: {response.status_code}, Response message: {response.text}")
+            print(f"GRONAT POST FAILED: {response.status_code}, Response message: {response.text}")
             return False
 
 
@@ -300,8 +298,8 @@ def send_to_sheets(timestamp,first_name,ozip,dzip,dcity,dstate,data,ref_no,valid
                 insertDataOption='INSERT_ROWS',
                 body=body
             ).execute()
-            print('Sent to Google Sheet Successfully')
+            print('SUCCESS: Sent to Google Sheets')
             return True
         except HttpError as error: 
-            print('An error occurred while sending data to Google Sheets: ', error._get_reason())
+            print('FAILED POST to Google Sheets: ', error._get_reason())
             return False

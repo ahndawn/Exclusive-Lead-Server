@@ -81,12 +81,13 @@ def insert_domain():
     if form.validate_on_submit():
         label = form.label.data
         domain_name = form.domain.data
-        lead_cost = form.lead_cost
         d_phone_number = form.d_phone_number.data
         send_to_leads_api = 1
         send_to_google_sheet = 1
         twilio_number_validation = 1
         sms_texting = 1
+        lead_cost = '110'
+
 
         new_domain = Domain(
             label=label,
@@ -96,7 +97,8 @@ def insert_domain():
             send_to_leads_api=send_to_leads_api,
             send_to_google_sheet=send_to_google_sheet,
             twilio_number_validation=twilio_number_validation,
-            sms_texting=sms_texting
+            sms_texting=sms_texting,
+            change_moverref = True
         )
 
         try:

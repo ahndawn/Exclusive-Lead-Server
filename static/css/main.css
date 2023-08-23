@@ -205,6 +205,7 @@ h1{
   background-color: rgba(184, 184, 184, 0.5);
   border-radius: 10px;
  width: fit-content;
+ margin-bottom: 10px;
 
 }
 
@@ -644,6 +645,9 @@ ul{
 
   #addDomainForm{
     font-size:12px;
+    margin-left: 0px !important;
+    margin-right: 0px !important;
+    margin-bottom: 10px !important;
   }
   #addDomainForm input{
     margin-bottom:20px;

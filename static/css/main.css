@@ -35,7 +35,6 @@ html, body{
     margin-right: -40px;
     background-repeat: no-repeat;
     background-size: cover;
-    border:black 2px solid;
 }
 
 #cancelButton {
@@ -165,7 +164,6 @@ h1{
 .btn {
   background: linear-gradient(to top, #0a7013, #17c526);
     color: rgb(255, 255, 255);
-    border: none;
     cursor: pointer;
     padding: 6px 12px;
     border-radius: 10px;

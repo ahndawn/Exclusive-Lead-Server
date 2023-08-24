@@ -34,26 +34,11 @@ def add_data():
         
         #create timestamp
         timezone = pytz.timezone('America/New_York')
-        current_datetime = datetime.now(timezone)
-        timestamp = current_datetime.strftime('%Y-%m-%d')
-
-        phnumber = data.get('phone1')
-        phone_number = format_phone_number(phnumber)
-
-        domain = Domain.query.filter_by(label=label).first()
-        change_moverref = domain.change_moverref
-    
-        movedate = data.get('movedte')
-        movedte = format_move_date(movedate)
-
+        timestamp = datetime.now(timezone).strftime('%Y-%m-%d')
+        
+        phone_number = format_phone_number(data.get('phone1'))
+        movedte = format_move_date(data.get('movedte'))
         movesize = data.get('movesize')
-
-        if '1' not in movesize and '2' not in movesize and 'Studio' not in movesize and change_moverref == True:
-            moverref = 'forwarding@safeshipmoving.com'
-        else:
-            moverref = data.get('moverref')
-        print(f'Posting Key (moverref) is: {moverref}')
-
         first_name = data.get('firstname')
         # Validate ref_no, it must not be an empty string
         ref_no = data.get('ref_no')
@@ -85,6 +70,12 @@ def add_data():
             sms_texting = domain_settings.sms_texting
             change_moverref = domain_settings.change_moverref
             lead_cost = domain_settings.lead_cost
+
+        if '1' not in movesize and '2' not in movesize and 'Studio' not in movesize and change_moverref == True:
+            moverref = 'forwarding@safeshipmoving.com'
+        else:
+            moverref = data.get('moverref')
+        print(f'Posting Key (moverref) is: {moverref}')
 
         
         #############send to gronat function from helpers.py

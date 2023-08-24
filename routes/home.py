@@ -75,12 +75,16 @@ def add_data():
             send_to_google_sheet = 1
             twilio_number_validation = 1
             sms_texting = 1
+            change_moverref = True
+            lead_cost = '110'
         else:
             #if label of domain is found in database, use settings specified for that domain 
             send_to_leads_api = domain_settings.send_to_leads_api
             send_to_google_sheet = domain_settings.send_to_google_sheet
             twilio_number_validation = domain_settings.twilio_number_validation
             sms_texting = domain_settings.sms_texting
+            change_moverref = domain_settings.change_moverref
+            lead_cost = domain_settings.lead_cost
 
         
         #############send to gronat function from helpers.py

@@ -513,7 +513,7 @@ ul{
     padding: 10px;
 }
 table{
-  border-bottom: #292929 .5px solid;
+  box-shadow:0px 2px 2px;
 }
 
 .pagination {

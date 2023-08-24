@@ -28,11 +28,11 @@
 </div>
   </li>
   {% endfor %}
-  <button id="addDomainButton" class="btn btn-primary" style='border: none; margin-bottom: 20px !important; padding-top: 10px;'><i class="fa-solid fa-plus"></i> Add Domain</button>
+  <button id="addDomainButton" class="btn btn-primary" style='border: none; margin-bottom: 20px !important; margin-top: 20px;'><i class="fa-solid fa-plus"></i> Add Domain</button>
 </ul>
 
 
-<div id="addDomainForm" style="display: none; padding-bottom: 10px">
+<div id="addDomainForm" style="display: none; margin-bottom: 10px">
   <form action="{{ url_for('domain.insert_domain') }}" method="post">
     {{ form.hidden_tag() }} <b>Label:</b>{{ form.label }}  <b>Domain:</b> {{ form.domain }} <b>Phone:</b> {{ form.d_phone_number }} {{ form.submit }}
 </form>

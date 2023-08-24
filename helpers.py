@@ -283,7 +283,7 @@ def send_to_sheets(timestamp,first_name,ozip,dzip,dcity,dstate,data,ref_no,valid
             data.get('notes')
         ]
         # Append phone_number and lead_cost together for specific labels
-        if label in ['IQ Media', 'Spot Tower', 'Top10', 'ConAdsP1']:
+        if label in ['IQ Media', 'Spot Tower', 'Top10', 'ConAdsP1', 'ConAds EX']:
             values_to_append.extend([phone_number, str(lead_cost)])
         else:
             values_to_append.append(str(lead_cost))   

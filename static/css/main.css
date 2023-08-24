@@ -171,7 +171,7 @@ h1{
     font-size: 14px;
     font-weight: bolder;
     text-shadow: black 1px 1px 1px;
-    border: black 1px solid;
+    border: none;
 }
 .btn:hover {
   background: linear-gradient(to bottom, #0a7013, #14af21);
@@ -337,7 +337,7 @@ nav {
     align-items: left;
     padding: 10px;
     border-radius: 5px;
-    background-color: rgba(176, 176, 176, 0.7);
+    background-color: rgb(200, 199, 199);
     color: #000000;
     margin-bottom: 10px;
     text-align: left;
@@ -511,6 +511,10 @@ ul{
     text-align: center;
     color: black;
     padding: 10px;
+    border: #292929 1px solid;
+}
+table{
+  border-bottom: #292929 1px solid;
 }
 
 .pagination {

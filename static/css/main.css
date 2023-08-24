@@ -35,7 +35,7 @@ html, body{
     margin-right: -40px;
     background-repeat: no-repeat;
     background-size: cover;
-    box-shadow: black 3px 3px 4px;
+    border:black 2px solid;
 }
 
 #cancelButton {
@@ -172,7 +172,7 @@ h1{
     font-size: 14px;
     font-weight: bolder;
     text-shadow: black 1px 1px 1px;
-    border: none;
+    border: black 1px solid;
 }
 .btn:hover {
   background: linear-gradient(to bottom, #0a7013, #14af21);

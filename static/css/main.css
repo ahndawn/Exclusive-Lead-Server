@@ -338,9 +338,11 @@ nav {
     display: flex;
     align-items: center;
     padding: 20px;
-    border: 1px solid #963b3b;
+    border: none;
+    border-radius: 5px;
+    box-shadow: #292929 2px 2px 2px;
     margin-bottom: 5px;
-    background-color: rgb(184, 184, 184);
+    background-color: rgb(232, 232, 232);
     color: #000000;
   }
 

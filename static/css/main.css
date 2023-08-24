@@ -338,17 +338,16 @@ nav {
     display: flex;
     align-items: center;
     padding: 20px;
-    border: 1px solid #ddd;
-    border-radius: 10px;
+    border: 1px solid #963b3b;
     margin-bottom: 5px;
-    background-color: rgba(117, 117, 117, 0.5);
-    color: #fefefe;
+    background-color: rgb(184, 184, 184);
+    color: #000000;
   }
 
   .domain-info {
     flex-grow: 1;
     padding: 20px;
-    text-shadow: black 2px 2px 2px;
+
   }
 
   .settings-delete-container {

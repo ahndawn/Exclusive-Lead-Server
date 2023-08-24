@@ -339,11 +339,13 @@ nav {
     border: 1px solid rgb(97, 97, 97);
     background-color: rgb(227, 225, 225);
     color: #000000;
+    text-align: left;
   }
 
   .domain-info {
     flex-grow: 1;
     padding: 20px;
+    text-align: left;
 
   }
 

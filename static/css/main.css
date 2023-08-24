@@ -513,7 +513,7 @@ ul{
     padding: 10px;
 }
 table{
-  box-shadow: black 0px 2px 2px;
+  box-shadow: black 2px 0px 2px;
 }
 
 .pagination {

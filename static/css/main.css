@@ -232,10 +232,10 @@ h1{
 }
 
 #insertDomainbtn:hover {
-  background:linear-gradient(to bottom, #33d7fc, #0992c8);
+  background:linear-gradient(to bottom, #325f2c, #3d9219);
   color: white;
   text-shadow: rgb(74, 74, 74) 2px 2px 2px;
-  border: 1px solid darkgray;
+  border: 1px solid rgb(16, 16, 16);
   
 }
 
@@ -526,7 +526,7 @@ ul{
     margin: 0 5px;
     background-color: white;
     border-radius: 10px;
-    color: #005c91;
+    color: #10601d;
     text-decoration: none;
     cursor: pointer;
     font-weight: bolder;

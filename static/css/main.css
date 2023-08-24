@@ -336,7 +336,9 @@ nav {
   #domainitem {
     display: flex;
     align-items: left;
+    padding: 10px;
     border: 1px solid rgb(97, 97, 97);
+    border-radius: 5px;
     background-color: rgb(227, 225, 225);
     color: #000000;
     text-align: left;

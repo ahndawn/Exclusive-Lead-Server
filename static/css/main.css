@@ -338,11 +338,11 @@ nav {
     display: flex;
     align-items: center;
     padding: 20px;
-    border: none;
+    border: 1px solid black;
     border-radius: 5px;
-    box-shadow: #292929 2px 2px 2px;
+    box-shadow: #292929 1px 1px 1px;
     margin-bottom: 5px;
-    background-color: rgb(232, 232, 232);
+    background-color: rgb(227, 225, 225);
     color: #000000;
   }
 

@@ -166,7 +166,6 @@ h1{
   background: linear-gradient(to top, #0a7013, #17c526);
     color: rgb(255, 255, 255);
     border: none;
-    box-shadow: black 2px 2px 2px;
     cursor: pointer;
     padding: 6px 12px;
     border-radius: 10px;
@@ -338,9 +337,8 @@ nav {
     display: flex;
     align-items: center;
     padding: 20px;
-    border: 1px solid black;
+    border: 1px solid rgb(97, 97, 97);
     border-radius: 5px;
-    box-shadow: #292929 1px 1px 1px;
     margin-bottom: 5px;
     background-color: rgb(227, 225, 225);
     color: #000000;

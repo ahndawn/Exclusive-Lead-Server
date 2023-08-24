@@ -158,12 +158,14 @@ def send_message(first_name, phone_number):
 # Push the data to the corresponding Google Sheet by Label name 
 spreadsheet_ids_and_ranges = {
     'Spot Tower': {'spreadsheet_id': '1d4lIy0a_slZKYKx3BRM1i57pWX7SIMFllWC6pNrYlXQ', 'range': 'Sheet1!A2'},
+    'Spot Tower Test': {'spreadsheet_id': '1d4lIy0a_slZKYKx3BRM1i57pWX7SIMFllWC6pNrYlXQ', 'range': 'Sheet1!A2'},
     'Savvy': {'spreadsheet_id': '1ZQ7wNiKNmH4x-10Tl2s0dgqDr8t7FiyIVpNNUk006QU', 'range': 'Sheet1!A2'},
     'Crispx': {'spreadsheet_id': '17qSaCVHHrMiRKd6Q11_rq-AQ07isulU-TxKkyvefoeI', 'range': 'Leadpost!A2'},
     'ConAds': {'spreadsheet_id': '1LlNqoLEijBcpITbXOE_UlNeH0of9QuKReA6S6fPszI4', 'range': 'Sheet1!A2'},
     'IQ Media': {'spreadsheet_id': '1RUYZ9aONYGEq26POCF0JGNjiZ1GsBzRHIs1h3BbZq5A', 'range': 'Sheet1!A2'},
     'Top10': {'spreadsheet_id': '12uCFTYzn9WydVZInVaZpTZKg7N3Rz65x4rsbjjqnIAk', 'range': 'LeadFlow!A2'},
     'ConAdsP1': {'spreadsheet_id': '1UpcqT5qzqNv7u1e0Q-DY7mqke6sqYm5WM_Qdr6rDGJ4', 'range': 'Sheet1!A2'},
+    'ConAds Ex': {'spreadsheet_id': '1UpcqT5qzqNv7u1e0Q-DY7mqke6sqYm5WM_Qdr6rDGJ4', 'range': 'Sheet2!A2'},
 }
 
 ##################################################################
@@ -280,7 +282,6 @@ def send_to_sheets(timestamp,first_name,ozip,dzip,dcity,dstate,data,ref_no,valid
             validation,
             data.get('notes')
         ]
-
         # Append phone_number and lead_cost together for specific labels
         if label in ['IQ Media', 'Spot Tower', 'Top10', 'ConAdsP1']:
             values_to_append.extend([phone_number, str(lead_cost)])

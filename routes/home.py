@@ -37,7 +37,8 @@ def add_data():
         timestamp = datetime.now(timezone).strftime('%Y-%m-%d')
         
         phone_number = format_phone_number(data.get('phone1'))
-        movedte = format_move_date(data.get('movedte'))
+        movedate= data.get('movedte')
+        movedte = format_move_date(movedate)
         movesize = data.get('movesize')
         first_name = data.get('firstname')
         # Validate ref_no, it must not be an empty string

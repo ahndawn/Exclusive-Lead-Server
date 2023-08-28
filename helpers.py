@@ -70,21 +70,20 @@ def send_email(label,dzip,dcity,dstate,ref_no, email, data, movedte, ozip, phone
         print(f"FAILED to send email: {e}")
 ###########################    format date
 def format_move_date(movedate):
-    try:
-        # Try to parse the input date string as MM/DD/YYYY format
-        date_obj = datetime.strptime(movedate, '%m/%d/%Y')
-        # If parsing is successful, return the input date as is
-        return movedate
-    except ValueError:
+    formats = ['%m/%d/%Y', '%Y-%m-%d', '%d-%m-%Y', '%d/%m/%Y', '%Y.%m.%d']
+    
+    for fmt in formats:
         try:
-            # Try to parse the input date string as YYYY-MM-DD format
-            date_obj = datetime.strptime(movedate, '%Y-%m-%d')
-            # Format the datetime object as MM/DD/YYYY
+            date_obj = datetime.strptime(movedate, fmt)
+            # Once a correct format is found, format the datetime object as MM/DD/YYYY and return
             formatted_date = date_obj.strftime('%m/%d/%Y')
             return formatted_date
         except ValueError:
-            # If the date_string is not in either format, return an empty string or handle the error as needed
-            return ''
+            # If the current format doesn't match, continue to the next format
+            continue
+    
+    # If no formats matched, return the original movedate
+    return movedate
 
 
 #############################

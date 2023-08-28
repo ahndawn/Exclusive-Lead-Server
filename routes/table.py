@@ -54,6 +54,16 @@ table_bp = Blueprint('table', __name__)
 
     # # Render the template with the chart
     # return render_template('charts.html', chart_html=chart_html, current_user=current_user, leads_today=leads_today, leads_week=leads_week, leads_month=leads_month)
+def get_lead_details_from_db(lead_id):
+    from models.lead import Lead
+    """
+    Fetches a lead from the database by its ID.
+    
+    :param lead_id: ID of the lead to fetch.
+    :return: Lead object if found, None otherwise.
+    """
+    lead = Lead.query.get(lead_id)
+    return lead
 
 @table_bp.route('/charts')
 @login_required
@@ -169,3 +179,37 @@ def show_table():
 
     # Render the template with the current data and pagination information
     return render_template('table.html', **template_context, current_user=current_user)
+
+@table_bp.route('/send_to_gronat', methods=['POST'])
+def send_to_gronat_route():
+    from helpers import send_to_gronat
+    from app import db
+    lead_id = request.form['lead_id']
+    moverref = 'chris@safeshipmoving.com'
+    
+    # Fetch lead details from the database using lead_id
+    lead = get_lead_details_from_db(lead_id)  # Dummy function, replace with your actual function
+    
+    # Assuming `lead` is an object or dictionary containing all the required fields
+    success = send_to_gronat(
+        lead.label, 
+        moverref, 
+        lead.firstname, 
+        lead.email, 
+        lead.phone1, 
+        lead.ozip, 
+        lead.dzip, 
+        lead.dcity, 
+        lead.dstate, 
+        {'movesize': lead.movesize, 'notes': lead.notes}, 
+        lead.movedte,
+        1
+    )
+
+    if success:
+        lead.sent_to_gronat = '1'
+        # db_update_sent_to_gronat(lead_id) // Dummy function, replace with your actual function
+        db.session.commit()
+        return jsonify({'success': True})
+    else:
+        return jsonify({'success': False})

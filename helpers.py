@@ -35,7 +35,7 @@ def send_email(label,dzip,dcity,dstate,ref_no, email, data, movedte, ozip, phone
     if label == 'Crispx':
         indicator = f'GCLID {ref_no}\n                       ICID: {data.get("notes")}'
     else:
-        indicator = f'ICID {ref_no}'
+        indicator = f'ICID {data.get("notes")}'
 
     msg = MIMEMultipart()
     msg['From'] = from_email

@@ -1,9 +1,24 @@
 {% extends 'home.html' %}
 
 {% block content %}
-<div class="head">
-    <h1 style="color:white">Leads</h1>
-</div>
-<div>{{ chart_html | safe }}</div>
+  <div class="head">
+      <h1 style="color:white">Leads</h1>
+  </div>
+
+  <!-- Dropdown and Date Filter -->
+  <form id="filterForm">
+      <select name="filter_type" id="filterType">
+          <option value="all">All Time</option>
+          <option value="today">Today</option>
+          <option value="weekly">This Week</option>
+          <option value="monthly">This Month</option>
+      </select>
+      Start Date: <input type="date" name="start_date">
+      End Date: <input type="date" name="end_date">
+      <input type="submit" value="Apply">
+  </form>
+
+  <!-- Chart Container -->
+  <div>{{ chart_html | safe }}</div>
 
 {% endblock %}

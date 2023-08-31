@@ -4,56 +4,12 @@ from flask_login import login_required, current_user
 from helpers import creds
 from googleapiclient.discovery import build
 from operator import attrgetter
+from datetime import datetime, timedelta
 import plotly.express as px
 import plotly.offline as pyo
 
 table_bp = Blueprint('table', __name__)
 
-# @table_bp.route('/charts')
-# @login_required
-# def show_charts():
-#     from models.lead import Lead
-#     import pandas as pd  # Import pandas for DataFrame creation
-#     import plotly.express as px  # Import Plotly Express
-
-#     today_start = datetime.now(pytz.timezone('America/New_York')).replace(hour=0, minute=0, second=0, microsecond=0)
-#     week_start = today_start - timedelta(days=today_start.weekday())
-#     month_start = today_start.replace(day=1)
-
-#     all_data = Lead.query.all()
-
-#     # Convert the saved timestamp strings to datetime objects
-#     timezone = pytz.timezone('America/New_York')
-#     for lead in all_data:
-    #     lead.timestamp = datetime.strptime(lead.timestamp, '%Y-%m-%d').replace(tzinfo=timezone)
-
-    # # Filter lead data for different time intervals
-    # leads_today = [lead for lead in all_data if lead.timestamp >= today_start]
-    # leads_week = [lead for lead in all_data if lead.timestamp >= week_start]
-    # leads_month = [lead for lead in all_data if lead.timestamp >= month_start]
-
-    # # Calculate lead counts for different time intervals
-    # lead_count_today = len(leads_today)
-    # lead_count_week = len(leads_week)
-    # lead_count_month = len(leads_month)
-
-    # # Create a DataFrame for Plotly
-    # data = pd.DataFrame({
-    #     'Time Interval': ['Today', 'This Week', 'This Month'],
-    #     'Lead Count': [lead_count_today, lead_count_week, lead_count_month]
-    # })
-
-    # # Create a bar chart with Plotly
-    # fig = px.bar(data, x='Time Interval', y='Lead Count', title='Lead Counts for Different Time Intervals')
-
-    # # You can customize the chart appearance if needed
-    # fig.update_layout(xaxis_title='Time Interval', yaxis_title='Lead Count')
-
-    # # Convert the Plotly figure to HTML
-    # chart_html = fig.to_html()
-
-    # # Render the template with the chart
-    # return render_template('charts.html', chart_html=chart_html, current_user=current_user, leads_today=leads_today, leads_week=leads_week, leads_month=leads_month)
 def get_lead_details_from_db(lead_id):
     from models.lead import Lead
     """
@@ -69,9 +25,48 @@ def get_lead_details_from_db(lead_id):
 @login_required
 def show_charts():
     from models.lead import Lead
-    # Retrieve the current data from the Data table
+
+    filter_type = request.args.get('filter_type', default='all')
+    start_date_str = request.args.get('start_date')
+    end_date_str = request.args.get('end_date')
+
+    # Convert user-provided dates to datetime objects
+    if start_date_str:
+        start_date = datetime.strptime(start_date_str, '%Y-%m-%d')
+    else:
+        start_date = datetime.min
+      
+    if end_date_str:
+        end_date = datetime.strptime(end_date_str, '%Y-%m-%d')
+    else:
+        end_date = datetime.max
+
+    def try_parsing_date(text):
+        for fmt in ('%Y-%m-%d', '%m/%d/%Y'):
+            try:
+                return datetime.strptime(text, fmt)
+            except ValueError:
+                continue
+        return None  # return None if all attempts fail
+
+    # Update the filter function
+    def filter_leads_by_date(data, start_date, end_date):
+        return [row for row in data if start_date <= try_parsing_date(row.timestamp) <= end_date]
+
     all_data = Lead.query.all()
-    
+
+    # Further filtering based on all-time, today, weekly, or monthly
+    if filter_type == 'today':
+        start_date = end_date = datetime.now()
+    elif filter_type == 'weekly':
+        start_date = datetime.now() - timedelta(days=7)
+        end_date = datetime.now()
+    elif filter_type == 'monthly':
+        start_date = datetime.now() - timedelta(days=30)
+        end_date = datetime.now()
+
+    all_data = filter_leads_by_date(all_data, start_date, end_date)
+
     # Group data by label and count the leads
     label_counts = {}
     for row in all_data:
@@ -80,18 +75,17 @@ def show_charts():
             label_counts[label] += 1
         else:
             label_counts[label] = 1
-    
+
     labels = list(label_counts.keys())
     counts = list(label_counts.values())
-    
+
     # Create a bar chart using Plotly
-    fig = px.bar(x=labels, y=counts, labels={'x': 'Label', 'y': 'Lead Count'}, title='Lead Counts by Label')
-    
+    fig = px.bar(x=labels, y=counts, labels={'x': 'Label', 'y': 'Lead Count'}, title=f'Lead Counts by Label ({filter_type.capitalize()})')
+
     # Convert the Plotly figure to HTML
     chart_html = pyo.plot(fig, output_type='div')
-    
-    # Render the template with the chart
-    return render_template('charts.html', chart_html=chart_html, current_user=current_user)
+
+    return render_template('charts.html', chart_html=chart_html, current_user=current_user, filter_type=filter_type)
 
 
 @table_bp.route('/table')

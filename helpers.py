@@ -70,7 +70,7 @@ def send_email(label,dzip,dcity,dstate,ref_no, email, data, movedte, ozip, phone
         print(f"FAILED to send email: {e}")
 ###########################    format date
 def format_move_date(movedate):
-    formats = ['%m/%d/%Y', '%Y-%m-%d', '%d-%m-%Y', '%d/%m/%Y', '%Y.%m.%d']
+    formats = ['%m/%d/%Y', '%Y-%m-%d', '%d-%m-%Y', '%d/%m/%Y', '%Y.%m.%d', '%d%m%y']
     
     for fmt in formats:
         try:
@@ -79,7 +79,7 @@ def format_move_date(movedate):
             formatted_date = date_obj.strftime('%m/%d/%Y')
             return formatted_date
         except ValueError:
-            # If the current format doesn't match, continue to the next format
+            # If the current format doesn't match, continuFe to the next format
             continue
     
     # If no formats matched, return the original movedate
@@ -298,7 +298,7 @@ def send_to_sheets(timestamp,first_name,ozip,dzip,dcity,dstate,data,ref_no,valid
                 valueInputOption='RAW',
                 insertDataOption='INSERT_ROWS',
                 body=body
-            ).execute()
+            ).execute()  
             print('SUCCESS: Google Sheets')
             return True
         except HttpError as error: 

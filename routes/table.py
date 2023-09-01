@@ -27,19 +27,9 @@ def show_charts():
     from models.lead import Lead
 
     filter_type = request.args.get('filter_type', default='all')
-    start_date_str = request.args.get('start_date')
-    end_date_str = request.args.get('end_date')
-
-    # Convert user-provided dates to datetime objects
-    if start_date_str:
-        start_date = datetime.strptime(start_date_str, '%Y-%m-%d')
-    else:
-        start_date = datetime.min
-      
-    if end_date_str:
-        end_date = datetime.strptime(end_date_str, '%Y-%m-%d')
-    else:
-        end_date = datetime.max
+    specific_date = request.args.get('specific_date')
+    week_start_date = request.args.get('week_start_date')
+    month = request.args.get('month')
 
     def try_parsing_date(text):
         for fmt in ('%Y-%m-%d', '%m/%d/%Y'):
@@ -47,27 +37,30 @@ def show_charts():
                 return datetime.strptime(text, fmt)
             except ValueError:
                 continue
-        return None  # return None if all attempts fail
+        return None
 
-    # Update the filter function
     def filter_leads_by_date(data, start_date, end_date):
         return [row for row in data if start_date <= try_parsing_date(row.timestamp) <= end_date]
 
     all_data = Lead.query.all()
 
-    # Further filtering based on all-time, today, weekly, or monthly
-    if filter_type == 'today':
-        start_date = end_date = datetime.now()
-    elif filter_type == 'weekly':
-        start_date = datetime.now() - timedelta(days=7)
-        end_date = datetime.now()
-    elif filter_type == 'monthly':
-        start_date = datetime.now() - timedelta(days=30)
-        end_date = datetime.now()
+    today = datetime.now()
+    if filter_type == 'day' and specific_date:
+        start_date = end_date = datetime.strptime(specific_date, '%Y-%m-%d')
+    elif filter_type == 'weekly' and week_start_date:
+        start_date = datetime.strptime(week_start_date, '%Y-%m-%d')
+        end_date = start_date + timedelta(days=7)
+    elif filter_type == 'monthly' and month:
+        start_date = datetime(today.year, int(month), 1)
+        next_month = int(month) % 12 + 1
+        next_year = today.year if next_month != 1 else today.year + 1
+        end_date = datetime(next_year, next_month, 1) - timedelta(days=1)
+    else:
+        start_date = datetime.min
+        end_date = datetime.max
 
     all_data = filter_leads_by_date(all_data, start_date, end_date)
 
-    # Group data by label and count the leads
     label_counts = {}
     for row in all_data:
         label = row.label
@@ -79,10 +72,19 @@ def show_charts():
     labels = list(label_counts.keys())
     counts = list(label_counts.values())
 
-    # Create a bar chart using Plotly
-    fig = px.bar(x=labels, y=counts, labels={'x': 'Label', 'y': 'Lead Count'}, title=f'Lead Counts by Label ({filter_type.capitalize()})')
+    # Generate a custom title for the chart
+    title_detail = ""
+    if filter_type == 'day' and specific_date:
+        title_detail = f", {specific_date}"
+    elif filter_type == 'weekly' and week_start_date:
+        end_week_date = (datetime.strptime(week_start_date, '%Y-%m-%d') + timedelta(days=7)).strftime('%Y-%m-%d')
+        title_detail = f", {week_start_date} to {end_week_date}"
+    elif filter_type == 'monthly' and month:
+        month_name = datetime(today.year, int(month), 1).strftime('%B')
+        title_detail = f", {month_name}"
 
-    # Convert the Plotly figure to HTML
+    title = f"Lead Counts by Label ({filter_type.capitalize()}{title_detail})"
+    fig = px.bar(x=labels, y=counts, labels={'x': 'Label', 'y': 'Lead Count'}, title=title)
     chart_html = pyo.plot(fig, output_type='div')
 
     return render_template('charts.html', chart_html=chart_html, current_user=current_user, filter_type=filter_type)
@@ -182,7 +184,7 @@ def send_to_gronat_route():
     moverref = 'chris@safeshipmoving.com'
     
     # Fetch lead details from the database using lead_id
-    lead = get_lead_details_from_db(lead_id)  # Dummy function, replace with your actual function
+    lead = get_lead_details_from_db(lead_id) 
     
     # Assuming `lead` is an object or dictionary containing all the required fields
     success = send_to_gronat(

@@ -1,24 +1,79 @@
 {% extends 'home.html' %}
 
 {% block content %}
-  <div class="head">
-      <h1 style="color:white">Leads</h1>
-  </div>
+<div class="head">
+    <h1 style="color:white">Leads</h1>
+</div>
 
-  <!-- Dropdown and Date Filter -->
-  <form id="filterForm">
-      <select name="filter_type" id="filterType">
-          <option value="all">All Time</option>
-          <option value="today">Today</option>
-          <option value="weekly">This Week</option>
-          <option value="monthly">This Month</option>
-      </select>
-      Start Date: <input type="date" name="start_date">
-      End Date: <input type="date" name="end_date">
-      <input type="submit" value="Apply">
-  </form>
+<!-- Dropdown for filter type and dynamic fields for date/week/month selection -->
+<form action="/charts" method="get" class="filterdiv">
+    <h1 style="text-shadow: none; font-weight: bolder; padding-right: 10px; margin-left: auto; margin-top:10px; font-size: 16px;">Filter Selection:</h1>
+    <select name="filter_type" id="filter_type" onchange="showDateInput(this.value)">
+        <option value="all">All time</option>
+        <option value="day">Day</option>
+        <option value="weekly">Weekly</option>
+        <option value="monthly">Monthly</option>
+    </select>
 
-  <!-- Chart Container -->
-  <div>{{ chart_html | safe }}</div>
+    <!-- Day selector -->
+    <div id="dayDiv" style="display:none;">
+        <input type="date" name="specific_date">
+    </div>
 
+    <!-- Week selector -->
+    <div id="weekDiv" style="display:none;">
+        <input type="date" name="week_start_date">
+    </div>
+
+    <!-- Month selector -->
+    <div id="monthDiv" style="display:none;">
+        <select name="month">
+            <option value="1">January</option>
+            <option value="2">February</option>
+            <option value="3">March</option>
+            <option value="4">April</option>
+            <option value="5">May</option>
+            <option value="6">June</option>
+            <option value="7">July</option>
+            <option value="8">August</option>
+            <option value="9">September</option>
+            <option value="10">October</option>
+            <option value="11">November</option>
+            <option value="12">December</option>
+        </select>
+    </div>
+
+    <input type="submit" class='filter' value="Apply">
+</form>
+<style>
+    .filterdiv{
+        padding-left:50px;
+        text-align: center;
+        display: flex;
+        margin: auto;
+        padding-top: 15px;
+    }
+</style>
+
+<script>
+    function showDateInput(value) {
+        document.getElementById('dayDiv').style.display = 'none';
+        document.getElementById('weekDiv').style.display = 'none';
+        document.getElementById('monthDiv').style.display = 'none';
+
+        if (value === 'day') {
+            document.getElementById('dayDiv').style.display = 'block';
+        } else if (value === 'weekly') {
+            document.getElementById('weekDiv').style.display = 'block';
+        } else if (value === 'monthly') {
+            document.getElementById('monthDiv').style.display = 'block';
+        }
+    }
+    window.onload = function() {
+    var filterType = document.getElementById('filter_type').value;
+    showDateInput(filterType);
+};
+</script>
+
+<div>{{ chart_html | safe }}</div>
 {% endblock %}

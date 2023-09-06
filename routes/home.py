@@ -31,6 +31,10 @@ def add_data():
         dzip = data.get('dzip', '')
         email = data.get('email')
         label = data.get('label')
+        icid = data.get('notes')
+
+        if label == "Spot Tower":
+            icid = 'A-' + icid
         
         #create timestamp
         timezone = pytz.timezone('America/New_York')
@@ -80,14 +84,14 @@ def add_data():
 
         
         #############send to gronat function from helpers.py
-        sent_gronat_success = send_to_gronat(label, moverref, first_name, email, phone_number, ozip, dzip, dcity, dstate, data, movedte, send_to_leads_api)
+        sent_gronat_success = send_to_gronat(label, moverref, first_name, email, phone_number, ozip, dzip, dcity, dstate, data, movedte, send_to_leads_api, icid)
         if sent_gronat_success:
             sent_to_gronat = '1'
         else:
             sent_to_gronat = '0'
 
         ################send to email function from helpers.py
-        send_email(label,dzip,dcity,dstate,ref_no, email, data, movedte, ozip, phone_number, first_name)
+        send_email(label,dzip,dcity,dstate,ref_no, email, data, movedte, ozip, phone_number, first_name, icid)
         
         ################## TWILIO
         # default value if validation is not ran '-1'
@@ -113,12 +117,12 @@ def add_data():
         sent_to_sheets='0'
         if send_to_google_sheet == 1:
             lead_cost = domain_settings.lead_cost if domain_settings else "110"
-            sent_to_sheets_success=send_to_sheets(timestamp,first_name,ozip,dzip,dcity,dstate,data,ref_no,validation,label, phone_number, lead_cost)
+            sent_to_sheets_success=send_to_sheets(timestamp,first_name,ozip,dzip,dcity,dstate,data,ref_no,validation,label, phone_number, lead_cost, icid)
             if sent_to_sheets_success:
                 sent_to_sheets='1'
         
         ############################### Insert the data into the database
-        db_insertion_success = insert_data_into_db(data, sent_to_gronat, sent_to_sheets, validation, movesize, movedte)
+        db_insertion_success = insert_data_into_db(data, sent_to_gronat, sent_to_sheets, validation, movesize, movedte, icid)
     
         if db_insertion_success:
             session['submitted'] = True
@@ -128,7 +132,7 @@ def add_data():
         
         if not db_insertion_success and sent_to_gronat == '0':
             print("Database insertion failed. Sending data to the leads API...")
-            send_to_gronat(label, moverref, first_name, email, phone_number, ozip, dzip, dcity, dstate, data, movedte, send_to_leads_api, sent_to_gronat)
+            send_to_gronat(label, moverref, first_name, email, phone_number, ozip, dzip, dcity, dstate, data, movedte, send_to_leads_api, sent_to_gronat, icid)
             # If the insertion fails, send the data to the leads API as long as it wasn't sent already
 
         # Render the template with the updated data and message

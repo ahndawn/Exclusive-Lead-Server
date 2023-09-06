@@ -24,7 +24,7 @@ twilio_auth_token = os.environ.get('TWILIO_AUTH_TOKEN')
 client = Client(twilio_account_sid, twilio_auth_token)
 
 ########################### Send email
-def send_email(label,dzip,dcity,dstate,ref_no, email, data, movedte, ozip, phone_number, first_name):
+def send_email(label,dzip,dcity,dstate,ref_no, email, data, movedte, ozip, phone_number, first_name, icid):
     # Construct the email message
     subject = f"New {str(label)} Lead"
     from_email = "quoteform@safeship-moving.com"
@@ -33,9 +33,9 @@ def send_email(label,dzip,dcity,dstate,ref_no, email, data, movedte, ozip, phone
     destination = dzip if dzip else f'{dcity}, {dstate}'
 
     if label == 'Crispx':
-        indicator = f'GCLID {ref_no}\n                       ICID: {data.get("notes")}'
+        indicator = f'GCLID {ref_no}\n                       ICID: {icid}'
     else:
-        indicator = f'ICID {data.get("notes")}'
+        indicator = f'ICID {icid}'
 
     msg = MIMEMultipart()
     msg['From'] = from_email
@@ -157,7 +157,7 @@ def send_message(first_name, phone_number):
 # Push the data to the corresponding Google Sheet by Label name 
 spreadsheet_ids_and_ranges = {
     'Spot Tower': {'spreadsheet_id': '1d4lIy0a_slZKYKx3BRM1i57pWX7SIMFllWC6pNrYlXQ', 'range': 'Sheet1!A2'},
-    'Special EX': {'spreadsheet_id': '1d4lIy0a_slZKYKx3BRM1i57pWX7SIMFllWC6pNrYlXQ', 'range': 'Sheet2!A2'},
+    'Special EX': {'spreadsheet_id': '1d4lIy0a_slZKYKx3BRM1i57pWX7SIMFllWC6pNrYlXQ', 'range': 'Sheet1!A2'},
     'Savvy': {'spreadsheet_id': '1ZQ7wNiKNmH4x-10Tl2s0dgqDr8t7FiyIVpNNUk006QU', 'range': 'Sheet1!A2'},
     'Crispx': {'spreadsheet_id': '17qSaCVHHrMiRKd6Q11_rq-AQ07isulU-TxKkyvefoeI', 'range': 'Leadpost!A2'},
     'ConAds': {'spreadsheet_id': '1LlNqoLEijBcpITbXOE_UlNeH0of9QuKReA6S6fPszI4', 'range': 'Sheet1!A2'},
@@ -170,7 +170,7 @@ spreadsheet_ids_and_ranges = {
 
 ##################################################################
 # LEAD INSERTION
-def insert_data_into_db(data, sent_to_gronat, sent_to_sheets, validation, movesize, movedte):
+def insert_data_into_db(data, sent_to_gronat, sent_to_sheets, validation, movesize, movedte, icid):
     from app import db
     from models.lead import Lead
     try:
@@ -214,7 +214,7 @@ def insert_data_into_db(data, sent_to_gronat, sent_to_sheets, validation, movesi
             movedte=movedte,
             conversion=ref_no,
             validation=validation,
-            notes=json.dumps(data.get('notes', {})),
+            notes=icid,
             sent_to_gronat=sent_to_gronat,
             sent_to_sheets=sent_to_sheets
         )
@@ -235,7 +235,7 @@ def insert_data_into_db(data, sent_to_gronat, sent_to_sheets, validation, movesi
 
 #####################################
  # Prepare data for Gronat POST request
-def send_to_gronat(label, moverref, first_name, email, phone_number, ozip, dzip, dcity, dstate, data, movedte, send_to_leads_api):
+def send_to_gronat(label, moverref, first_name, email, phone_number, ozip, dzip, dcity, dstate, data, movedte, send_to_leads_api, icid):
     api_url = "https://lead.hellomoving.com/LEADSGWHTTP.lidgw?&API_ID=5E3FD536C2D6"
     query_string = urlencode({
         'label': label,
@@ -249,7 +249,7 @@ def send_to_gronat(label, moverref, first_name, email, phone_number, ozip, dzip,
         'dstate': dstate,
         'movesize': data.get('movesize'),
         'movedte': movedte,
-        'notes': 'ICID: ' + data.get('notes'),
+        'notes': 'ICID: ' + icid,
         'volume': calculate_volume(data.get('movesize'))
     })
 
@@ -266,7 +266,7 @@ def send_to_gronat(label, moverref, first_name, email, phone_number, ozip, dzip,
 
 
 ############################# send to google sheets
-def send_to_sheets(timestamp,first_name,ozip,dzip,dcity,dstate,data,ref_no,validation,label, phone_number,lead_cost):
+def send_to_sheets(timestamp,first_name,ozip,dzip,dcity,dstate,data,ref_no,validation,label, phone_number,lead_cost, icid):
     spreadsheet_config = spreadsheet_ids_and_ranges.get(label)
     if spreadsheet_config:
         values_to_append = [
@@ -280,7 +280,7 @@ def send_to_sheets(timestamp,first_name,ozip,dzip,dcity,dstate,data,ref_no,valid
             data.get('movedte'),
             ref_no,
             validation,
-            data.get('notes')
+            icid
         ]
         # Append phone_number and lead_cost together for specific labels
         if label in ['IQ Media', 'Spot Tower', 'Top10', 'ConAdsP1', 'ConAds EX', 'Interstate EX', 'Special EX']:

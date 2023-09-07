@@ -136,6 +136,7 @@ function showTitle(element) {
              document.getElementById("sendToLeadsAPI").checked = (domainInfo.send_to_leads_api == "1");
              document.getElementById("sendToGoogleSheet").checked = (domainInfo.send_to_google_sheet == "1");
              document.getElementById("twilioNumberValidation").checked = (domainInfo.twilio_number_validation == "1");
+             document.getElementById("moverref").value = domainInfo.moverref;
              document.getElementById("smsTexting").checked = (domainInfo.sms_texting == "1");
              document.getElementById("changeMoverRefInput").checked = domainInfo.change_moverref == 1;
          });
@@ -196,6 +197,7 @@ function showTitle(element) {
         (sendToGoogleSheet ? "1" : "0") +
         "&twilio_number_validation=" +
         (twilioNumberValidation ? "1" : "0") +
+        "&moverref=" + encodeURIComponent(moverref) +
         "&sms_texting=" +
         (smsTexting ? "1" : "0") +
         "&lead_cost=" + 

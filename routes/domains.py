@@ -29,7 +29,8 @@ def get_domain_info(label):
             'send_to_google_sheet': domain.send_to_google_sheet,
             'twilio_number_validation': domain.twilio_number_validation,
             'sms_texting': domain.sms_texting,
-            'change_moverref': domain.change_moverref
+            'change_moverref': domain.change_moverref,
+            'moverref': domain.moverref
         })
     else:
         return jsonify({'error': 'Domain not found'}), 404
@@ -43,6 +44,7 @@ def update_domain(label):
     domain = request.form['domain']
     lead_cost = request.form['lead_cost']
     d_phone_number = request.form['phone_number']
+    moverref = request.form['moverref']
     send_to_leads_api = request.form.get('send_to_leads_api', '0') == '1'
     send_to_google_sheet = request.form.get('send_to_google_sheet', '0') == '1'
     twilio_number_validation = request.form.get('twilio_number_validation', '0') == '1'
@@ -67,6 +69,7 @@ def update_domain(label):
         domain_object.send_to_google_sheet = send_to_google_sheet
         domain_object.twilio_number_validation = twilio_number_validation
         domain_object.sms_texting = sms_texting
+        domain_object.moverref = moverref
         domain_object.change_moverref = change_moverref
         db.session.commit()
 
@@ -98,7 +101,8 @@ def insert_domain():
             send_to_google_sheet=send_to_google_sheet,
             twilio_number_validation=twilio_number_validation,
             sms_texting=sms_texting,
-            change_moverref = True
+            change_moverref = True,
+            moverref = 'chris@safeshipmoving.com'
         )
 
         try:

@@ -11,3 +11,4 @@ class Domain(db.Model):
     sms_texting = db.Column(db.Integer, nullable=True)
     lead_cost = db.Column(db.String, nullable=True)
     change_moverref = db.Column(db.Boolean, nullable=True, default=False)
+    moverref = db.Column(db.String, nullable=True) 

@@ -65,6 +65,7 @@ def add_data():
             send_to_google_sheet = 1
             twilio_number_validation = 1
             sms_texting = 1
+            moverref = data.get('moverref') or 'chris@safeshipmoving.com'
             change_moverref = True
             lead_cost = '110'
         else:
@@ -75,12 +76,12 @@ def add_data():
             sms_texting = domain_settings.sms_texting
             change_moverref = domain_settings.change_moverref
             lead_cost = domain_settings.lead_cost
+            moverref = domain_settings.moverref
 
-        if '1' not in movesize and '2' not in movesize and 'Studio' not in movesize and change_moverref == True:
+        #change posting key if bedroom size is 3 or larger
+        if not any(size in movesize for size in ['1', '2', 'studio', 'Studio']) and change_moverref == True:
             moverref = 'forwarding@safeshipmoving.com'
-        else:
-            moverref = data.get('moverref')
-        print(f'Posting Key (moverref) is: {moverref}')
+        print(f'Posting key for {label} is: {moverref}')
 
         
         #############send to gronat function from helpers.py

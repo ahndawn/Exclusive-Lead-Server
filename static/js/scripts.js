@@ -170,6 +170,7 @@ function showTitle(element) {
     var smsTexting = document.getElementById("smsTexting").checked;
     var leadCost = document.getElementById("leadCostInput").value;
     var changeMoverRef = document.getElementById("changeMoverRefInput").checked;
+    var moverref = document.getElementById("moverref").value; // Add this line to get the moverref value
 
     // Perform an AJAX request to update the domain properties on the server
     var xhr = new XMLHttpRequest();

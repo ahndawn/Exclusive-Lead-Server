@@ -78,7 +78,10 @@
                     <td {% if row.sent_to_gronat == '0' %}style="color: rgb(216, 0, 0);"{% elif row.sent_to_gronat == '1' %}style="color: green;"{% endif %}>
                         {{ row.sent_to_gronat }}
                         {% if row.sent_to_gronat == '0' %}
-                            <button id="send-to-gronat-btn" class="filter" data-lead-id="{{ row.id }}">Send to GRONAT</button>
+                            <form action="/send_to_gronat" method="post">
+                                <input type="hidden" name="lead_id" value="{{ row.id }}">
+                                <button type="submit" class="send-to-gronat-btn" id="sendToGronatButton" onclick="this.innerHTML='Sending...';">Send to GRONAT</button>
+                            </form>
                         {% endif %}
                     </td>
                     <td {% if row.sent_to_sheets == '0' %}style="color: rgb(216, 0, 0);"{% elif row.sent_to_sheets == '1' %}style="color: green;"{% endif %}>{{ row.sent_to_sheets }}</td>
@@ -132,46 +135,5 @@
     background: rgb(33, 82, 33);
 }
 </style>
-<script>
-$(document).ready(function() {
-    $('#send-to-gronat-btn').click(function() {
-        var leadId = $(this).data('lead-id');
-        var btn = $(this); // Save the reference to the button for later use
-
-        // Change the button text to 'Sending...'
-        btn.text('Sending...');
-
-        $.ajax({
-            url: "/send_to_gronat",
-            type: "POST",
-            data: {
-                'lead_id': leadId
-            },
-            success: function(response) {
-                if (response.success) {
-                    // Hide the button if successfully sent
-                    btn.hide();
-
-                    // Flash a success message
-                    alert('Successfully sent to Gronat.');
-                } else {
-                    // Change the button text back to 'Send to Gronat'
-                    btn.text('Send to Gronat');
-
-                    // Flash an error message
-                    alert('Failed to send to Gronat. Try again.');
-                }
-            },
-            error: function() {
-                // If there's an AJAX error, change the button text back to 'Send to Gronat'
-                btn.text('Send to Gronat');
-
-                // Flash an error message
-                alert('An error occurred. Try again.');
-            }
-        });
-    });
-});
-</script>
 {% endif %}
 {% endblock %}

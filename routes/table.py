@@ -1,5 +1,5 @@
 #some imports are used within each required route and function in order to avoid 'circular imports'
-from flask import Blueprint, render_template, request, jsonify, render_template 
+from flask import Blueprint, render_template, request, jsonify, render_template, redirect, url_for, flash
 from flask_login import login_required, current_user
 from helpers import creds
 from googleapiclient.discovery import build
@@ -180,32 +180,44 @@ def show_table():
 def send_to_gronat_route():
     from helpers import send_to_gronat
     from app import db
+    from models.domain import Domain
     lead_id = request.form['lead_id']
-    moverref = 'chris@safeshipmoving.com'
     
     # Fetch lead details from the database using lead_id
-    lead = get_lead_details_from_db(lead_id) 
+    lead = get_lead_details_from_db(lead_id)
+    if not lead:
+        flash("Lead not found.", "error")
+        return redirect(url_for('table.show_table'))
     
-    # Assuming `lead` is an object or dictionary containing all the required fields
-    success = send_to_gronat(
-        lead.label, 
-        moverref, 
-        lead.firstname, 
-        lead.email, 
-        lead.phone1, 
-        lead.ozip, 
-        lead.dzip, 
-        lead.dcity, 
-        lead.dstate, 
-        {'movesize': lead.movesize, 'notes': lead.notes}, 
-        lead.movedte,
-        1
-    )
+    domain = Domain.query.filter_by(label=lead.label).first()
+    if not domain:
+        flash("Domain for the lead not found.", "error")
+        return redirect(url_for('table.show_table'))
+    
+    moverref = domain.moverref
+    icid = lead.notes  # Assuming ICID is stored as a note, adjust if needed
+
+    # Extract other necessary details from the `lead` and `domain` objects
+    label = lead.label
+    first_name = lead.firstname
+    email = lead.email
+    phone_number = lead.phone1
+    ozip = lead.ozip
+    dzip = lead.dzip
+    dcity = lead.dcity
+    dstate = lead.dstate
+    data = {"movesize": lead.movesize}  # Add other necessary fields if needed
+    movedte = lead.movedte
+    send_to_leads_api = domain.send_to_leads_api
+    
+    success = send_to_gronat(label, moverref, first_name, email, phone_number, ozip, dzip, dcity, dstate, data, movedte, send_to_leads_api, icid)
 
     if success:
+        # Update the lead record in the database to reflect that it was successfully sent
         lead.sent_to_gronat = '1'
-        # db_update_sent_to_gronat(lead_id) // Dummy function, replace with your actual function
         db.session.commit()
-        return jsonify({'success': True})
+        flash("Lead successfully sent to Gronat.", "success")
     else:
-        return jsonify({'success': False})
+        flash("Failed to send lead to Gronat. Please try again.", "error")
+
+    return redirect(url_for('table.show_table'))

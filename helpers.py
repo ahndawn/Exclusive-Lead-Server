@@ -2,7 +2,7 @@
 from flask import jsonify
 from urllib.parse import unquote
 from googleapiclient.discovery import build
-from datetime import datetime
+from datetime import datetime, timedelta
 from sqlalchemy.exc import IntegrityError
 from twilio.rest import Client
 from google.oauth2 import service_account
@@ -236,6 +236,8 @@ def insert_data_into_db(data, sent_to_gronat, sent_to_sheets, validation, movesi
 #####################################
  # Prepare data for Gronat POST request
 def send_to_gronat(label, moverref, first_name, email, phone_number, ozip, dzip, dcity, dstate, data, movedte, send_to_leads_api, icid):
+    if movedte == '':
+        movedte = (datetime.today() + timedelta(days=30)).strftime('%m %d %Y')
     api_url = "https://lead.hellomoving.com/LEADSGWHTTP.lidgw?&API_ID=5E3FD536C2D6"
     query_string = urlencode({
         'label': label,

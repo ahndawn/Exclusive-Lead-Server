@@ -3,6 +3,19 @@
 {% block content %}
 <div class="head">
 <h1 style="text-align: center; color:white" >All Leads</h1>
+{% with messages = get_flashed_messages() %}
+    {% if messages %}
+      <ul class="messages">
+        {% for message in messages %}
+          {% if 'success' in message %}
+            <li class="success-message">{{ message }}</li>
+          {% else %}
+            <li>{{ message }}</li>
+          {% endif %}
+        {% endfor %}
+      </ul>
+    {% endif %}
+  {% endwith %}
 
 <!-- Search Bar -->
 <div class="search-area">

@@ -25,15 +25,15 @@
     <nav>
       <ul class="clearfix">
         <li><a href="/home"><img src="../static/images/safe-ship-white-icon.png" style="width:20px; height:20px; margin-bottom: 0px;"/>  <b class="nav-info">Home</b></a></li>
-        <li class="nav-item dropdown">
-          <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-            <b class="nav-info">Leads</b>
-          </a>
-          <ul class="dropdown-menu" style='background: rgb(161, 161, 161); border:none; border-radius:0px; padding-right:15px; color:black' aria-labelledby="navbarDropdown">
-              <li><a class="dropdown-item" style="color:black; text-shadow:none;" href="/table">All Leads</a></li>
-              <li><a class="dropdown-item" style="color:black; text-shadow:none;" href="/charts">Lead Metrics</a></li>
+        <!-- Leads Dropdown Start -->
+        <li class="dropdown">
+          <a href="#"><i class="fa-regular fa-address-book"></i> <b class="nav-info">Leads</b> <span class="caret"></span></a>
+          <ul class="dropdown-content">
+              <li><a href="/table">All Leads</a></li>
+              <li><a href="/charts">Lead Metrics</a></li>
           </ul>
       </li>
+      <!-- Leads Dropdown End -->
         <li><a href="/domains"><i class="fa-solid fa-globe"></i> <b class="nav-info">Domains</b></a></li>
       {% if not current_user.is_authenticated %}
         <li class="userBtn"><a href="{{ url_for('auth.login') }}"><i class="fa-solid fa-right-to-bracket"></i> <b class="nav-info">Login</b></a></li>

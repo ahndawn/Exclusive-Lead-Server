@@ -1,8 +1,13 @@
 {% extends 'home.html' %}
 {% block content %}
+<script>
+    $(document).ready(function(){
+    $('[data-toggle="tooltip"]').tooltip(); 
+});
+</script>
 
 <div class="head">
-<h1 style="color:white">Lead Assignments</h1>
+<h1 style="color:white">Lead Distribution</h1>
 </div>
 <br>
 
@@ -33,11 +38,12 @@
 </div>
 
 <!-- List of all configurations -->
+<div class="table-responsive">
 <table class="table table-bordered table-hover">
     <thead class="thead-light">
         <tr>
-            <th class="text-center" style="text-shadow:none">Department</th>
-            <th class="text-center" style="text-shadow:none"># Lead assignments</th>
+            <th class="text-center" style="text-shadow:none">Department <i class="fa-solid fa-circle-question" data-toggle="tooltip" title="Department 'TA' = customerservice@safeshipmoving.com. Department 'TB' = rachel.s@safeshipmoving.com."></i></th>
+            <th class="text-center" style="text-shadow:none">Number of Leads <i class="fa-solid fa-circle-question" data-toggle="tooltip" title="The number of Lead Assignments determines the distribution ratio. '1' means one lead is assigned before moving to the next department. '2' means two leads are assigned first, and so on."></i></th>
             <th class="text-center" style="text-shadow:none">Actions</th>
         </tr>
     </thead>
@@ -60,6 +66,7 @@
         {% endfor %}
     </tbody>
 </table>
+</div>
 
 <!-- Edit Configuration Modal -->
 <div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="editModalLabel" aria-hidden="true">

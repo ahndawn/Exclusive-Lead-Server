@@ -23,86 +23,29 @@ function showTitle(element) {
   
 
   function filterTable() {
-  var input = document.getElementById("search-input").value.toUpperCase();
-  var table = document.getElementsByTagName("table")[0];
-  var tr = table.getElementsByTagName("tr");
+    var input = document.getElementById("search-input").value;
 
-  // Get the state of each checkbox
-  var filterAll = document.getElementById("all-checkbox").checked;
-  var filterLabel = document.getElementById("label-checkbox").checked;
-  var filterTimestamp = document.getElementById("timestamp-checkbox").checked;
-  var filterFirstName = document.getElementById("firstname-checkbox").checked;
-  var filterEmail = document.getElementById("email-checkbox").checked;
-  var filterPhone = document.getElementById("phone-checkbox").checked;
-  var filterOzip = document.getElementById("ozip-checkbox").checked;
-  var filterDzip = document.getElementById("dzip-checkbox").checked;
-  var filterDcity = document.getElementById("dcity-checkbox").checked;
-  var filterDstate = document.getElementById("dstate-checkbox").checked;
-  var filterMovesize = document.getElementById("movesize-checkbox").checked;
-  var filterMovedate = document.getElementById("movedate-checkbox").checked;
-  var filterConversion = document.getElementById("conversion-checkbox").checked;
-  var filterValidation = document.getElementById("validation-checkbox").checked;
-  var filterNotes = document.getElementById("notes-checkbox").checked;
-  var filterGronat = document.getElementById("gronat-checkbox").checked;
-  var filterSheets = document.getElementById("sheets-checkbox").checked;
-  var filterDuplicate = document.getElementById("duplicate-checkbox").checked;
+    var filterCriteria;
+    if (document.getElementById("label-checkbox").checked) filterCriteria = "label";
+    else if (document.getElementById("timestamp-checkbox").checked) filterCriteria = "timestamp";
+    else if (document.getElementById("firstname-checkbox").checked) filterCriteria = "firstname";
+    else if (document.getElementById("email-checkbox").checked) filterCriteria = "email";
+    else if (document.getElementById("phone-checkbox").checked) filterCriteria = "phone1";
+    else if (document.getElementById("ozip-checkbox").checked) filterCriteria = "ozip";
+    else if (document.getElementById("dzip-checkbox").checked) filterCriteria = "dzip";
+    else if (document.getElementById("dcity-checkbox").checked) filterCriteria = "dcity";
+    else if (document.getElementById("dstate-checkbox").checked) filterCriteria = "dstate";
+    else if (document.getElementById("movesize-checkbox").checked) filterCriteria = "movesize";
+    else if (document.getElementById("movedate-checkbox").checked) filterCriteria = "movedte";
+    else if (document.getElementById("conversion-checkbox").checked) filterCriteria = "conversion";
+    else if (document.getElementById("validation-checkbox").checked) filterCriteria = "validation";
+    else if (document.getElementById("notes-checkbox").checked) filterCriteria = "notes";
+    else if (document.getElementById("gronat-checkbox").checked) filterCriteria = "sent_to_gronat";
+    else if (document.getElementById("sheets-checkbox").checked) filterCriteria = "sent_to_sheets";
 
-  // Create array to store unique phone numbers and emails
-  var uniqueValues = [];
-
-  for (var i = 0; i < tr.length; i++) {
-      var td = tr[i].getElementsByTagName("td");
-      if (td.length > 0) {
-          var match = false;
-
-          // Filter based on the "All" checkbox
-          if (filterAll) {
-              for (var j = 0; j < td.length; j++) {
-                  if (td[j].textContent.toUpperCase().indexOf(input) > -1) {
-                      match = true;
-                      break;
-                  }
-              }
-          } else {
-              // Filter based on individual checkboxes
-              if (filterLabel) match = match || (td[0].textContent.toUpperCase().indexOf(input) > -1);
-              if (filterTimestamp) match = match || (td[1].textContent.toUpperCase().indexOf(input) > -1);
-              if (filterFirstName) match = match || (td[2].textContent.toUpperCase().indexOf(input) > -1);
-              if (filterEmail) match = match || (td[3].textContent.toUpperCase().indexOf(input) > -1);
-              if (filterPhone) match = match || (td[4].textContent.toUpperCase().indexOf(input) > -1);
-              if (filterOzip) match = match || (td[5].textContent.toUpperCase().indexOf(input) > -1);
-              if (filterDzip) match = match || (td[6].textContent.toUpperCase().indexOf(input) > -1);
-              if (filterDcity) match = match || (td[7].textContent.toUpperCase().indexOf(input) > -1);
-              if (filterDstate) match = match || (td[8].textContent.toUpperCase().indexOf(input) > -1);
-              if (filterMovesize) match = match || (td[9].textContent.toUpperCase().indexOf(input) > -1);
-              if (filterMovedate) match = match || (td[10].textContent.toUpperCase().indexOf(input) > -1);
-              if (filterConversion) match = match || (td[11].textContent.toUpperCase().indexOf(input) > -1);
-              if (filterValidation) match = match || (td[12].textContent.toUpperCase().indexOf(input) > -1);
-              if (filterNotes) match = match || (td[13].textContent.toUpperCase().indexOf(input) > -1);
-              if (filterGronat) match = match || (td[14].textContent.toUpperCase().indexOf(input) > -1);
-              if (filterSheets) match = match || (td[15].textContent.toUpperCase().indexOf(input) > -1);
-          }
-
-          // Check if duplicate filtering is enabled and filter out duplicates
-          if (filterDuplicate) {
-              var phone = td[4].textContent;
-              var email = td[3].textContent;
-              var value = phone || email; // Use either phone or email as the value
-
-              if (value && uniqueValues.includes(value)) {
-                  match = false;
-              } else {
-                  if (value) uniqueValues.push(value);
-              }
-          }
-
-          if (match) {
-              tr[i].style.display = "";
-          } else {
-              tr[i].style.display = "none";
-          }
-      }
-  }
+    // Redirect with the filter criteria and input as parameters
+    var url = `/table?filter=${filterCriteria}&filter_value=${input}`;
+    window.location.href = url;
 }
 
 

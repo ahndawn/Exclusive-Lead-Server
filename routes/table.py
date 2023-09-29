@@ -26,9 +26,6 @@ def show_table():
     # Retrieve the current data from the Data table
     all_data = Lead.query.all()
 
-    # Check if the "Show All Entries" button is clicked
-    show_all = request.args.get('show_all')
-
     # Get the filter from the query parameters
     filter_by = request.args.get('filter', default=None)
     filtered_data = all_data
@@ -52,44 +49,53 @@ def show_table():
         'sent_to_sheets': Lead.sent_to_sheets,
     }
 
-    if filter_by:
-        # Filter the data based on the selected filter
-        column_attribute = filter_columns.get(filter_by)
-        if column_attribute:
-            filter_value = request.args.get('filter_value', default="")
-            filtered_data = [row for row in all_data if attrgetter(column_attribute)(row) == filter_value]
+    column_attribute = filter_columns.get(filter_by)
+    if column_attribute:
+        filter_value = request.args.get('filter_value', default="")
+        if filter_by in ['sent_to_gronat', 'sent_to_sheets']:
+            try:
+                filter_value = int(filter_value)
+                # For these specific columns, cast the integer filter_value to string for the query
+                filtered_data = Lead.query.filter(getattr(Lead, filter_by).like(f"%{filter_value}%")).all()
+            except ValueError:
+                return flash("Invalid integer value provided for filter")
         else:
-            # Invalid filter selected, show all data
-            filtered_data = all_data
-
-    # Check if "Show All Entries" button is clicked
-    if show_all:
+            filtered_data = Lead.query.filter(getattr(Lead, filter_by).like(f"%{filter_value}%")).all()
+    else:
+    # Invalid filter selected, show all data
         filtered_data = all_data
-
-    # Pagination
-    per_page = 15
-    page = request.args.get('page', 1, type=int)
+    
+    # Check if the "Show All Entries" button is clicked or a filter is applied
+    show_all = request.args.get('show_all') or filter_by
+    
     filtered_data = sorted(filtered_data, key=attrgetter('id'), reverse=True)
+    
+    page = request.args.get('page', 1, type=int)
 
     if show_all:
         data = filtered_data
     else:
-        # Calculate start and end index for pagination
+    # Pagination
+        per_page = 15
         start = (page - 1) * per_page
         end = start + per_page
         data = filtered_data[start:end]
 
     # Determine the total number of pages
-    total_pages = 1 if show_all else len(filtered_data) // per_page + (len(filtered_data) % per_page > 0)
+        total_pages = len(filtered_data) // per_page + (len(filtered_data) % per_page > 0)
 
     # Calculate start_page and end_page
-    visible_pages = 5  # Number of visible page numbers excluding "..." separators
-    start_page = max(page - visible_pages // 2, 1)
-    end_page = min(start_page + visible_pages, total_pages)
+        visible_pages = 5  # Number of visible page numbers excluding "..." separators
+        start_page = max(page - visible_pages // 2, 1)
+        end_page = min(start_page + visible_pages, total_pages)
 
     # Adjust start_page if end_page is at the maximum limit
-    if end_page == total_pages:
-        start_page = max(end_page - visible_pages + 1, 1)
+        if end_page == total_pages:
+            start_page = max(end_page - visible_pages + 1, 1)
+
+# If showing all, set these values to avoid errors in the frontend
+    if show_all:
+        total_pages, start_page, end_page = 1, 1, 1
 
     # Add the enumerate function to the template context
     template_context = {

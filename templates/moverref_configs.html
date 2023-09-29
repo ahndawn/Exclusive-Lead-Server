@@ -1,0 +1,106 @@
+{% extends 'home.html' %}
+{% block content %}
+
+<div class="head">
+<h1 style="color:white">Lead Assignments</h1>
+</div>
+<br>
+
+<!-- Form to add a new configuration -->
+<button class="filter" onclick="$('#addModal').modal('show')">Add New Department</button>
+
+<!-- Add New Configuration Modal -->
+<div class="modal fade" id="addModal" tabindex="-1" role="dialog" aria-labelledby="addModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addModalLabel">Add New Department/Lead Configuration</h5>
+            </div>
+            <form action="{{ url_for('moverref.add_moverref_config') }}" method="post">
+                <div class="modal-body">
+                    <label for="name"> Department Name (email):</label>
+                    <input type="text" name="name" required>
+                    <br>
+                    <label for="repeat_count">Lead Assignment Count:</label>
+                    <input type="number" name="repeat_count" required>
+                </div>
+                <div class="modal-footer">
+                    <input type="submit" class="filter" value="Add">
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- List of all configurations -->
+<table class="table table-bordered table-hover">
+    <thead class="thead-light">
+        <tr>
+            <th class="text-center" style="text-shadow:none">Department</th>
+            <th class="text-center" style="text-shadow:none"># Lead assignments</th>
+            <th class="text-center" style="text-shadow:none">Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for config in configs %}
+        <tr>
+            <td class="text-center">
+                <span class="data-name">{{ config.name }}</span>
+            </td>
+            <td class="text-center">
+                <span class="data-repeat_count">{{ config.repeat_count }}</span>
+            </td>
+            <td class="text-center">
+                <button class="filter" title="Settings" onclick="showEditForm(this, {{ config.id }})"><i class="fa-solid fa-gear" title="Settings" style="cursor:pointer"></i></button>
+                <form action="{{ url_for('moverref.delete_moverref_config', config_id=config.id) }}" method="post" style="display:inline;">
+                    <button type="submit" class="deleteBtn" onclick="return confirm('Are you sure you want to delete?')"><i class="fa-solid fa-trash-can" title="Delete" style="cursor:pointer"></i></button>
+                </form>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<!-- Edit Configuration Modal -->
+<div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="editModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="editModalLabel">Edit Configuration</h5>
+      </div>
+      <form id="modalForm" method="post">
+        <div class="modal-body">
+          <label for="modalName">Name:</label>
+          <input type="text" id="modalName" name="name">
+          <br>
+          <label for="modalRepeatCount">Repeat Count:</label>
+          <input type="number" id="modalRepeatCount" name="repeat_count">
+        </div>
+        <div class="modal-footer">
+          <input type="submit" class="filter" value="Save">
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<script>
+function showEditForm(buttonElement, configId) {
+    const trElement = buttonElement.closest('tr');
+    
+    const name = trElement.querySelector('.data-name').textContent;
+ 
+    const repeatCount = trElement.querySelector('.data-repeat_count').textContent;
+
+    document.getElementById('modalName').value = name;
+
+    document.getElementById('modalRepeatCount').value = repeatCount;
+
+    // Set the form's action to the correct endpoint
+    document.getElementById('modalForm').action = `/edit_moverref_config/${configId}`;
+
+    $('#editModal').modal('show');
+}
+</script>
+
+{% endblock %}

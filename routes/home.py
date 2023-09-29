@@ -2,7 +2,7 @@
 from flask import Blueprint, render_template, request, jsonify, render_template, session
 from flask_login import current_user
 from urllib.parse import unquote
-from helpers import client, send_message, format_phone_number, format_move_date, send_email, send_to_gronat, send_to_sheets
+from helpers import client, send_message, format_phone_number, format_move_date, send_email, send_to_gronat, send_to_sheets, get_next_moverref
 from datetime import datetime
 import pytz
 
@@ -13,7 +13,7 @@ app_bp = Blueprint('app', __name__)
 def home():
     return render_template('home.html', current_user=current_user)
     
-
+    
 @app_bp.route('/', methods=['GET', 'POST'])
 def add_data():
     from app import db
@@ -81,6 +81,8 @@ def add_data():
        #change posting key if bedroom size is 3 or larger
         if not any(size in movesize for size in ['1', '2', 'studio', 'Studio']) and change_moverref == True:
             moverref = 'forwarding@safeshipmoving.com'
+        # else:
+        #     moverref = get_next_moverref()
         print(f'Posting key for {label} is: {moverref}')
 
         

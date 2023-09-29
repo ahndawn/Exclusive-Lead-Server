@@ -18,6 +18,7 @@ import requests
 
 
 # Access the environment variables
+# database_url2 = os.environ.get('SHARED_DATABASE_URL')
 database_url = os.environ.get('DATABASE_URL')
 twilio_account_sid = os.environ.get('TWILIO_ACCOUNT_SID')
 twilio_auth_token = os.environ.get('TWILIO_AUTH_TOKEN')
@@ -307,3 +308,36 @@ def send_to_sheets(timestamp,first_name,ozip,dzip,dcity,dstate,data,ref_no,valid
         except HttpError as error: 
             print('FAILED POST to Google Sheets: ', error._get_reason())
             return False
+
+
+##################### Get Moverref (Lead Distribution Settings)
+def get_next_moverref():
+    from app import db
+    from models.moverref_config import MoverrefConfig
+    from models.counter import Counter
+
+    current_count = db.session.query(Counter).first().moverref_count
+
+    # Fetch and sort the configuration
+    configs = db.session.query(MoverrefConfig).order_by(MoverrefConfig.sequence_order).all()
+
+    # Compute total assignments based on repeat_count
+    total_assignments = sum([config.repeat_count for config in configs])
+    
+    # Determine the position in the total sequence
+    position = current_count % total_assignments
+
+    # Determine the next name based on position and repeat_count
+    count_so_far = 0
+    for config in configs:
+        if position < count_so_far + config.repeat_count:
+            next_name = config.name
+            break
+        count_so_far += config.repeat_count
+
+    # Increment the counter
+    current_count += 1
+    db.session.query(Counter).update({Counter.moverref_count: current_count})
+    db.session.commit()
+
+    return next_name

@@ -30,7 +30,7 @@
           <a href="#"><i class="fa-regular fa-address-book"></i> <b class="nav-info">Leads</b> <span class="caret"></span></a>
           <ul class="dropdown-content">
               <li><a href="/table">All Leads</a></li>
-              <li><a href="/charts">Lead Metrics</a></li>
+              <li><a href="{{ url_for('moverref.show_moverref_configs') }}">Lead Assignments</a></li>
           </ul>
       </li>
       <!-- Leads Dropdown End -->
@@ -89,7 +89,7 @@
               <a href="/domains">
                 <div class="mask" style="background-color: rgba(251, 251, 251, 0.15);"></div>
               </a>
-            </div>  
+            </div>
             <div class="card-body" style="height: 140px;">
               <p class="card-text">
                 See all Domains and Manage settings for each one.
@@ -141,8 +141,8 @@
       </div>
     </section>
 {% endblock %}
-<script type="text/javascript" src="../static/js/mdb.min.js"></script>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script type="text/javascript" src="../static/js/mdb.min.js"></script>
 <script src="../static/js/scripts.js"></script>
 </body>
 </html>

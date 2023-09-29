@@ -1,12 +1,9 @@
 #some imports are used within each required route and function in order to avoid 'circular imports'
-from flask import Blueprint, render_template, request, jsonify, render_template, redirect, url_for, flash
+from flask import Blueprint, render_template, request, jsonify, render_template, url_for, flash, redirect
 from flask_login import login_required, current_user
 from helpers import creds
 from googleapiclient.discovery import build
 from operator import attrgetter
-from datetime import datetime, timedelta
-import plotly.express as px
-import plotly.offline as pyo
 
 table_bp = Blueprint('table', __name__)
 
@@ -20,74 +17,6 @@ def get_lead_details_from_db(lead_id):
     """
     lead = Lead.query.get(lead_id)
     return lead
-
-@table_bp.route('/charts')
-@login_required
-def show_charts():
-    from models.lead import Lead
-
-    filter_type = request.args.get('filter_type', default='all')
-    specific_date = request.args.get('specific_date')
-    week_start_date = request.args.get('week_start_date')
-    month = request.args.get('month')
-
-    def try_parsing_date(text):
-        for fmt in ('%Y-%m-%d', '%m/%d/%Y'):
-            try:
-                return datetime.strptime(text, fmt)
-            except ValueError:
-                continue
-        return None
-
-    def filter_leads_by_date(data, start_date, end_date):
-        return [row for row in data if start_date <= try_parsing_date(row.timestamp) <= end_date]
-
-    all_data = Lead.query.all()
-
-    today = datetime.now()
-    if filter_type == 'day' and specific_date:
-        start_date = end_date = datetime.strptime(specific_date, '%Y-%m-%d')
-    elif filter_type == 'weekly' and week_start_date:
-        start_date = datetime.strptime(week_start_date, '%Y-%m-%d')
-        end_date = start_date + timedelta(days=7)
-    elif filter_type == 'monthly' and month:
-        start_date = datetime(today.year, int(month), 1)
-        next_month = int(month) % 12 + 1
-        next_year = today.year if next_month != 1 else today.year + 1
-        end_date = datetime(next_year, next_month, 1) - timedelta(days=1)
-    else:
-        start_date = datetime.min
-        end_date = datetime.max
-
-    all_data = filter_leads_by_date(all_data, start_date, end_date)
-
-    label_counts = {}
-    for row in all_data:
-        label = row.label
-        if label in label_counts:
-            label_counts[label] += 1
-        else:
-            label_counts[label] = 1
-
-    labels = list(label_counts.keys())
-    counts = list(label_counts.values())
-
-    # Generate a custom title for the chart
-    title_detail = ""
-    if filter_type == 'day' and specific_date:
-        title_detail = f", {specific_date}"
-    elif filter_type == 'weekly' and week_start_date:
-        end_week_date = (datetime.strptime(week_start_date, '%Y-%m-%d') + timedelta(days=7)).strftime('%Y-%m-%d')
-        title_detail = f", {week_start_date} to {end_week_date}"
-    elif filter_type == 'monthly' and month:
-        month_name = datetime(today.year, int(month), 1).strftime('%B')
-        title_detail = f", {month_name}"
-
-    title = f"Lead Counts by Label ({filter_type.capitalize()}{title_detail})"
-    fig = px.bar(x=labels, y=counts, labels={'x': 'Label', 'y': 'Lead Count'}, title=title)
-    chart_html = pyo.plot(fig, output_type='div')
-
-    return render_template('charts.html', chart_html=chart_html, current_user=current_user, filter_type=filter_type)
 
 
 @table_bp.route('/table')
@@ -221,3 +150,7 @@ def send_to_gronat_route():
         flash("Failed to send lead to Gronat. Please try again.", "error")
 
     return redirect(url_for('table.show_table'))
+
+
+
+

@@ -60,127 +60,87 @@
 </div>
 
 <!-- Settings Modal -->
-<div id="settingsModal" class="modal">
-    <div class="modal-content">
-      <span class="close">&times;</span>
-      <form id="settingsForm">
-        <label for="labelInput"><b>Label:</b></label>
-        <input type="text" id="labelInput" name="label" class="domainInput" style="width: 198px; margin-top: 10px; margin-bottom: 10px" required>
-        
-        <label for="leadCostInput"><b>Lead Cost ($):</b></label>
-        <input type="text" id="leadCostInput" name="lead_cost" class="domainInput" style="width: 198px; margin-top: 10px; margin-bottom: 10px" placeholder="$">
-
-        <label for="domainInput"><b>Domain:</b></label>
-        <input type="text" id="domainInput" name="domain" class="domainInput" style="width: 198px; margin-top: 10px; margin-bottom: 10px" required>
-        
-        <label for="phoneInput"><b>Phone-Number:</b></label>
-        <input type="text" id="phoneInput" name="phone_number" class="domainInput" style="width: 198px; margin-top: 10px; margin-bottom: 10px" required>
-        <hr>
-        <label for="moverref"><b>Posting Key</b></label>
-        <input type="text" id="moverref" name="moverref" class="domainInput" style="width: 198px; margin-top: 10px; margin-bottom: 10px" required>
-        <hr>
-        <label for="sendToLeadsAPI">Send to GRONAT:</label>
-        <input type="checkbox" id="sendToLeadsAPI" name="send_to_leads_api" style="margin-right: 20px">
-        <hr>
-        <label for="sendToGoogleSheet" >Send to Google Sheet:</label>
-        <input type="checkbox" id="sendToGoogleSheet" name="send_to_google_sheet" style="margin-right: 10px">
-        <hr>
-        <label for="twilioNumberValidation">Twilio Number Validation:</label>
-        <input type="checkbox" id="twilioNumberValidation" name="twilio_number_validation">
-        <hr>
-        <label for="smsTexting" style=" margin-left: 50px;">SMS Texting:</label>
-        <input type="checkbox" id="smsTexting" name="sms_texting"style="margin-right: 50px;">
-        <hr>
-        <label for="changeMoverRefInput">Forwarding Posting Key</label>
-        <input type="checkbox" id="changeMoverRefInput" name="change_moverref">
-        <hr>
-        <input type="submit" value="Save" class="btn btn-primary" style = 'margin-top: 10px; border:none'>
-      </form>
-    </div>
+<div id="settingsModal" class="modal fade" tabindex="-1" role="dialog">
+  <div class="modal-dialog modal-lg" role="document">
+      <div class="modal-content">
+          <div class="modal-header">
+              <h5 class="modal-title" style="text-align: center;">Settings</h5>
+          </div>
+          <form id="settingsForm">
+              <div class="modal-body">
+                <div class="form-group row">
+                  <label for="labelInput" class="col-sm-4 col-form-label text-right">Label:</label>
+                  <div class="col-sm-8">
+                      <input type="text" id="labelInput" name="label" class="form-control centered-text-input" required>
+                  </div>
+              </div>
+              <div class="form-group row">
+                  <label for="leadCostInput" class="col-sm-4 col-form-label text-right">Lead Cost ($):</label>
+                  <div class="col-sm-8">
+                      <input type="text" id="leadCostInput" name="lead_cost" class="form-control centered-text-input" placeholder="$">
+                  </div>
+              </div>
+              <div class="form-group row">
+                  <label for="domainInput" class="col-sm-4 col-form-label text-right">Domain:</label>
+                  <div class="col-sm-8">
+                      <input type="text" id="domainInput" name="domain" class="form-control centered-text-input" required>
+                  </div>
+              </div>
+              <div class="form-group row">
+                  <label for="phoneInput" class="col-sm-4 col-form-label text-right">Phone-Number:</label>
+                  <div class="col-sm-8">
+                      <input type="text" id="phoneInput" name="phone_number" class="form-control centered-text-input" required>
+                  </div>
+              </div>
+              <div class="form-group row">
+                  <label for="moverref" class="col-sm-4 col-form-label text-right">Posting Key:</label>
+                  <div class="col-sm-8">
+                      <input type="text" id="moverref" name="moverref" class="form-control centered-text-input" required>
+                  </div>
+              </div>
+              <hr>
+                  <div class="row form-group justify-content-center">
+                    <label class="col-sm-6 text-right form-check-label" for="sendToLeadsAPI">Send to GRONAT:</label>
+                    <div class="col-sm-1">
+                        <input class="form-check-input" type="checkbox" id="sendToLeadsAPI" name="send_to_leads_api">
+                    </div>
+                </div>
+                
+                <div class="row form-group justify-content-center">
+                    <label class="col-sm-6 text-right form-check-label" for="sendToGoogleSheet">Send to Google Sheet:</label>
+                    <div class="col-sm-1">
+                        <input class="form-check-input" type="checkbox" id="sendToGoogleSheet" name="send_to_google_sheet">
+                    </div>
+                </div>
+                
+                <div class="row form-group justify-content-center">
+                    <label class="col-sm-6 text-right form-check-label" for="twilioNumberValidation">Twilio Number Validation:</label>
+                    <div class="col-sm-1">
+                        <input class="form-check-input" type="checkbox" id="twilioNumberValidation" name="twilio_number_validation">
+                    </div>
+                </div>
+                
+                <div class="row form-group justify-content-center">
+                    <label class="col-sm-6 text-right form-check-label" for="smsTexting">SMS Texting:</label>
+                    <div class="col-sm-1">
+                        <input class="form-check-input" type="checkbox" id="smsTexting" name="sms_texting">
+                    </div>
+                </div>
+                
+                <div class="row form-group justify-content-center">
+                    <label class="col-sm-6 text-right form-check-label" for="changeMoverRefInput">Forwarding Posting Key:</label>
+                    <div class="col-sm-1">
+                        <input class="form-check-input" type="checkbox" id="changeMoverRefInput" name="change_moverref">
+                    </div>
+                </div>
+                <br>
+              <div class="modal-footer">
+                  <input type="submit" value="Save" class="filter">
+              </div>
+          </form>
+      </div>
   </div>
-
-  <style>
-
-@media(max-width:796px){
-  .head{
-    margin-top: 60px;
-  }
-  form{
-    padding-bottom:15px;
-  }
-  .btn-primary{
-    margin-left: -35px;
-    margin-bottom:10px;
-    font-size:13px
-  }
-  .deleteBtn{
-    margin-top:13px
-  }
-}
-     .settings-delete-container {
-    display: flex;
-  align-items: center;
-  flex-direction: row;
-  }
-  .settings {
-    background-color: transparent;
-    text-align: center;
-    text-decoration: none;
-    cursor: pointer;
-    border: none;
-    color: #9b9b9b;
-    text-shadow: rgb(61, 61, 61) 1px 1px 1px;
-    font-size: 20px;
-    margin:-5px;
-  }
-
-  .settings:hover {
-    color: #5e5e5e;
-    text-shadow: black 1px 1px 1px;
-  }
-
-  .deleteBtn {
-    background-color: transparent;
-    padding: 5px 10px;
-    text-align: center;
-    text-decoration: none;
-    cursor: pointer;
-    border: none;
-    color: hsl(0, 100%, 65%);
-    text-shadow: black 2px 2px 2px;
-    font-size: 25px;
-  }
-
-  .deleteBtn:hover {
-    color: #801616;
-    text-shadow: black 3px 3px 3px;
-  }
-
-  .modal {
-    display: none;
-    position: fixed;
-    z-index: 1;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    overflow: auto;
-    background-color: rgba(0, 0, 0, 0.4);
-  }
-
-  .modal-content {
-    background-color: rgba(255, 255, 255, 0.89);
-    margin: 15% auto;
-    height: auto;
-    padding: 30px;
-    border: 3px solid #ffffff;
-    width: 300px;
-    justify-content: space-between;
-    text-align: center;
-    height: fit-content;
-    border-radius: 20px;
-  }
-  </style>
+</div>
    
 
 {% endblock %}

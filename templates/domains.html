@@ -2,41 +2,60 @@
 
 {% block content %}
 <div class="head">
-    <h1 style="color:white">Domains</h1>
+  <h1 style="color:white">Domains</h1>
 </div>
-<ul id="domainlist">
-  {% for domain in domains %}
-  <li id="domainitem">
-    <div class="domain-info">
-      <strong style="color:white; text-shadow: black 1px 1px 1px">Label:</strong> {{ domain.label }}
-    </div>
-    <div class="domain-info">
-      <strong style="color:white; text-shadow: black 1px 1px 1px">Domain:</strong> {{ domain.domain }}
-    </div>
-    <div class="domain-info">
-      <strong style="color:white; text-shadow: black 1px 1px 1px">Phone Number:</strong> {{ domain.d_phone_number }}
-    </div>
-    <div class="domain-info">
-      <strong style="color:white; text-shadow: black 1px 1px 1px">Lead Cost ($):</strong> {{ domain.lead_cost }}
-    </div>
-    <div>
-    <div class="settings-delete-container">
-      <button class="settings-button" data-label="{{ domain.label }}" title="Settings"><i class="fa-solid fa-gear" title="Settings" style="cursor:pointer"></i></button>
-    <form action="{{ url_for('domain.delete_domain', label=domain.label) }}" method="post">
-        <button type="submit" class="deleteBtn" onclick="return confirm('Are you sure you want to delete this domain?')"><i class="fa-solid fa-trash-can" title="Delete" style="cursor:pointer"></i></button>
-    </form>
-</div>
-  </li>
-  {% endfor %}
-  <button id="addDomainButton" class="btn btn-primary" style='margin-bottom: 20px !important; margin-top: 10px; border:none'><i class="fa-solid fa-plus"></i> Add Domain</button>
-</ul>
 
+<div class="table-responsive">
+<table class="table table-bordered table-hover">
+  <thead class="thead-light">
+      <tr>
+          <th class="text-center" style="text-shadow:none">Label</th>
+          <th class="text-center" style="text-shadow:none">Domain</th>
+          <th class="text-center" style="text-shadow:none">Phone Number</th>
+          <th class="text-center" style="text-shadow:none">Lead Cost ($)</th>
+          <th class="text-center" style="text-shadow:none">Actions</th>
+      </tr>
+  </thead>
+  <tbody>
+      {% for domain in domains %}
+      <tr>
+          <td class="text-center">
+              <span class="data-name">{{ domain.label }}</span>
+          </td>
+          <td class="text-center">
+              <span class="data-domain">{{ domain.domain }}</span>
+          </td>
+          <td class="text-center">
+              <span class="data-phone">{{ domain.d_phone_number }}</span>
+          </td>
+          <td class="text-center">
+              <span class="data-lead-cost">{{ domain.lead_cost }}</span>
+          </td>
+          <td class="text-center">
+              <button class="settings-button" data-label="{{ domain.label }}" title="Settings"><i class="fa-solid fa-gear" title="Settings" style="cursor:pointer"></i></button>
+              <form action="{{ url_for('domain.delete_domain', label=domain.label) }}" method="post" style="display:inline;">
+                  <button type="submit" class="deleteBtn" onclick="return confirm('Are you sure you want to delete this domain?')"><i class="fa-solid fa-trash-can" title="Delete" style="cursor:pointer"></i></button>
+              </form>
+          </td>
+      </tr>
+      {% endfor %}
+  </tbody>
+</table>
+</div>
 
 <div id="addDomainForm" style="display: none; margin-bottom: 10px;">
   <form action="{{ url_for('domain.insert_domain') }}" method="post">
-    {{ form.hidden_tag() }} <b>Label:</b>{{ form.label }}  <b>Domain:</b> {{ form.domain }} <b>Phone:</b> {{ form.d_phone_number }} {{ form.submit }}
-</form>
+      {{ form.hidden_tag() }}
+      <b>Label:</b>{{ form.label }}
+      <b>Domain:</b> {{ form.domain }}
+      <b>Phone:</b> {{ form.d_phone_number }}
+      {{ form.submit }}
+  </form>
 </div>
+
+<button id="addDomainButton" class="btn btn-primary" style='margin-bottom: 20px !important; margin-top: 10px; border:none'>
+  <i class="fa-solid fa-plus"></i> Add Domain
+</button>
 
 <!-- Settings Modal -->
 <div id="settingsModal" class="modal">

@@ -252,6 +252,11 @@ nav {
     padding-bottom: 5px;
     border: 1px solid #606060;
   }
+
+  .table-responsive {
+    overflow-x: auto;    /* Allow horizontal scrolling */
+    width: 100%;         /* Set width to 100% to take full width of its parent */
+}
   
   body {
     margin-top: 60px; /* adjust this to the height of your navigation bar */
@@ -271,6 +276,7 @@ nav {
     color:white;
     font-weight: bolder;
     border-radius: 4px;
+    border: none;
   }
 
   .filter:hover {
@@ -363,13 +369,13 @@ nav {
     text-decoration: none;
     cursor: pointer;
     border: none;
-    color: #fefefe;
+    color: #858585;
     text-shadow: black 1px 1px 1px;
     font-size: 30px;
   }
 
   .settings-button:hover {
-    color: #d3d3d3;
+    color: #565656;
     text-shadow: black 3px 3px 3px;
   }
   .settings {
@@ -447,6 +453,20 @@ nav {
     text-decoration: none;
     cursor: pointer;
   }
+
+  .send-to-gronat-btn{
+    background: rgb(48, 134, 49);
+    color:white; 
+    font-weight:bolder; 
+    text-shadow:black 1px 1px 1px; 
+    border-radius:5px; 
+    border: none
+}
+.send-to-gronat-btn:hover{
+    text-shadow: black 2px 2px 2px;
+    background: rgb(33, 82, 33);
+}
+
 
   .dropdown {
     position: relative;
@@ -541,9 +561,6 @@ ul{
     color: black;
     padding: 10px;
 }
-table{
-  box-shadow: black 2px 2px 2px;
-}
 
 .pagination {
     display: inline-block;
@@ -561,6 +578,7 @@ table{
     text-decoration: none;
     cursor: pointer;
     font-weight: bolder;
+    border: none;
 }
 
 .pagination-btn:hover {

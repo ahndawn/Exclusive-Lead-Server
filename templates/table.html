@@ -1,6 +1,40 @@
 {% extends 'home.html' %}
 
 {% block content %}
+<script>
+    $(document).ready(function() {
+$(".send-to-gronat-btn").click(function(event) {
+event.preventDefault();
+
+var btn = $(this);
+btn.text('Sending...');
+
+var leadId = btn.prev('input[name="lead_id"]').val();
+
+$.ajax({
+    url: '/send_to_gronat',
+    method: 'POST',
+    data: { lead_id: leadId },
+    success: function(response) {
+        if (response.success) {
+            btn.parent().text('1'); // or any other indicator for success
+            btn.remove(); // Remove the button
+            // Optionally, display a success message
+            alert("Lead successfully sent to GRONAT.");
+        } else {
+            btn.text('Send to GRONAT');
+            // Display the error message
+            alert("Failed to send lead to Gronat. Please try again.");
+        }
+    },
+    error: function() {
+        btn.text('Send to GRONAT');
+        alert("An error occurred. Please try again later.");
+    }
+});
+});
+});
+</script>
 <div class="head">
 <h1 style="text-align: center; color:white" >All Leads</h1>
 {% with messages = get_flashed_messages() %}
@@ -133,20 +167,5 @@
         
     </div>
     <br>
-<style>
-
-.send-to-gronat-btn{
-    background: rgb(48, 134, 49);
-    color:white; 
-    font-weight:bolder; 
-    text-shadow:black 1px 1px 1px; 
-    border-radius:5px; 
-    border: black 1px solid;
-}
-.send-to-gronat-btn :hover{
-    text-shadow: black 2px 2px 2px;
-    background: rgb(33, 82, 33);
-}
-</style>
 {% endif %}
 {% endblock %}

@@ -83,6 +83,9 @@ def add_data():
             moverref = 'customerservice@safeshipmoving.com'
         else:
             moverref = get_next_moverref()
+
+        if label == 'Crispx':
+            moverref = 'sales@safeshipmoving.com'
         print(f'Posting key for {label} is: {moverref}')
 
         

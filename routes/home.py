@@ -80,7 +80,7 @@ def add_data():
 
        #change posting key if bedroom size is 3 or larger
         if not any(size in movesize for size in ['1', '2', 'studio', 'Studio']) and change_moverref == True:
-            moverref = 'forwarding@safeshipmoving.com'
+            moverref = 'customerservice@safeshipmoving.com'
         else:
             moverref = get_next_moverref()
         print(f'Posting key for {label} is: {moverref}')

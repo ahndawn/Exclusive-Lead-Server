@@ -148,14 +148,27 @@ def send_to_gronat_route():
     success = send_to_gronat(label, moverref, first_name, email, phone_number, ozip, dzip, dcity, dstate, data, movedte, send_to_leads_api, icid)
 
     if success:
-        # Update the lead record in the database to reflect that it was successfully sent
-        lead.sent_to_gronat = '1'
+    # Update the lead record in the database to reflect that it was successfully sent
+        lead.sent_to_gronat = 1
         db.session.commit()
-        flash("Lead successfully sent to Gronat.", "success")
+        return jsonify(success=True, message="Lead successfully sent to GRONAT.")
     else:
-        flash("Failed to send lead to Gronat. Please try again.", "error")
+        return jsonify(success=False, message="Failed to send lead to Gronat. Please try again.")
 
-    return redirect(url_for('table.show_table'))
+@table_bp.route('/update_movedte', methods=['POST'])
+def update_movedte():
+    from app import db
+    lead_id = request.form['lead_id']
+    new_movedte = request.form['new_movedte']
+
+    lead = get_lead_details_from_db(lead_id)
+    if not lead:
+        return jsonify({"success": False, "message": "Lead not found."}), 404
+
+    lead.movedte = new_movedte
+    db.session.commit()
+
+    return jsonify({"success": True})
 
 
 

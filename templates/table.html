@@ -3,6 +3,47 @@
 {% block content %}
 <script>
     $(document).ready(function() {
+        $(".editable-cell").click(function() {
+        if ($(this).find('input').length > 0) {
+            return;  // If the cell is already being edited, don't recreate the input and save button
+        }
+        var originalContent = $(this).text();
+        $(this).html('<input type="text" value="' + originalContent + '"><button class="save-btn">Save</button>');
+        $(this).find('input').first().focus();
+    });
+
+    $(".editable-cell").on('click', '.save-btn', function() {
+        var inputElem = $(this).siblings('input');
+        var newValue = inputElem.val();
+        var cell = $(this).parent();
+        var leadId = cell.attr("data-id");
+        
+        // AJAX call to update the movedte value
+        $.ajax({
+            url: '/update_movedte',
+            method: 'POST',
+            data: { 
+                'lead_id': leadId,
+                'new_movedte': newValue 
+            },
+            success: function(response) {
+                if (response.success) {
+                    location.reload();
+                } else {
+                    alert(response.message || "Error updating movedte.");
+                    cell.text(originalContent); // Revert to the original value
+                }
+            },
+            error: function() {
+                alert("An error occurred. Please try again later.");
+                cell.text(originalContent); // Revert to the original value
+            }
+        });
+    });
+});
+
+$(document).ready(function() {
+// send to gronat button
 $(".send-to-gronat-btn").click(function(event) {
 event.preventDefault();
 
@@ -17,13 +58,10 @@ $.ajax({
     data: { lead_id: leadId },
     success: function(response) {
         if (response.success) {
-            btn.parent().text('1'); // or any other indicator for success
-            btn.remove(); // Remove the button
-            // Optionally, display a success message
-            alert("Lead successfully sent to GRONAT.");
+            btn.parent().css('color', 'green').text('Sent');
+            btn.remove();
         } else {
             btn.text('Send to GRONAT');
-            // Display the error message
             alert("Failed to send lead to Gronat. Please try again.");
         }
     },
@@ -118,7 +156,7 @@ $.ajax({
                     <td>{{ row.dcity }}</td>
                     <td>{{ row.dstate }}</td>
                     <td>{{ row.movesize }}</td>
-                    <td>{{ row.movedte }}</td>
+                    <td class="editable-cell" data-id="{{ row.id }}">{{ row.movedte }}</td>
                     <td>{{ row.conversion }}</td>
                     <td {% if row.validation == '0' %}style="color: rgb(216, 0, 0);"{% elif row.validation == '-1' %}style="color: rgb(150, 150, 150);"{% elif row.validation == '1' %}style="color: green;"{% endif %}>{{ row.validation }}</td>
                     <td>{{ row.notes }}</td>

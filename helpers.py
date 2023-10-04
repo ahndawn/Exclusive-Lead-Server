@@ -201,29 +201,46 @@ def insert_data_into_db(label, data, sent_to_gronat, sent_to_sheets, validation,
         timestamp = current_datetime.strftime('%Y-%m-%d')
 
         if label == 'Crispx':
-            moverref = 'sales@safeshipmoving.com'
-        
+            lead = Lead(
+                label=label,
+                timestamp=timestamp,
+                firstname=data.get('firstname'),
+                email=data.get('email'),
+                phone1=data.get('phone1'),
+                ozip=data.get('ozip'),
+                dzip=dzip,
+                dcity=dcity,
+                dstate=dstate,
+                movesize=movesize,
+                movedte=movedte,
+                conversion=ref_no,
+                validation=validation,
+                notes=icid,
+                sent_to_gronat=sent_to_gronat,
+                sent_to_sheets=sent_to_sheets,
+                moverref = 'sales@safeshipmoving.com'
+            )
+        else:   
         # Insert the data into the database
-        lead = Lead(
-            label=label,
-            timestamp=timestamp,
-            firstname=data.get('firstname'),
-            email=data.get('email'),
-            phone1=data.get('phone1'),
-            ozip=data.get('ozip'),
-            dzip=dzip,
-            dcity=dcity,
-            dstate=dstate,
-            movesize=movesize,
-            movedte=movedte,
-            conversion=ref_no,
-            validation=validation,
-            notes=icid,
-            sent_to_gronat=sent_to_gronat,
-            sent_to_sheets=sent_to_sheets,
-            moverref=moverref
-        )
-        
+            lead = Lead(
+                label=label,
+                timestamp=timestamp,
+                firstname=data.get('firstname'),
+                email=data.get('email'),
+                phone1=data.get('phone1'),
+                ozip=data.get('ozip'),
+                dzip=dzip,
+                dcity=dcity,
+                dstate=dstate,
+                movesize=movesize,
+                movedte=movedte,
+                conversion=ref_no,
+                validation=validation,
+                notes=icid,
+                sent_to_gronat=sent_to_gronat,
+                sent_to_sheets=sent_to_sheets,
+                moverref=moverref
+            )
         
         db.session.add(lead)
         db.session.commit()

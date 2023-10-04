@@ -82,7 +82,7 @@ def add_data():
         if not any(size in movesize for size in ['1', '2', 'studio', 'Studio']) and change_moverref == True:
             moverref = 'customerservice@safeshipmoving.com'
         if label == 'Crispx':
-            moverref = 'sales@safeshipmoving.com'
+            moverref = domain_settings.moverref
         else:
             moverref = get_next_moverref()
         print(f'Posting key for {label} is: {moverref}')

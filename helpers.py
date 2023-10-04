@@ -224,6 +224,7 @@ def insert_data_into_db(label, data, sent_to_gronat, sent_to_sheets, validation,
             moverref=moverref
         )
         
+        
         db.session.add(lead)
         db.session.commit()
 

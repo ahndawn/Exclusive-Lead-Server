@@ -31,6 +31,21 @@ def get_moverref_data():
 
     return jsonify(data)
 
+@table_bp.route('/update_moverref', methods=['POST'])
+def update_moverref():
+    from app import db
+    from models.lead import Lead
+    lead_id = request.form['lead_id']
+    new_moverref = request.form['new_value']
+
+    lead = Lead.query.get(lead_id)
+    if not lead:
+        return jsonify({"success": False, "message": "Lead not found."}), 404
+
+    lead.moverref = new_moverref
+    db.session.commit()
+
+    return jsonify({"success": True})
 
 
 @table_bp.route('/table')

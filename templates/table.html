@@ -13,31 +13,40 @@
     });
 
     $(".editable-cell").on('click', '.save-btn', function() {
-        var inputElem = $(this).siblings('input');
-        var newValue = inputElem.val();
-        var cell = $(this).parent();
-        var leadId = cell.attr("data-id");
-        
-        // AJAX call to update the movedte value
-        $.ajax({
-            url: '/update_movedte',
-            method: 'POST',
-            data: { 
-                'lead_id': leadId,
-                'new_movedte': newValue 
-            },
-            success: function(response) {
-                if (response.success) {
-                    location.reload();
-                } else {
-                    alert(response.message || "Error updating movedte.");
-                    cell.text(originalContent); // Revert to the original value
-                }
-            },
-            error: function() {
-                alert("An error occurred. Please try again later.");
+    var inputElem = $(this).siblings('input');
+    var newValue = inputElem.val();
+    var cell = $(this).parent();
+    var leadId = cell.attr("data-id");
+
+    var updateUrl;
+    if (cell.index() === 10) {
+        updateUrl = '/update_movedte';
+    } else if (cell.index() === 16) { 
+        updateUrl = '/update_moverref';
+    } else {
+        return;  // Unsupported column, exit
+    }
+
+    // AJAX call to update the value
+    $.ajax({
+        url: updateUrl,
+        method: 'POST',
+        data: {
+            'lead_id': leadId,
+            'new_value': newValue  // Generic key for new value
+        },
+        success: function(response) {
+            if (response.success) {
+                location.reload();
+            } else {
+                alert(response.message || "Error updating value.");
                 cell.text(originalContent); // Revert to the original value
             }
+        },
+        error: function() {
+            alert("An error occurred. Please try again later.");
+            cell.text(originalContent); // Revert to the original value
+        }
         });
     });
 });
@@ -171,7 +180,7 @@ $.ajax({
                         {% endif %}
                     </td>
                     <td {% if row.sent_to_sheets == '0' %}style="color: rgb(216, 0, 0);"{% elif row.sent_to_sheets == '1' %}style="color: green;"{% endif %}>{{ row.sent_to_sheets }}</td>
-                    <td>{{ row.moverref }}</td>
+                    <td class="editable-cell" data-id="{{ row.id }}">{{ row.moverref }}</td>
                 </tr>
             {% endfor %}
         </tbody>

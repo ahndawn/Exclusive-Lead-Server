@@ -128,7 +128,7 @@ def add_data():
                 sent_to_sheets='1'
         
         ############################### Insert the data into the database
-        db_insertion_success = insert_data_into_db(data, sent_to_gronat, sent_to_sheets, validation, movesize, movedte, icid)
+        db_insertion_success = insert_data_into_db(data, sent_to_gronat, sent_to_sheets, validation, movesize, movedte, icid, moverref)
     
         if db_insertion_success:
             session['submitted'] = True

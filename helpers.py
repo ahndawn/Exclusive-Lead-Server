@@ -171,7 +171,7 @@ spreadsheet_ids_and_ranges = {
 
 ##################################################################
 # LEAD INSERTION
-def insert_data_into_db(data, sent_to_gronat, sent_to_sheets, validation, movesize, movedte, icid):
+def insert_data_into_db(data, sent_to_gronat, sent_to_sheets, validation, movesize, movedte, icid, moverref):
     from app import db
     from models.lead import Lead
     try:
@@ -217,7 +217,8 @@ def insert_data_into_db(data, sent_to_gronat, sent_to_sheets, validation, movesi
             validation=validation,
             notes=icid,
             sent_to_gronat=sent_to_gronat,
-            sent_to_sheets=sent_to_sheets
+            sent_to_sheets=sent_to_sheets,
+            moverref=moverref
         )
         
         db.session.add(lead)

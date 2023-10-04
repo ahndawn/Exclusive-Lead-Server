@@ -141,6 +141,7 @@ $.ajax({
                 <th>Notes</th>
                 <th>GRONAT <i class="fa-solid fa-circle-question" title="O = Not Sent. 1 = Sent" style="cursor:pointer"></i></th>
                 <th>Sheets <i class="fa-solid fa-circle-question" title="O = Not Sent. 1 = Sent" style="cursor:pointer"></i></th>
+                <th>Department</th>
             </tr>
         </thead>
         <tbody>
@@ -170,6 +171,7 @@ $.ajax({
                         {% endif %}
                     </td>
                     <td {% if row.sent_to_sheets == '0' %}style="color: rgb(216, 0, 0);"{% elif row.sent_to_sheets == '1' %}style="color: green;"{% endif %}>{{ row.sent_to_sheets }}</td>
+                    <td>{{ row.moverref }}</td>
                 </tr>
             {% endfor %}
         </tbody>

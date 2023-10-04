@@ -18,3 +18,4 @@ class Lead(db.Model):
     notes = db.Column(db.String, nullable=True)
     sent_to_gronat = db.Column(db.String, nullable=True)
     sent_to_sheets = db.Column(db.String, nullable=True)
+    moverref = db.Column(db.String, nullable=True)

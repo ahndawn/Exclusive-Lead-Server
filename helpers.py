@@ -171,7 +171,7 @@ spreadsheet_ids_and_ranges = {
 
 ##################################################################
 # LEAD INSERTION
-def insert_data_into_db(data, sent_to_gronat, sent_to_sheets, validation, movesize, movedte, icid, moverref):
+def insert_data_into_db(label, data, sent_to_gronat, sent_to_sheets, validation, movesize, movedte, icid, moverref):
     from app import db
     from models.lead import Lead
     try:
@@ -199,10 +199,13 @@ def insert_data_into_db(data, sent_to_gronat, sent_to_sheets, validation, movesi
         timezone = pytz.timezone('America/New_York')
         current_datetime = datetime.now(timezone)
         timestamp = current_datetime.strftime('%Y-%m-%d')
+
+        if label == 'Crispx':
+            moverref = 'sales@safeshipmoving.com'
         
         # Insert the data into the database
         lead = Lead(
-            label=data.get('label'),
+            label=label,
             timestamp=timestamp,
             firstname=data.get('firstname'),
             email=data.get('email'),

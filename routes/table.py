@@ -4,6 +4,7 @@ from flask_login import login_required, current_user
 from helpers import creds
 from googleapiclient.discovery import build
 from operator import attrgetter
+from sqlalchemy import func
 
 table_bp = Blueprint('table', __name__)
 
@@ -17,6 +18,19 @@ def get_lead_details_from_db(lead_id):
     """
     lead = Lead.query.get(lead_id)
     return lead
+
+@table_bp.route('/get_moverref_data')
+def get_moverref_data():
+    from app import db
+    from models.lead import Lead
+    # Aggregate data by moverref and count leads for each moverref
+    results = db.session.query(Lead.moverref, func.count(Lead.id)).group_by(Lead.moverref).filter(Lead.moverref.isnot(None)).all()
+
+    # Convert results into a dictionary format for JSON
+    data = {result[0]: result[1] for result in results}
+
+    return jsonify(data)
+
 
 
 @table_bp.route('/table')

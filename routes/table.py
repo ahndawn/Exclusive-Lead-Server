@@ -188,7 +188,7 @@ def send_to_gronat_route():
 def update_movedte():
     from app import db
     lead_id = request.form['lead_id']
-    new_movedte = request.form['new_movedte']
+    new_movedte = request.form['new_value']
 
     lead = get_lead_details_from_db(lead_id)
     if not lead:

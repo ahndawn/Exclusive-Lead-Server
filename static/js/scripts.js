@@ -46,6 +46,7 @@ function showTitle(element) {
     else if (document.getElementById("notes-checkbox").checked) filterCriteria = "notes";
     else if (document.getElementById("gronat-checkbox").checked) filterCriteria = "sent_to_gronat";
     else if (document.getElementById("sheets-checkbox").checked) filterCriteria = "sent_to_sheets";
+    else if (document.getElementById("moverref-checkbox").checked) filterCriteria = "moverref";
 
     // Redirect with the filter criteria and input as parameters
     var url = `/table?filter=${filterCriteria}&filter_value=${input}`;

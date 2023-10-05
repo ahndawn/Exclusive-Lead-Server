@@ -76,6 +76,7 @@ def show_table():
         'notes': Lead.notes,
         'sent_to_gronat': Lead.sent_to_gronat,
         'sent_to_sheets': Lead.sent_to_sheets,
+        'moverref': Lead.moverref,
     }
 
     column_attribute = filter_columns.get(filter_by)

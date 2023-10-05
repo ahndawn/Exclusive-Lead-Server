@@ -79,11 +79,14 @@ def add_data():
             moverref = domain_settings.moverref
 
        #change posting key if bedroom size is 3 or larger
-        if not any(size in movesize for size in ['1', '2', 'studio', 'Studio']) and change_moverref == True:
-            moverref = 'customerservice@safeshipmoving.com'
+        # Check if the label is 'Crispx' and assign the moverref from domain_settings
         if label == 'Crispx':
             moverref = domain_settings.moverref
+        # Check if movesize is greater than 2 and change_moverref is True
+        elif not any(size in movesize for size in ['1', '2', 'studio', 'Studio']) and change_moverref:
+            moverref = 'customerservice@safeshipmoving.com'
         else:
+            # If neither of the above conditions are met, get the next moverref
             moverref = get_next_moverref()
         print(f'Posting key for {label} is: {moverref}')
 

@@ -105,7 +105,7 @@ def show_table():
         data = filtered_data
     else:
     # Pagination
-        per_page = 15
+        per_page = 25
         start = (page - 1) * per_page
         end = start + per_page
         data = filtered_data[start:end]

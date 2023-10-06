@@ -271,44 +271,48 @@ def send_to_gronat(label, moverref, first_name, email, phone_number, ozip, dzip,
 
 
 ############################# send to google sheets
-def send_to_sheets(timestamp,first_name,ozip,dzip,dcity,dstate,data,ref_no,validation,label, phone_number,lead_cost, icid):
+def send_to_sheets(timestamp,first_name,ozip,dzip,dcity,dstate,data,ref_no,validation,label, phone_number,lead_cost, icid, sheet_id):
     spreadsheet_config = spreadsheet_ids_and_ranges.get(label)
-    if spreadsheet_config:
-        values_to_append = [
-            timestamp,
-            first_name,
-            ozip,
-            dzip,
-            dcity,
-            dstate,
-            data.get('movesize'),
-            data.get('movedte'),
-            ref_no,
-            validation,
-            icid
-        ]
-        # Append phone_number and lead_cost together for specific labels
-        if label in ['IQ Media', 'Spot Tower', 'Top10', 'ConAdsP1', 'ConAds EX', 'Interstate EX', 'Special EX']:
-            values_to_append.extend([phone_number, str(lead_cost)])
-        else:
-            values_to_append.append(str(lead_cost))   
+    if not spreadsheet_config:
+        print(f"No spreadsheet config found for label: {label}. Using default range.")
+        sheet_range = 'Sheet1!A2'
+    else:
+        sheet_range = spreadsheet_config['range']
+    values_to_append = [
+        timestamp,
+        first_name,
+        ozip,
+        dzip,
+        dcity,
+        dstate,
+        data.get('movesize'),
+        data.get('movedte'),
+        ref_no,
+        validation,
+        icid,
+        phone_number,
+        lead_cost
+    ]
+    if label in ['Savvy', 'Crispx', 'Conads']:
+        phone_number_index = values_to_append.index(phone_number)  # Find the index of phone_number
+        values_to_append.pop(phone_number_index)
 
-        body = {'values': [values_to_append]}
+    body = {'values': [values_to_append]}
         # check domain setting (1 = checked box in settings)
-        try:
-            service = build('sheets', 'v4', credentials=creds)
-            result = service.spreadsheets().values().append(
-                spreadsheetId=spreadsheet_config['spreadsheet_id'],
-                range=spreadsheet_config['range'],
-                valueInputOption='RAW',
-                insertDataOption='INSERT_ROWS',
-                body=body
-            ).execute()  
-            print('SUCCESS: Google Sheets')
-            return True
-        except HttpError as error: 
-            print('FAILED POST to Google Sheets: ', error._get_reason())
-            return False
+    try:
+        service = build('sheets', 'v4', credentials=creds)
+        result = service.spreadsheets().values().append(
+            spreadsheetId=sheet_id,
+            range=sheet_range,
+            valueInputOption='RAW',
+            insertDataOption='INSERT_ROWS',
+            body=body
+        ).execute()  
+        print('SUCCESS: Google Sheets')
+        return True
+    except HttpError as error: 
+        print('FAILED POST to Google Sheets: ', error._get_reason())
+        return False
 
 
 ##################### Get Moverref (Lead Distribution Settings)

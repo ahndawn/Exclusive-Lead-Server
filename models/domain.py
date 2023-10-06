@@ -9,6 +9,7 @@ class Domain(db.Model):
     send_to_google_sheet = db.Column(db.Integer, nullable=True)
     twilio_number_validation = db.Column(db.Integer, nullable=True)
     sms_texting = db.Column(db.Integer, nullable=True)
+    sheet_id = db.Column(db.String, nullable=True)
     lead_cost = db.Column(db.String, nullable=True)
     change_moverref = db.Column(db.Boolean, nullable=True, default=False)
     moverref = db.Column(db.String, nullable=True) 

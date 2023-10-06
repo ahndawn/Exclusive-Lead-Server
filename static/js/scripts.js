@@ -73,6 +73,7 @@ $(".settings-button").click(function() {
         $("#leadCostInput").val(domainInfo.lead_cost);
         $("#domainInput").val(domainInfo.domain);
         $("#phoneInput").val(domainInfo.d_phone_number);
+        $("#sheetInput").val(domainInfo.sheet_id);
         $("#sendToLeadsAPI").prop('checked', domainInfo.send_to_leads_api == "1");
         $("#sendToGoogleSheet").prop('checked', domainInfo.send_to_google_sheet == "1");
         $("#twilioNumberValidation").prop('checked', domainInfo.twilio_number_validation == "1");
@@ -91,6 +92,7 @@ $("#settingsForm").submit(function(event) {
     var label = $("#labelInput").val();
     var domain = $("#domainInput").val();
     var phone = $("#phoneInput").val();
+    var sheet_id = $("#sheetInput").val();
     var sendToLeadsAPI = $("#sendToLeadsAPI").is(':checked');
     var sendToGoogleSheet = $("#sendToGoogleSheet").is(':checked');
     var twilioNumberValidation = $("#twilioNumberValidation").is(':checked');
@@ -108,6 +110,7 @@ $("#settingsForm").submit(function(event) {
             label: label,
             domain: domain,
             phone_number: phone,
+            sheet_id: sheet_id,
             send_to_leads_api: sendToLeadsAPI ? "1" : "0",
             send_to_google_sheet: sendToGoogleSheet ? "1" : "0",
             twilio_number_validation: twilioNumberValidation ? "1" : "0",

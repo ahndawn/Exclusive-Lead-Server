@@ -77,8 +77,9 @@ def add_data():
             change_moverref = domain_settings.change_moverref
             lead_cost = domain_settings.lead_cost
             moverref = domain_settings.moverref
+            sheet_id = domain_settings.sheet_id
 
-       #change posting key if bedroom size is 3 or larger
+       
         # Check if the label is 'Crispx' and assign the moverref from domain_settings
         if label == 'Crispx':
             moverref = domain_settings.moverref
@@ -125,7 +126,7 @@ def add_data():
         sent_to_sheets='0'
         if send_to_google_sheet == 1:
             lead_cost = domain_settings.lead_cost if domain_settings else "110"
-            sent_to_sheets_success=send_to_sheets(timestamp,first_name,ozip,dzip,dcity,dstate,data,ref_no,validation,label, phone_number, lead_cost, icid)
+            sent_to_sheets_success=send_to_sheets(timestamp,first_name,ozip,dzip,dcity,dstate,data,ref_no,validation,label, phone_number, lead_cost, icid, sheet_id)
             if sent_to_sheets_success:
                 sent_to_sheets='1'
         

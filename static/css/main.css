@@ -453,7 +453,7 @@ nav {
     text-decoration: none;
     cursor: pointer;
   }
-
+  
   .send-to-gronat-btn{
     background: rgb(48, 134, 49);
     color:white; 
@@ -466,6 +466,13 @@ nav {
     text-shadow: black 2px 2px 2px;
     background: rgb(33, 82, 33);
 }
+
+.rangeInput:hover{
+  font-weight: bold;
+  color: #1148b8;
+  cursor: pointer;
+}
+
 
 
   .dropdown {
@@ -481,6 +488,7 @@ nav {
     z-index: 1;
     width: 220px
   }
+  
   
   .dropdown-content a {
     color: white;

@@ -62,7 +62,7 @@ def add_data():
             #automatically turn on all settings if label of a domain is not found in database
             print(f"No domain settings found for label: {label}")
             send_to_leads_api = 1
-            send_to_google_sheet = 1
+            send_to_google_sheet = 0
             moverref = data.get('moverref') or 'chris@safeshipmoving.com'
             twilio_number_validation = 1
             sms_texting = 1
@@ -78,6 +78,7 @@ def add_data():
             lead_cost = domain_settings.lead_cost
             moverref = domain_settings.moverref
             sheet_id = domain_settings.sheet_id
+            sheet_range = domain_settings.sheet_range
 
        
         # Check if the label is 'Crispx' and assign the moverref from domain_settings
@@ -126,7 +127,7 @@ def add_data():
         sent_to_sheets='0'
         if send_to_google_sheet == 1:
             lead_cost = domain_settings.lead_cost if domain_settings else "110"
-            sent_to_sheets_success=send_to_sheets(timestamp,first_name,ozip,dzip,dcity,dstate,data,ref_no,validation,label, phone_number, lead_cost, icid, sheet_id)
+            sent_to_sheets_success=send_to_sheets(timestamp,first_name,ozip,dzip,dcity,dstate,data,ref_no,validation,label, phone_number, lead_cost, icid, sheet_id, sheet_range)
             if sent_to_sheets_success:
                 sent_to_sheets='1'
         

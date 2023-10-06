@@ -167,6 +167,7 @@ spreadsheet_ids_and_ranges = {
     'Top10': {'spreadsheet_id': '12uCFTYzn9WydVZInVaZpTZKg7N3Rz65x4rsbjjqnIAk', 'range': 'LeadFlow!A2'},
     'ConAdsP1': {'spreadsheet_id': '1UpcqT5qzqNv7u1e0Q-DY7mqke6sqYm5WM_Qdr6rDGJ4', 'range': 'Sheet1!A2'},
     'ConAds EX': {'spreadsheet_id': '1UpcqT5qzqNv7u1e0Q-DY7mqke6sqYm5WM_Qdr6rDGJ4', 'range': 'Sheet2!A2'},
+    'IQ Media AA': {'spreadsheet_id': '1RUYZ9aONYGEq26POCF0JGNjiZ1GsBzRHIs1h3BbZq5A', 'range': 'AA!A2'},
 }
 
 ##################################################################
@@ -271,13 +272,10 @@ def send_to_gronat(label, moverref, first_name, email, phone_number, ozip, dzip,
 
 
 ############################# send to google sheets
-def send_to_sheets(timestamp,first_name,ozip,dzip,dcity,dstate,data,ref_no,validation,label, phone_number,lead_cost, icid, sheet_id):
-    spreadsheet_config = spreadsheet_ids_and_ranges.get(label)
-    if not spreadsheet_config:
-        print(f"No spreadsheet config found for label: {label}. Using default range.")
+def send_to_sheets(timestamp,first_name,ozip,dzip,dcity,dstate,data,ref_no,validation,label, phone_number,lead_cost, icid, sheet_id, sheet_range):
+    if sheet_range == '':
+        print(f"No spreadsheet settings found for label: {label}. Using default range.")
         sheet_range = 'Sheet1!A2'
-    else:
-        sheet_range = spreadsheet_config['range']
     values_to_append = [
         timestamp,
         first_name,

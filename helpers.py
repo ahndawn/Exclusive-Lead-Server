@@ -344,3 +344,67 @@ def get_next_moverref():
     db.session.commit()
 
     return next_name
+
+#########################LOCAL LEAD INSERTION
+def insert_local_into_db(label, data, sent_to_gronat, sent_to_sheets, validation, movesize, movedte, icid, moverref):
+    from app import db
+    from models.locallead import LocalLead
+    try:
+        # Check for duplicate data
+        existing_data = LocalLead.query.filter_by(
+            firstname=data.get('firstname'),
+            email=data.get('email'),
+            phone1=data.get('phone1')
+        ).first()
+        if existing_data:
+            print('Existing data, skipping...')
+            return jsonify({"message": "Duplicate data found in the database. Skipping insertion."}), 201
+        
+        # if form post request has start/end state/city or not
+        dcity = data.get('dcity', '')
+        dstate = data.get('dstate', '')
+        dzip = data.get('dzip', '')
+        # Validate ref_no, it must not be an empty string
+        ref_no = data.get('ref_no')
+        if not ref_no or ref_no.strip() == '':
+            print("Invalid ref_no, ref_no cannot be an empty string.")
+            return jsonify({"message": "Invalid ref_no. ref_no cannot be an empty string."}), 400
+        ref_no = unquote(ref_no)
+        
+        timezone = pytz.timezone('America/New_York')
+        current_datetime = datetime.now(timezone)
+        timestamp = current_datetime.strftime('%Y-%m-%d')
+        
+        # Insert the data into the database
+        lead = LocalLead(
+            label=label,
+            timestamp=timestamp,
+            firstname=data.get('firstname'),
+            email=data.get('email'),
+            phone1=data.get('phone1'),
+            ozip=data.get('ozip'),
+            dzip=dzip,
+            dcity=dcity,
+            dstate=dstate,
+            movesize=movesize,
+            movedte=movedte,
+            conversion=ref_no,
+            validation=validation,
+            notes=icid,
+            sent_to_gronat=sent_to_gronat,
+            sent_to_sheets=sent_to_sheets,
+            moverref=moverref
+        )
+        
+        db.session.add(lead)
+        db.session.commit()
+
+        print('SUCCESSFUL POST: Heroku')
+        return True  # Return True if insertion was successful
+    
+    except IntegrityError:
+        db.session.rollback()
+        print('Error: Duplicate data in lead table.')
+    except Exception as e:
+        print(f"FAILED to insert data into the database: {e}")
+        return False  # Return False if insertion failed.

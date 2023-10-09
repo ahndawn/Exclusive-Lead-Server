@@ -1,0 +1,221 @@
+{% extends 'home.html' %}
+
+{% block content %}
+<script>
+    $(document).ready(function() {
+        $(".editable-cell").click(function() {
+        if ($(this).find('input').length > 0) {
+            return;  // If the cell is already being edited, don't recreate the input and save button
+        }
+        var originalContent = $(this).text();
+        $(this).html('<input type="text" value="' + originalContent + '"><button class="save-btn">Save</button>');
+        $(this).find('input').first().focus();
+    });
+
+    $(".editable-cell").on('click', '.save-btn', function() {
+    var inputElem = $(this).siblings('input');
+    var newValue = inputElem.val();
+    var cell = $(this).parent();
+    var leadId = cell.attr("data-id");
+
+    var updateUrl;
+    if (cell.index() === 10) {
+        updateUrl = '/update_movedte';
+    } else if (cell.index() === 16) { 
+        updateUrl = '/update_moverref';
+    } else {
+        return;  // Unsupported column, exit
+    }
+
+    // AJAX call to update the value
+    $.ajax({
+        url: updateUrl,
+        method: 'POST',
+        data: {
+            'lead_id': leadId,
+            'new_value': newValue  // Generic key for new value
+        },
+        success: function(response) {
+            if (response.success) {
+                location.reload();
+            } else {
+                alert(response.message || "Error updating value.");
+                cell.text(originalContent); // Revert to the original value
+            }
+        },
+        error: function() {
+            alert("An error occurred. Please try again later.");
+            cell.text(originalContent); // Revert to the original value
+        }
+        });
+    });
+});
+
+$(document).ready(function() {
+// send to gronat button
+$(".send-to-gronat-btn").click(function(event) {
+event.preventDefault();
+
+var btn = $(this);
+btn.text('Sending...');
+
+var leadId = btn.prev('input[name="lead_id"]').val();
+
+$.ajax({
+    url: '/send_to_gronat',
+    method: 'POST',
+    data: { lead_id: leadId },
+    success: function(response) {
+        if (response.success) {
+            btn.parent().css('color', 'green').text('Sent');
+            btn.remove();
+        } else {
+            btn.text('Send to GRONAT');
+            alert("Failed to send lead to Gronat. Please try again.");
+        }
+    },
+    error: function() {
+        btn.text('Send to GRONAT');
+        alert("An error occurred. Please try again later.");
+    }
+});
+});
+});
+</script>
+<div class="head">
+<h1 style="text-align: center; color:white" >Local Leads</h1>
+{% with messages = get_flashed_messages() %}
+    {% if messages %}
+      <ul class="messages">
+        {% for message in messages %}
+          {% if 'success' in message %}
+            <li class="success-message">{{ message }}</li>
+          {% else %}
+            <li>{{ message }}</li>
+          {% endif %}
+        {% endfor %}
+      </ul>
+    {% endif %}
+  {% endwith %}
+
+<!-- Search Bar -->
+<div class="search-area">
+    <div class="search-bar">
+        <input type="text" id="search-input" placeholder="Search..." style="height:30px; background-color: rgb(197, 197, 197); border-radius: 4px; border: none">
+        <button onclick="toggleFilterOptions()" class="filter" style="background-color: rgb(48, 134, 49);" ><i class="fa-solid fa-filter"></i> Filter</button>
+        <button onclick="filterTable()" class="filter"><i class="fa-solid fa-magnifying-glass"></i> Search</button>
+    </div>
+    <div id="filter-options" class="filter-options" style="display:none">
+        <label><input type="checkbox" id="all-checkbox"> All</label>
+        <label><input type="checkbox" id="duplicate-checkbox"> Filter Duplicates</label>
+        <hr>
+        <label><input type="checkbox" id="label-checkbox"> Label</label>
+        <label><input type="checkbox" id="timestamp-checkbox"> Timestamp</label>
+        <label><input type="checkbox" id="firstname-checkbox"> Name</label>
+        <label><input type="checkbox" id="email-checkbox"> Email</label>
+        <label><input type="checkbox" id="phone-checkbox"> Phone</label>
+        <label><input type="checkbox" id="ozip-checkbox"> Origin ZIP</label>
+        <label><input type="checkbox" id="dzip-checkbox"> Destination ZIP</label>
+        <label><input type="checkbox" id="dcity-checkbox"> Destination City</label>
+        <label><input type="checkbox" id="dstate-checkbox"> Destination State</label>
+        <label><input type="checkbox" id="movesize-checkbox"> Move Size</label>
+        <label><input type="checkbox" id="movedate-checkbox"> Move Date</label>
+        <label><input type="checkbox" id="conversion-checkbox"> Conversion</label>
+        <label><input type="checkbox" id="validation-checkbox"> Validation</label>
+        <label><input type="checkbox" id="notes-checkbox"> Notes</label>
+        <label><input type="checkbox" id="gronat-checkbox"> Sent to Gronat</label>
+        <label><input type="checkbox" id="sheets-checkbox"> Sent to Sheets</label>
+        <label><input type="checkbox" id="moverref-checkbox"> Department</label>
+    </div>
+</div>
+</div>
+
+<div class="table-wrapper">
+<div class="table-scroll">
+    <table>
+        <thead>
+            <tr style="text-align: center;">
+                <th>Label</th>
+                <th>Timestamp</th>
+                <th>First Name</th>
+                <th>Email <i class="fa-solid fa-circle-question" title="Duplicates are highlighted" style="cursor:pointer"></i></th>
+                <th>Phone <i class="fa-solid fa-circle-question" title="Duplicates are highlighted" style="cursor:pointer"></i></th>
+                <th>Origin ZIP</th>
+                <th>Destination ZIP</th>
+                <th>Destination City</th>
+                <th>Destination State</th>
+                <th>Move Size</th>
+                <th>Move Date</th>
+                <th>Conversion</th>
+                <th>Validation <i class="fa-solid fa-circle-question" title="-1 = No Validation check. 1 = Valid. 0 = Invalid" style="cursor:pointer"></i></th>
+                <th>Notes</th>
+                <th>GRONAT <i class="fa-solid fa-circle-question" title="O = Not Sent. 1 = Sent" style="cursor:pointer"></i></th>
+                <th>Sheets <i class="fa-solid fa-circle-question" title="O = Not Sent. 1 = Sent" style="cursor:pointer"></i></th>
+                <th>Department</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for row in data %}
+                <tr>
+                    <td>{{ row.label }}</td>
+                    <td>{{ row.timestamp }}</td>
+                    <td>{{ row.firstname }}</td>
+                    <td>{{ row.email }}</td>
+                    <td>{{ row.phone1 }}</td>
+                    <td>{{ row.ozip }}</td>
+                    <td>{{ row.dzip }}</td>
+                    <td>{{ row.dcity }}</td>
+                    <td>{{ row.dstate }}</td>
+                    <td>{{ row.movesize }}</td>
+                    <td class="editable-cell" data-id="{{ row.id }}">{{ row.movedte }}</td>
+                    <td>{{ row.conversion }}</td>
+                    <td {% if row.validation == '0' %}style="color: rgb(216, 0, 0);"{% elif row.validation == '-1' %}style="color: rgb(150, 150, 150);"{% elif row.validation == '1' %}style="color: green;"{% endif %}>{{ row.validation }}</td>
+                    <td>{{ row.notes }}</td>
+                    <td {% if row.sent_to_gronat == '0' %}style="color: rgb(216, 0, 0);"{% elif row.sent_to_gronat == '1' %}style="color: green;"{% endif %}>
+                        {{ row.sent_to_gronat }}
+                        {% if row.sent_to_gronat == '0' %}
+                            <form action="/send_local_gronat" method="post">
+                                <input type="hidden" name="lead_id" value="{{ row.id }}">
+                                <button type="submit" class="send-to-gronat-btn" id="sendToGronatButton" onclick="this.innerHTML='Sending...';">Send to GRONAT</button>
+                            </form>
+                        {% endif %}
+                    </td>
+                    <td {% if row.sent_to_sheets == '0' %}style="color: rgb(216, 0, 0);"{% elif row.sent_to_sheets == '1' %}style="color: green;"{% endif %}>{{ row.sent_to_sheets }}</td>
+                    <td class="editable-cell" data-id="{{ row.id }}">{{ row.moverref }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+            
+
+<!-- <div class="status-bar">
+
+</div> -->
+<!-- Pagination Controls -->
+{% if show_pagination %}
+    <div id="pagination">
+        <div class="pagination">
+            {% if page > 1 %}
+                <a href="{{ url_for('table.show_table', page=page-1, filter=filter_by) }}" class="pagination-btn"><b>&#171;</b> Previous</a>
+            {% endif %}
+
+            <span style="font-size: small;" class="pagination-info">Page {{ page }} of {{ total_pages }}</span>
+
+            {% if page < total_pages %}
+                <a href="{{ url_for('table.show_table', page=page+1, filter=filter_by) }}" class="pagination-btn">Next <b>&#187;</b></a>
+            {% endif %}
+
+            {% if end_page > 2 %}
+                {% if page < total_pages %}
+                    <span class="pagination-info">. . .</span>
+                    <a href="{{ url_for('table.show_table', page=total_pages, filter=filter_by) }}" class="pagination-btn">Last ({{ total_pages }})</a>
+                {% endif %}
+            {% endif %}
+            <button onclick="showAllEntries()" class="filter">Show All Entries</button>
+        </div>
+        
+    </div>
+    <br>
+{% endif %}
+{% endblock %}

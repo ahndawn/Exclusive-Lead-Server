@@ -105,7 +105,7 @@ def calculate_volume(movesize):
 #################################################################
 def format_phone_number(phone_number):
     # Remove all non-numeric characters
-    phone_number = ''.join(filter(str.isdigit, phone_number))
+    phone_number = ''.join(filter(str.isdigit, str(phone_number)))
 
     # Check if phone number has the correct length for international format
     if len(phone_number) < 10 or len(phone_number) > 12:

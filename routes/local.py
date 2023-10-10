@@ -40,11 +40,9 @@ def add_local():
         movesize = data.get('movesize')
         first_name = data.get('firstname')
         # Validate ref_no, it must not be an empty string
-        ref_no = data.get('ref_no')
-        if not ref_no or ref_no.strip() == '':
-            print("Invalid ref_no, ref_no cannot be an empty string.")
-            return jsonify({"message": "Invalid ref_no. ref_no cannot be an empty string."}), 400
-        ref_no = unquote(ref_no)
+        ref_no = data.get('ref_no', '').strip()
+        if ref_no:
+            ref_no = unquote(ref_no)
         if not email or not phone_number or not first_name:
             print("PHONE, EMAIL, AND NAME ARE REQUIRED. SKIPPING INSERTION")
             return jsonify({"message": "Email, phone number, and name are required."}), 400 

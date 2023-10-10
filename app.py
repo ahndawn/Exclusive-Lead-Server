@@ -8,6 +8,7 @@ from routes.home import app_bp
 from routes.moverref import moverref_bp
 from routes.domains import domain_bp
 from routes.table import table_bp
+from routes.local import local_bp
 from helpers import database_url
 
 # Load environment variables from .env file. Information on .env found in docs/herokuDeployment.md
@@ -38,6 +39,7 @@ login_manager.login_view = 'auth.login'
 app.register_blueprint(auth_bp)
 app.register_blueprint(app_bp)
 app.register_blueprint(domain_bp)
+app.register_blueprint(local_bp)
 app.register_blueprint(table_bp)
 app.register_blueprint(moverref_bp)
 db.init_app(app)

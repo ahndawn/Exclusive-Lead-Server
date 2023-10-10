@@ -6,20 +6,14 @@ from helpers import client, send_message, format_phone_number, format_move_date,
 from datetime import datetime
 import pytz
 
+local_bp = Blueprint('local', __name__)
 
-app_bp = Blueprint('app', __name__)
-
-@app_bp.route('/home', methods=['GET', 'POST'])
-def home():
-    return render_template('home.html', current_user=current_user)
-    
-    
-@app_bp.route('/', methods=['GET', 'POST'])
-def add_data():
+@local_bp.route('/local', methods=['GET', 'POST'])
+def add_local():
     from app import db
     from models.domain import Domain
     from models.processed_data import ProcessedData
-    from helpers import insert_data_into_db
+    from helpers import insert_local_into_db
     if request.method == 'POST':
         data = request.get_json()
         print(f"--------> INCOMING: {data}")
@@ -46,10 +40,11 @@ def add_data():
         movesize = data.get('movesize')
         first_name = data.get('firstname')
         # Validate ref_no, it must not be an empty string
-        ref_no = data.get('ref_no', '').strip()
-        if ref_no:
-            ref_no = unquote(ref_no)
-
+        ref_no = data.get('ref_no')
+        if not ref_no or ref_no.strip() == '':
+            print("Invalid ref_no, ref_no cannot be an empty string.")
+            return jsonify({"message": "Invalid ref_no. ref_no cannot be an empty string."}), 400
+        ref_no = unquote(ref_no)
         if not email or not phone_number or not first_name:
             print("PHONE, EMAIL, AND NAME ARE REQUIRED. SKIPPING INSERTION")
             return jsonify({"message": "Email, phone number, and name are required."}), 400 
@@ -84,8 +79,8 @@ def add_data():
         if label == 'Crispx':
             moverref = domain_settings.moverref
         # Check if movesize is greater than 2 and change_moverref is True
-        elif not any(size in movesize for size in ['1', '2', 'studio', 'Studio']) and change_moverref:
-            moverref = 'customerservice@safeshipmoving.com'
+        # elif not any(size in movesize for size in ['1', '2', 'studio', 'Studio']) and change_moverref:
+        #     moverref = 'customerservice@safeshipmoving.com'
         else:
             # If neither of the above conditions are met, get the next moverref
             moverref = get_next_moverref()
@@ -116,10 +111,10 @@ def add_data():
                 print(f"Phone number is invalid: {phone_number}")
                 # change value in table to '0' if number is invalid
                 validation = '0'
-            if sms_texting == 1 and validation == '1':
-                success = send_message(first_name, phone_number)
-                if not success:
-                    print(f"Failed to send sms to {phone_number}")
+            # if sms_texting == 1 and validation == '1':
+            #     success = send_message(first_name, phone_number)
+            #     if not success:
+            #         print(f"Failed to send sms to {phone_number}")
         
         ############################## Send to sheets
         # default value '0' if not sent to sheet, '1' if sent. use spreadsheet_config dictionary
@@ -131,14 +126,13 @@ def add_data():
                 sent_to_sheets='1'
         
         ############################### Insert the data into the database
-        db_insertion_success = insert_data_into_db(label, data, sent_to_gronat, sent_to_sheets, validation, movesize, movedte, icid, moverref)
+        db_insertion_success = insert_local_into_db(label, data, sent_to_gronat, sent_to_sheets, validation, movesize, movedte, icid, moverref)
     
         if db_insertion_success:
             session['submitted'] = True
             print("END <--------")
             return jsonify({"message": "Data sent to Heroku successfully."}), 200
             
-        
         if not db_insertion_success and sent_to_gronat == '0':
             print("Database insertion failed. Sending data to the leads API...")
             send_to_gronat(label, moverref, first_name, email, phone_number, ozip, dzip, dcity, dstate, data, movedte, send_to_leads_api, sent_to_gronat, icid)

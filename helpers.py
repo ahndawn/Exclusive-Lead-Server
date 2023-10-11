@@ -296,7 +296,7 @@ def send_to_gronat(label, moverref, first_name, email, phone_number, ozip, dzip,
         'movesize': data.get('movesize'),
         'movedte': movedte,
         'leadno': str(icid),
-        'notes': 'ICID: ' + icid,
+        'notes': 'ICID: ' + str(icid),
         'volume': calculate_volume(data.get('movesize'))
     })
 

@@ -69,6 +69,51 @@ def send_email(label,dzip,dcity,dstate,ref_no, email, data, movedte, ozip, phone
             print("SUCCESS: Email")
     except Exception as e:
         print(f"FAILED to send email: {e}")
+#####################local email
+def send_local_email(label,dzip,dcity,dstate,ref_no, email, data, movedte, ozip, phone_number, first_name, icid):
+    # Construct the email message
+    subject = f"New Local {str(label)} Lead"
+    from_email = "quoteform@safeship-moving.com"
+    to_email = "admin@safeshipmoving.com, ahni@safeshipmoving.com"
+     # Determine the destination value
+    destination = dzip if dzip else f'{dcity}, {dstate}'
+
+    if label == 'Crispx':
+        indicator = f'GCLID {ref_no}\n                       ICID: {icid}'
+    else:
+        indicator = f'ICID {icid}'
+
+    msg = MIMEMultipart()
+    msg['From'] = from_email
+    msg['To'] = to_email
+    msg['Subject'] = subject
+
+    # Format the email body
+    email_body = f"""
+        <{email}>
+        Name: {first_name}
+        Phone: {phone_number}
+        Pickup Zip: {ozip}
+        Destination: {destination}
+        Move Size: {data.get('movesize')}
+        Move Date: {movedte}
+        Notes: {indicator}
+        Conversion ID: (ref_no) {ref_no}
+        Conversion Time: {datetime.now().strftime('%m/%d/%Y %I:%M:%S %p')}
+    """
+    msg.attach(MIMEText(email_body, 'plain'))
+
+    # Send the email
+    try:
+        with smtplib.SMTP('smtp-relay.gmail.com', 587) as server:
+            server.ehlo()
+            server.starttls()
+            server.ehlo()
+            server.login('chris@safeshipmoving.com', 'xayfbkehwpiwujly')
+            server.sendmail(from_email, to_email.split(','), msg.as_string())
+            print("SUCCESS: Email")
+    except Exception as e:
+        print(f"FAILED to send email: {e}")
 ###########################    format date
 def format_move_date(movedate):
     formats = ['%m/%d/%Y', '%Y-%m-%d', '%d-%m-%Y', '%d/%m/%Y', '%Y.%m.%d', '%d%m%y']
@@ -191,11 +236,7 @@ def insert_data_into_db(label, data, sent_to_gronat, sent_to_sheets, validation,
         dstate = data.get('dstate', '')
         dzip = data.get('dzip', '')
         # Validate ref_no, it must not be an empty string
-        ref_no = data.get('ref_no')
-        if not ref_no or ref_no.strip() == '':
-            print("Invalid ref_no, ref_no cannot be an empty string.")
-            return jsonify({"message": "Invalid ref_no. ref_no cannot be an empty string."}), 400
-        ref_no = unquote(ref_no)
+        ref_no = data.get('ref_no','')
         
         timezone = pytz.timezone('America/New_York')
         current_datetime = datetime.now(timezone)
@@ -365,11 +406,7 @@ def insert_local_into_db(label, data, sent_to_gronat, sent_to_sheets, validation
         dstate = data.get('dstate', '')
         dzip = data.get('dzip', '')
         # Validate ref_no, it must not be an empty string
-        ref_no = data.get('ref_no')
-        if not ref_no or ref_no.strip() == '':
-            print("Invalid ref_no, ref_no cannot be an empty string.")
-            return jsonify({"message": "Invalid ref_no. ref_no cannot be an empty string."}), 400
-        ref_no = unquote(ref_no)
+        ref_no = data.get('ref_no','')
         
         timezone = pytz.timezone('America/New_York')
         current_datetime = datetime.now(timezone)

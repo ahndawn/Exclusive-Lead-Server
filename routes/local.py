@@ -2,7 +2,7 @@
 from flask import Blueprint, render_template, request, jsonify, render_template, session
 from flask_login import current_user
 from urllib.parse import unquote
-from helpers import client, send_message, format_phone_number, format_move_date, send_email, send_to_gronat, send_to_sheets, get_next_moverref
+from helpers import client, send_message, format_phone_number, format_move_date, send_local_email, send_to_gronat, send_to_sheets, get_next_moverref
 from datetime import datetime
 import pytz
 
@@ -84,7 +84,6 @@ def add_local():
             moverref = get_next_moverref()
         print(f'Posting key for {label} is: {moverref}')
 
-        
         #############send to gronat function from helpers.py
         sent_gronat_success = send_to_gronat(label, moverref, first_name, email, phone_number, ozip, dzip, dcity, dstate, data, movedte, send_to_leads_api, icid)
         if sent_gronat_success:
@@ -93,7 +92,7 @@ def add_local():
             sent_to_gronat = '0'
 
         ################send to email function from helpers.py
-        send_email(label,dzip,dcity,dstate,ref_no, email, data, movedte, ozip, phone_number, first_name, icid)
+        send_local_email(label,dzip,dcity,dstate,ref_no, email, data, movedte, ozip, phone_number, first_name, icid)
         
         ################## TWILIO
         # default value if validation is not ran '-1'

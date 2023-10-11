@@ -4,7 +4,8 @@ from flask_login import login_required, current_user
 from helpers import creds
 from googleapiclient.discovery import build
 from operator import attrgetter
-from sqlalchemy import func
+from sqlalchemy import cast, Date
+from datetime import datetime
 
 table_bp = Blueprint('table', __name__)
 
@@ -29,17 +30,36 @@ def get_local_details_from_db(lead_id):
     """
     lead = LocalLead.query.get(lead_id)
     return lead
+
 @table_bp.route('/get_moverref_data')
 def get_moverref_data():
     from app import db
     from models.lead import Lead
+    from sqlalchemy import func
+
+    # Extract start_date and end_date from request arguments
+    start_date = request.args.get('start_date')
+    end_date = request.args.get('end_date')
+
+    # If start_date and end_date are provided, format them for the query filter
+    if start_date and end_date:
+        start_date_obj = datetime.strptime(start_date, '%Y-%m-%d')
+        end_date_obj = datetime.strptime(end_date, '%Y-%m-%d')
+        leads_query = Lead.query.filter(cast(Lead.timestamp, Date).between(start_date_obj, end_date_obj))
+    else:
+        leads_query = Lead.query
+
     # Aggregate data by moverref and count leads for each moverref
-    results = db.session.query(Lead.moverref, func.count(Lead.id)).group_by(Lead.moverref).filter(Lead.moverref.isnot(None)).all()
+    results = (leads_query.with_entities(Lead.moverref, func.count(Lead.id))
+               .group_by(Lead.moverref)
+               .filter(Lead.moverref.isnot(None))
+               .all())
 
     # Convert results into a dictionary format for JSON
     data = {result[0]: result[1] for result in results}
 
     return jsonify(data)
+    
 
 @table_bp.route('/update_moverref', methods=['POST'])
 def update_moverref():

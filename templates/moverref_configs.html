@@ -1,7 +1,8 @@
 {% extends 'home.html' %}
 {% block content %}
 <script>
-    document.addEventListener("DOMContentLoaded", function() {
+document.addEventListener("DOMContentLoaded", function() {
+    var myChart;
 
 // Fetch data from the Flask route
 fetch("/get_moverref_data")
@@ -13,7 +14,7 @@ fetch("/get_moverref_data")
 
     // Create a bar chart
     var ctx = document.getElementById('moverrefChart').getContext('2d');
-    var myChart = new Chart(ctx, {
+    myChart = new Chart(ctx, {
         type: 'bar',
         data: {
             labels: moverrefs,
@@ -33,8 +34,39 @@ fetch("/get_moverref_data")
             }
         }
     });
-})
-.catch(error => console.error("There was an error loading the data", error));
+    document.getElementById("apply-date-filter").addEventListener("click", function() {
+            let startDate = document.getElementById("start-date").value;
+            let endDate = document.getElementById("end-date").value;
+            updateChart(startDate, endDate);
+        });
+
+        document.getElementById("show-today").addEventListener("click", function() {
+            let today = new Date().toISOString().split("T")[0];
+            updateChart(today, today);
+        });
+
+        document.getElementById("show-all-time").addEventListener("click", function() {
+            updateChart(null, null);
+        });
+
+    })
+    .catch(error => console.error("There was an error loading the data", error));
+
+    function updateChart(startDate, endDate) {
+        let url = "/get_moverref_data";
+        if(startDate && endDate) {
+            url += `?start_date=${startDate}&end_date=${endDate}`;
+        }
+
+        fetch(url)
+        .then(response => response.json())
+        .then(data => {
+            // Assuming you have a 'myChart' variable representing your chart:
+            myChart.data.labels = Object.keys(data);
+            myChart.data.datasets[0].data = Object.values(data);
+            myChart.update();
+        });
+    }
 
 });
 </script>
@@ -101,6 +133,17 @@ fetch("/get_moverref_data")
 
 <div style="background-color: #434343; padding-top: 10px; margin-top:50px">
     <h2 style="text-align: center; color: white; text-shadow: black 2px 2px 2px;">Department Metrics</h2>
+    <div style="margin-bottom: 20px; display: flex;">
+        <label for="start-date">Start Date: </label>
+        <input type="date" id="start-date">
+        
+        <label for="end-date" style="margin-left: 20px;">End Date: </label>
+        <input type="date" id="end-date">
+        
+        <button id="apply-date-filter" style="margin-left: 20px;">Apply Date Filter</button>
+        <button id="show-today" style="margin-left: 20px;">Today</button>
+        <button id="show-all-time" style="margin-left: 20px;">All Time</button>
+    </div>
     <!-- Chart for leads by department -->
     <canvas id="moverrefChart" width="200" height="80" style="background-color: white; padding-bottom: 20px;"></canvas>
 </div>

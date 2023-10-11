@@ -74,14 +74,7 @@ def add_local():
 
        
         # Check if the label is 'Crispx' and assign the moverref from domain_settings
-        if label == 'Crispx':
-            moverref = domain_settings.moverref
-        # Check if movesize is greater than 2 and change_moverref is True
-        # elif not any(size in movesize for size in ['1', '2', 'studio', 'Studio']) and change_moverref:
-        #     moverref = 'customerservice@safeshipmoving.com'
-        else:
-            # If neither of the above conditions are met, get the next moverref
-            moverref = get_next_moverref()
+        moverref ='ahni@safeshipmoving.com'
         print(f'Posting key for {label} is: {moverref}')
 
         #############send to gronat function from helpers.py

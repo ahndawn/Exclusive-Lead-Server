@@ -4,6 +4,12 @@ from flask_login import current_user
 from urllib.parse import unquote
 from helpers import client, send_message, format_phone_number, format_move_date, send_email, send_to_gronat, send_to_sheets, get_next_moverref
 from datetime import datetime
+import random
+import pytz
+import smtplib
+import random
+from email.mime.text import MIMEText
+from email.mime.multipart import MIMEMultipart
 import pytz
 
 
@@ -31,7 +37,9 @@ def add_data():
         dzip = data.get('dzip', '')
         email = data.get('email')
         label = data.get('label')
-        icid = data.get('notes')
+        
+        vault = list('ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789')
+        icid = ''.join(random.choice(vault) for _ in range(12))
 
         if label == "Spot Tower":
             icid = 'A-' + icid

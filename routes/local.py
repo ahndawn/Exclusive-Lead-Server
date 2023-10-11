@@ -2,7 +2,7 @@
 from flask import Blueprint, render_template, request, jsonify, render_template, session
 from flask_login import current_user
 from urllib.parse import unquote
-from helpers import client, send_message, format_phone_number, format_move_date, send_local_email, send_to_gronat, send_to_sheets, get_next_moverref
+from helpers import client, send_message, format_phone_number, format_move_date, send_local_email, send_to_gronat, send_to_local_sheets, get_next_moverref
 from datetime import datetime
 import pytz
 
@@ -26,7 +26,7 @@ def add_local():
         email = data.get('email')
         label = data.get('label')
         icid = data.get('notes')
-
+ 
         if label == "Spot Tower":
             icid = 'A-' + icid
         
@@ -111,7 +111,7 @@ def add_local():
         sent_to_sheets='0'
         if send_to_google_sheet == 1:
             lead_cost = domain_settings.lead_cost if domain_settings else "110"
-            sent_to_sheets_success=send_to_sheets(timestamp,first_name,ozip,dzip,dcity,dstate,data,ref_no,validation,label, phone_number, lead_cost, icid, sheet_id, sheet_range)
+            sent_to_sheets_success=send_to_local_sheets(timestamp,first_name,ozip,dzip,dcity,dstate,data,ref_no,validation,label, phone_number, lead_cost, icid)
             if sent_to_sheets_success:
                 sent_to_sheets='1'
         

@@ -37,7 +37,7 @@ def add_data():
         dzip = data.get('dzip', '')
         email = data.get('email')
         label = data.get('label')
-        
+
         vault = list('ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789')
         icid = ''.join(random.choice(vault) for _ in range(12))
 

@@ -353,6 +353,40 @@ def send_to_sheets(timestamp,first_name,ozip,dzip,dcity,dstate,data,ref_no,valid
         print('FAILED POST to Google Sheets: ', error._get_reason())
         return False
 
+################################################ send to local sheets
+def send_to_local_sheets(timestamp,first_name,ozip,dzip,dcity,dstate,data,ref_no,validation,label, phone_number,lead_cost, icid):
+    values_to_append = [
+        timestamp,
+        first_name,
+        ozip,
+        dzip,
+        dcity,
+        dstate,
+        data.get('movesize'),
+        data.get('movedte'),
+        ref_no,
+        validation,
+        icid,
+        phone_number,
+        lead_cost
+    ]
+    body = {'values': [values_to_append]}
+        # check domain setting (1 = checked box in settings)
+    try:
+        service = build('sheets', 'v4', credentials=creds)
+        result = service.spreadsheets().values().append(
+            spreadsheetId='1ljSd266fz-R3kI1BktOEaGLU2RDHi_564rdJJ6uFdUg',
+            range='topten!A2',
+            valueInputOption='RAW',
+            insertDataOption='INSERT_ROWS',
+            body=body
+        ).execute()  
+        print('SUCCESS: Google Sheets')
+        return True
+    except HttpError as error: 
+        print('FAILED POST to Google Sheets: ', error._get_reason())
+        return False
+
 
 ##################### Get Moverref (Lead Distribution Settings)
 def get_next_moverref():

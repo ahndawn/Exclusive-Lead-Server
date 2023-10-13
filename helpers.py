@@ -77,7 +77,8 @@ def email_to_dept(email):
         'rachel.s@safeshipmoving.com': 'TB',
         'chris@safeshipmoving.com': 'TC',
         'leads@safeshipmoving.com': 'SL',
-        'ahni@safeshipmoving.com': 'LL'
+        'ahni@safeshipmoving.com': 'LL',
+        'sales@safeshipmoving.com': 'EX'
     }
     return mapping.get(email, email)
 #####################local email

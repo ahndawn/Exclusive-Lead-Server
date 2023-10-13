@@ -1,7 +1,7 @@
 #some imports are used within each required route and function in order to avoid 'circular imports'
 from flask import Blueprint, render_template, request, jsonify, render_template, url_for, flash, redirect
 from flask_login import login_required, current_user
-from helpers import creds
+from helpers import email_to_dept
 from googleapiclient.discovery import build
 from operator import attrgetter
 from sqlalchemy import cast, Date
@@ -56,7 +56,7 @@ def get_moverref_data():
                .all())
 
     # Convert results into a dictionary format for JSON
-    data = {result[0]: result[1] for result in results}
+    data = {email_to_dept(result[0]): result[1] for result in results}
 
     return jsonify(data)
     

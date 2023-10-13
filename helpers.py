@@ -69,6 +69,17 @@ def send_email(label,dzip,dcity,dstate,ref_no, email, data, movedte, ozip, phone
             print("SUCCESS: Email")
     except Exception as e:
         print(f"FAILED to send email: {e}")
+
+################convert posting key to DEPT label
+def email_to_dept(email):
+    mapping = {
+        'customerservice@safeshipmoving.com': 'TA',
+        'rachel.s@safeshipmoving.com': 'TB',
+        'chris@safeshipmoving.com': 'TC',
+        'leads@safeshipmoving.com': 'SL',
+        'ahni@safeshipmoving.com': 'LL'
+    }
+    return mapping.get(email, email)
 #####################local email
 def send_local_email(label,dzip,dcity,dstate,ref_no, email, data, movedte, ozip, phone_number, first_name, icid):
     # Construct the email message

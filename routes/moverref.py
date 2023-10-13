@@ -1,5 +1,6 @@
 from flask import Blueprint, render_template, request, render_template, redirect, url_for
 from flask_login import login_required, current_user
+from helpers import email_to_dept
 
 moverref_bp = Blueprint('moverref', __name__)
 
@@ -45,12 +46,18 @@ def edit_moverref_config(config_id):
 @moverref_bp.route('/show_moverref_configs', methods=['GET'])
 @login_required
 def show_moverref_configs():
-    from models.moverref_config import SecondModel
     from models.moverref_config import MoverrefConfig
     
-    configs = MoverrefConfig.query.all()
+    original_configs = MoverrefConfig.query.all()
+    
+    # Transform the original_configs
+    transformed_configs = []
+    for config in original_configs:
+        # Assuming the email is stored in config.email, if it's a different attribute, replace accordingly.
+        config.name = email_to_dept(config.name)
+        transformed_configs.append(config)
 
-    return render_template('moverref_configs.html', configs=configs, current_user=current_user)
+    return render_template('moverref_configs.html', configs=transformed_configs, current_user=current_user)
 
 @moverref_bp.route('/delete_moverref_config/<int:config_id>', methods=['POST'])
 def delete_moverref_config(config_id):

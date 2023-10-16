@@ -1,6 +1,71 @@
 {% extends 'home.html' %}
 
 {% block content %}
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+    var labelChart;  // Define a new variable for the label chart
+
+    fetch("/get_label_data")
+    .then(response => response.json())
+    .then(data => {
+        const labels = Object.keys(data);
+        const counts = Object.values(data);
+
+        var ctx = document.getElementById('labelChart').getContext('2d');
+        labelChart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: 'Number of Leads by Label',
+                    data: counts,
+                    backgroundColor: 'rgba(65, 105, 225, 0.2)',
+                    borderColor: 'rgba(65, 105, 225, 1)',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+
+        document.getElementById("apply-date-filter").addEventListener("click", function() {
+            let startDate = document.getElementById("start-date").value;
+            let endDate = document.getElementById("end-date").value;
+            updateChart(startDate, endDate);
+        });
+
+        document.getElementById("show-today").addEventListener("click", function() {
+            let today = new Date().toISOString().split("T")[0];
+            updateChart(today, today);
+        });
+
+        document.getElementById("show-all-time").addEventListener("click", function() {
+            updateChart(null, null);
+        });
+       
+        function updateChart(startDate, endDate) {
+            let url = "/get_label_data";  // Change the endpoint
+            if(startDate && endDate) {
+                url += `?start_date=${startDate}&end_date=${endDate}`;
+            }
+
+            fetch(url)
+            .then(response => response.json())
+            .then(data => {
+                labelChart.data.labels = Object.keys(data);  // Update the labelChart
+                labelChart.data.datasets[0].data = Object.values(data);
+                labelChart.update();
+            });
+        }
+    })
+    .catch(error => console.error("There was an error loading the data", error));
+});
+</script>
 <div class="head">
   <h1 style="color:white">Exclusive Domains</h1>
 </div>
@@ -57,6 +122,26 @@
   <button id="addDomainButton" class="filter" style='margin-bottom: 20px !important; margin-top: 10px; border:none'>
     <i class="fa-solid fa-plus"></i> Add Domain
   </button>
+</div>
+
+<!-- Lead Metrics by label chart -->
+<div style="background-color: #434343; padding-top: 10px; margin-top:50px; text-align: center;">
+    <h2 style="text-align: center; color: white; text-shadow: black 2px 2px 2px;">Lead Metrics by Lead Provider</h2>
+    <div style="margin-bottom: 20px; display: flex;">
+        <label style='color:white; text-shadow: black 1px 1px 1px; padding-left: 10px;' for="start-date">Start Date: </label>
+        <input type="date" id="start-date">
+        
+        <label style='color:white; text-shadow: black 1px 1px 1px; padding-left: 10px;' for="end-date">End Date: </label>
+        <input type="date" id="end-date">
+        
+        <button id="apply-date-filter" class='filter' style="margin-left: 20px;">Apply Date Filter</button>
+        <div style="text-align: right; display: inline;">
+            <button class='filter' id="show-today" style="margin-left: 20px;">Today</button>
+            <button class='filter' id="show-all-time" style="margin-left: 20px;">All Time</button>
+        </div>
+    </div>
+    <!-- Chart for leads by department -->
+    <canvas id="labelChart" width="200" height="80" style="background-color: white; padding-bottom: 20px;"></canvas>
 </div>
 
 <!-- Settings Modal -->

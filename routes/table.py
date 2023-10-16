@@ -59,6 +59,31 @@ def get_moverref_data():
     data = {email_to_dept(result[0]): result[1] for result in results}
 
     return jsonify(data)
+
+@table_bp.route('/get_label_data')
+def get_label_data():
+    from app import db
+    from models.lead import Lead
+    from sqlalchemy import func
+
+    start_date = request.args.get('start_date')
+    end_date = request.args.get('end_date')
+
+    if start_date and end_date:
+        start_date_obj = datetime.strptime(start_date, '%Y-%m-%d')
+        end_date_obj = datetime.strptime(end_date, '%Y-%m-%d')
+        leads_query = Lead.query.filter(cast(Lead.timestamp, Date).between(start_date_obj, end_date_obj))
+    else:
+        leads_query = Lead.query
+
+    results = (leads_query.with_entities(Lead.label, func.count(Lead.id))
+               .group_by(Lead.label)
+               .filter(Lead.label.isnot(None))
+               .all())
+
+    data = {result[0]: result[1] for result in results}
+
+    return jsonify(data)
     
 
 @table_bp.route('/update_moverref', methods=['POST'])

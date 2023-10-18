@@ -38,8 +38,8 @@ def add_data():
         email = data.get('email')
         label = data.get('label')
 
-        if label == 'None':
-            return jsonify({"error": "'none' cannot be the label."}), 400
+        if label == None:
+            return jsonify({"error": "'None' cannot be the label."}), 400
 
         vault = list('ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789')
         icid = ''.join(random.choice(vault) for _ in range(12))

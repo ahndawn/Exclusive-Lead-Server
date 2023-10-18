@@ -37,7 +37,7 @@ login_manager.login_view = 'auth.login'
 
 # used BluePrint for clean route management
 app.register_blueprint(auth_bp)
-app.register_blueprint(app_bp)
+# app.register_blueprint(ap_bp)
 app.register_blueprint(domain_bp)
 app.register_blueprint(local_bp)
 app.register_blueprint(table_bp)

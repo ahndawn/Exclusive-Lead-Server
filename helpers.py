@@ -214,17 +214,17 @@ def send_message(first_name, phone_number):
 ###################################################################
 # Push the data to the corresponding Google Sheet by Label name 
 spreadsheet_ids_and_ranges = {
-    'Spot Tower': {'spreadsheet_id': '1d4lIy0a_slZKYKx3BRM1i57pWX7SIMFllWC6pNrYlXQ', 'range': 'Sheet1!A2'},
-    'Special EX': {'spreadsheet_id': '1d4lIy0a_slZKYKx3BRM1i57pWX7SIMFllWC6pNrYlXQ', 'range': 'Sheet1!A2'},
-    'Savvy': {'spreadsheet_id': '1ZQ7wNiKNmH4x-10Tl2s0dgqDr8t7FiyIVpNNUk006QU', 'range': 'Sheet1!A2'},
-    'Crispx': {'spreadsheet_id': '17qSaCVHHrMiRKd6Q11_rq-AQ07isulU-TxKkyvefoeI', 'range': 'Leadpost!A2'},
-    'ConAds': {'spreadsheet_id': '1LlNqoLEijBcpITbXOE_UlNeH0of9QuKReA6S6fPszI4', 'range': 'Sheet1!A2'},
-    'IQ Media': {'spreadsheet_id': '1RUYZ9aONYGEq26POCF0JGNjiZ1GsBzRHIs1h3BbZq5A', 'range': 'Sheet1!A2'},
-    'Interstate EX': {'spreadsheet_id': '1RUYZ9aONYGEq26POCF0JGNjiZ1GsBzRHIs1h3BbZq5A', 'range': 'Sheet2!A2'},
-    'Top10': {'spreadsheet_id': '12uCFTYzn9WydVZInVaZpTZKg7N3Rz65x4rsbjjqnIAk', 'range': 'LeadFlow!A2'},
-    'ConAdsP1': {'spreadsheet_id': '1UpcqT5qzqNv7u1e0Q-DY7mqke6sqYm5WM_Qdr6rDGJ4', 'range': 'Sheet1!A2'},
-    'ConAds EX': {'spreadsheet_id': '1UpcqT5qzqNv7u1e0Q-DY7mqke6sqYm5WM_Qdr6rDGJ4', 'range': 'Sheet2!A2'},
-    'IQ Media AA': {'spreadsheet_id': '1RUYZ9aONYGEq26POCF0JGNjiZ1GsBzRHIs1h3BbZq5A', 'range': 'AA!A2'},
+    'Spot Tower': {'spreadsheet_id': '1ljSd266fz-R3kI1BktOEaGLU2RDHi_564rdJJ6uFdUg', 'range': 'spottower!A2'},
+    'Special EX': {'spreadsheet_id': '1ljSd266fz-R3kI1BktOEaGLU2RDHi_564rdJJ6uFdUg', 'range': 'Sheet1!A2'},
+    'Savvy': {'spreadsheet_id': '1ljSd266fz-R3kI1BktOEaGLU2RDHi_564rdJJ6uFdUg', 'range': 'Sheet1!A2'},
+    'Crispx': {'spreadsheet_id': '1ljSd266fz-R3kI1BktOEaGLU2RDHi_564rdJJ6uFdUg', 'range': 'Leadpost!A2'},
+    'ConAds': {'spreadsheet_id': '1ljSd266fz-R3kI1BktOEaGLU2RDHi_564rdJJ6uFdUg', 'range': 'conads!A2'},
+    'IQ Media': {'spreadsheet_id': '1ljSd266fz-R3kI1BktOEaGLU2RDHi_564rdJJ6uFdUg', 'range': 'iqmedia!A2'},
+    'Interstate EX': {'spreadsheet_id': '1ljSd266fz-R3kI1BktOEaGLU2RDHi_564rdJJ6uFdUg', 'range': 'Sheet2!A2'},
+    'Top10': {'spreadsheet_id': '1ljSd266fz-R3kI1BktOEaGLU2RDHi_564rdJJ6uFdUg', 'range': 'topten!A2'},
+    'ConAdsP1': {'spreadsheet_id': '1ljSd266fz-R3kI1BktOEaGLU2RDHi_564rdJJ6uFdUg', 'range': 'Sheet1!A2'},
+    'ConAds EX': {'spreadsheet_id': '1ljSd266fz-R3kI1BktOEaGLU2RDHi_564rdJJ6uFdUg', 'range': 'Sheet2!A2'},
+    'IQ Media AA': {'spreadsheet_id': '1ljSd266fz-R3kI1BktOEaGLU2RDHi_564rdJJ6uFdUg', 'range': 'AA!A2'},
 }
 
 ##################################################################
@@ -366,7 +366,7 @@ def send_to_sheets(timestamp,first_name,ozip,dzip,dcity,dstate,data,ref_no,valid
         return False
 
 ################################################ send to local sheets
-def send_to_local_sheets(timestamp,first_name,ozip,dzip,dcity,dstate,data,ref_no,validation,label, phone_number,lead_cost, icid):
+def send_to_local_sheets(timestamp, first_name, ozip, dzip, dcity, dstate, data, ref_no, validation, label, phone_number, lead_cost, icid):
     values_to_append = [
         timestamp,
         first_name,
@@ -382,13 +382,22 @@ def send_to_local_sheets(timestamp,first_name,ozip,dzip,dcity,dstate,data,ref_no
         phone_number,
         lead_cost
     ]
+
     body = {'values': [values_to_append]}
-        # check domain setting (1 = checked box in settings)
+    
+    # Extract the spreadsheet_id and range from the dictionary based on the label
+    if label not in spreadsheet_ids_and_ranges:
+        print(f"ERROR: Label '{label}' not found in spreadsheet_ids_and_ranges dictionary.")
+        return False
+
+    spreadsheet_id = spreadsheet_ids_and_ranges[label]['spreadsheet_id']
+    range_name = spreadsheet_ids_and_ranges[label]['range']
+
     try:
         service = build('sheets', 'v4', credentials=creds)
         result = service.spreadsheets().values().append(
-            spreadsheetId='1ljSd266fz-R3kI1BktOEaGLU2RDHi_564rdJJ6uFdUg',
-            range='topten!A2',
+            spreadsheetId=spreadsheet_id,
+            range=range_name,
             valueInputOption='RAW',
             insertDataOption='INSERT_ROWS',
             body=body

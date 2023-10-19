@@ -78,6 +78,7 @@ def add_local():
         print(f'Posting key for {label} is: {moverref}')
 
         #############send to gronat function from helpers.py
+        label = 'Local ' + label
         sent_gronat_success = send_to_gronat(label, moverref, first_name, email, phone_number, ozip, dzip, dcity, dstate, data, movedte, send_to_leads_api, icid)
         if sent_gronat_success:
             sent_to_gronat = '1'
@@ -109,6 +110,7 @@ def add_local():
         ############################## Send to sheets
         # default value '0' if not sent to sheet, '1' if sent. use spreadsheet_config dictionary
         sent_to_sheets='0'
+        label = data.get('label')
         if send_to_google_sheet == 1:
             lead_cost = domain_settings.lead_cost if domain_settings else "110"
             sent_to_sheets_success=send_to_local_sheets(timestamp,first_name,ozip,dzip,dcity,dstate,data,ref_no,validation,label, phone_number, lead_cost, icid)
@@ -116,6 +118,7 @@ def add_local():
                 sent_to_sheets='1'
         
         ############################### Insert the data into the database
+        label = 'Local ' + label
         db_insertion_success = insert_local_into_db(label, data, sent_to_gronat, sent_to_sheets, validation, movesize, movedte, icid, moverref)
     
         if db_insertion_success:

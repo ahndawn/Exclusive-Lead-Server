@@ -1,9 +1,56 @@
 {% extends 'home.html' %}
 
 {% block content %}
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
-    $(document).ready(function() {
-        $(".editable-cell").click(function() {
+$(document).ready(function() {
+        // Initialize cells with hidden data
+        $("td.hide-conversion").each(function() {
+        $(this).data('originalContent', $(this).html());
+        $(this).html('<span style="color: #aaa;" title="Conversion data is hidden.">Hidden</span>');
+    });
+
+    // Show conversions on cell click
+    $("td.hide-conversion").click(function() {
+        var cellContent = $(this).html();
+        if (cellContent === '<span style="color: #aaa;" title="Conversion data is hidden.">Hidden</span>') {
+            var originalContent = $(this).data('originalContent');
+            if (originalContent) {
+                $(this).html(originalContent);
+            }
+        }
+    });
+
+    // Hide conversions on mouse leave, but not if the user is selecting text or if the cell has been permanently revealed
+    $("td.hide-conversion").mouseleave(function() {
+        if (!$(this).hasClass("revealed") && window.getSelection().toString() === "") {
+            var cellContent = $(this).html();
+            if (cellContent !== '<span style="color: #aaa;" title="Conversion data is hidden.">Hidden</span>') {
+                $(this).data('originalContent', cellContent);
+                $(this).html('<span style="color: #aaa;" title="Conversion data is hidden.">Hidden</span>');
+            }
+        }
+    });
+
+    // Toggle reveal/hide all conversions when the "Conversion" header is clicked
+    $("th:contains('Conversion')").click(function() {
+        if ($("td.hide-conversion.revealed").length > 0) { // If any cell is revealed, hide all cells
+            $("td.hide-conversion").each(function() {
+                $(this).removeClass("revealed");
+                $(this).html('<span style="color: #aaa;" title="Conversion data is hidden.">Hidden</span>');
+            });
+        } else { // If no cells are revealed, reveal all cells
+            $("td.hide-conversion").each(function() {
+                var originalContent = $(this).data('originalContent');
+                if (originalContent) {
+                    $(this).html(originalContent);
+                    $(this).addClass("revealed");
+                }
+            });
+        }
+    });
+
+    $(".editable-cell").click(function() {
         if ($(this).find('input').length > 0) {
             return;  // If the cell is already being edited, don't recreate the input and save button
         }
@@ -13,77 +60,76 @@
     });
 
     $(".editable-cell").on('click', '.save-btn', function() {
-    var inputElem = $(this).siblings('input');
-    var newValue = inputElem.val();
-    var cell = $(this).parent();
-    var leadId = cell.attr("data-id");
+        var inputElem = $(this).siblings('input');
+        var newValue = inputElem.val();
+        var cell = $(this).parent();
+        var leadId = cell.attr("data-id");
+        var updateUrl;
+        if (cell.index() === 10) {
+            updateUrl = '/update_movedte';
+        } else if (cell.index() === 16) {
+            updateUrl = '/update_moverref';
+        } else {
+            return;  // Unsupported column, exit
+        }
 
-    var updateUrl;
-    if (cell.index() === 10) {
-        updateUrl = '/update_movedte';
-    } else if (cell.index() === 16) { 
-        updateUrl = '/update_moverref';
-    } else {
-        return;  // Unsupported column, exit
-    }
-
-    // AJAX call to update the value
-    $.ajax({
-        url: updateUrl,
-        method: 'POST',
-        data: {
-            'lead_id': leadId,
-            'new_value': newValue  // Generic key for new value
-        },
-        success: function(response) {
-            if (response.success) {
-                location.reload();
-            } else {
-                alert(response.message || "Error updating value.");
+        // AJAX call to update the value
+        $.ajax({
+            url: updateUrl,
+            method: 'POST',
+            data: {
+                'lead_id': leadId,
+                'new_value': newValue  // Generic key for new value
+            },
+            success: function(response) {
+                if (response.success) {
+                    location.reload();
+                } else {
+                    alert(response.message || "Error updating value.");
+                    cell.text(originalContent); // Revert to the original value
+                }
+            },
+            error: function() {
+                alert("An error occurred. Please try again later.");
                 cell.text(originalContent); // Revert to the original value
             }
-        },
-        error: function() {
-            alert("An error occurred. Please try again later.");
-            cell.text(originalContent); // Revert to the original value
-        }
+        });
+    });
+
+    // send to gronat button
+    $(".send-to-gronat-btn").click(function(event) {
+        event.preventDefault();
+
+        var btn = $(this);
+        btn.text('Sending...');
+        var leadId = btn.prev('input[name="lead_id"]').val();
+
+        $.ajax({
+            url: '/send_to_gronat',
+            method: 'POST',
+            data: {
+                lead_id: leadId
+            },
+            success: function(response) {
+                if (response.success) {
+                    btn.parent().css('color', 'green').text('Sent');
+                    btn.remove();
+                } else {
+                    btn.text('Send to GRONAT');
+                    alert("Failed to send lead to Gronat. Please try again.");
+                }
+            },
+            error: function() {
+                btn.text('Send to GRONAT');
+                alert("An error occurred. Please try again later.");
+            }
         });
     });
 });
 
-$(document).ready(function() {
-// send to gronat button
-$(".send-to-gronat-btn").click(function(event) {
-event.preventDefault();
-
-var btn = $(this);
-btn.text('Sending...');
-
-var leadId = btn.prev('input[name="lead_id"]').val();
-
-$.ajax({
-    url: '/send_to_gronat',
-    method: 'POST',
-    data: { lead_id: leadId },
-    success: function(response) {
-        if (response.success) {
-            btn.parent().css('color', 'green').text('Sent');
-            btn.remove();
-        } else {
-            btn.text('Send to GRONAT');
-            alert("Failed to send lead to Gronat. Please try again.");
-        }
-    },
-    error: function() {
-        btn.text('Send to GRONAT');
-        alert("An error occurred. Please try again later.");
-    }
-});
-});
-});
 </script>
 <div class="head">
-<h1 style="text-align: center; color:white" >Exclusive Leads</h1>
+<h1 style="text-align: center; color:white" >Local Leads</h1>
 {% with messages = get_flashed_messages() %}
     {% if messages %}
       <ul class="messages">
@@ -103,7 +149,7 @@ $.ajax({
     <div class="search-bar">
         <input type="text" id="search-input" placeholder="Search..." style="height:30px; background-color: rgb(197, 197, 197); border-radius: 4px; border: none">
         <button onclick="toggleFilterOptions()" class="filter" style="background-color: rgb(48, 134, 49);" ><i class="fa-solid fa-filter"></i> Filter</button>
-        <button onclick="filterTable()" class="filter"><i class="fa-solid fa-magnifying-glass"></i> Search</button>
+        <button onclick="filterLocalTable()" class="filter"><i class="fa-solid fa-magnifying-glass"></i> Search</button>
     </div>
     <div id="filter-options" class="filter-options" style="display:none">
         <label><input type="checkbox" id="all-checkbox"> All</label>
@@ -138,19 +184,19 @@ $.ajax({
                 <th>Label</th>
                 <th>Timestamp</th>
                 <th>First Name</th>
-                <th>Email <i class="fa-solid fa-circle-question" title="Duplicates are highlighted" style="cursor:pointer"></i></th>
-                <th>Phone <i class="fa-solid fa-circle-question" title="Duplicates are highlighted" style="cursor:pointer"></i></th>
+                <th class="header-info" data-toggle="tooltip" title="Duplicates are highlighted">Email <i class="fa-solid fa-circle-question"></i></th>
+                <th class="header-info" data-toggle="tooltip" title="Duplicates are highlighted">Phone <i class="fa-solid fa-circle-question"></i></th>
                 <th>Origin ZIP</th>
                 <th>Destination ZIP</th>
                 <th>Destination City</th>
                 <th>Destination State</th>
                 <th>Move Size</th>
                 <th>Move Date</th>
-                <th>Conversion</th>
-                <th>Validation <i class="fa-solid fa-circle-question" title="-1 = No Validation check. 1 = Valid. 0 = Invalid" style="cursor:pointer"></i></th>
+                <th class="header-info"  data-toggle="tooltip" title="Click to reveal all conversions">Conversion <i class="fa-solid fa-circle-question"></i></th>
+                <th class="header-info" data-toggle="tooltip" title="-1 = No Validation check. 1 = Valid. 0 = Invalid">Validation <i class="fa-solid fa-circle-question"></i></th>
                 <th>Notes</th>
-                <th>GRONAT <i class="fa-solid fa-circle-question" title="O = Not Sent. 1 = Sent" style="cursor:pointer"></i></th>
-                <th>Sheets <i class="fa-solid fa-circle-question" title="O = Not Sent. 1 = Sent" style="cursor:pointer"></i></th>
+                <th class="header-info" data-toggle="tooltip" title="O = Not Sent. 1 = Sent">GRONAT <i class="fa-solid fa-circle-question"></i></th>
+                <th class="header-info" data-toggle="tooltip" title="O = Not Sent. 1 = Sent">Sheets <i class="fa-solid fa-circle-question"></i></th>
                 <th>Department</th>
             </tr>
         </thead>
@@ -168,13 +214,13 @@ $.ajax({
                     <td>{{ row.dstate }}</td>
                     <td>{{ row.movesize }}</td>
                     <td class="editable-cell" data-id="{{ row.id }}">{{ row.movedte }}</td>
-                    <td>{{ row.conversion }}</td>
+                    <td class="hide-conversion" data-original-value="{{ row.conversion }}">{{ row.conversion }}</td>
                     <td {% if row.validation == '0' %}style="color: rgb(216, 0, 0);"{% elif row.validation == '-1' %}style="color: rgb(150, 150, 150);"{% elif row.validation == '1' %}style="color: green;"{% endif %}>{{ row.validation }}</td>
                     <td>{{ row.notes }}</td>
                     <td {% if row.sent_to_gronat == '0' %}style="color: rgb(216, 0, 0);"{% elif row.sent_to_gronat == '1' %}style="color: green;"{% endif %}>
                         {{ row.sent_to_gronat }}
                         {% if row.sent_to_gronat == '0' %}
-                            <form action="/send_to_gronat" method="post">
+                            <form action="/send_local_gronat" method="post">
                                 <input type="hidden" name="lead_id" value="{{ row.id }}">
                                 <button type="submit" class="send-to-gronat-btn" id="sendToGronatButton" onclick="this.innerHTML='Sending...';">Send to GRONAT</button>
                             </form>

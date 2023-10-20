@@ -53,6 +53,33 @@ function showTitle(element) {
     window.location.href = url;
 }
 
+function filterLocalTable() {
+    var input = document.getElementById("search-input").value;
+
+    var filterCriteria;
+    if (document.getElementById("label-checkbox").checked) filterCriteria = "label";
+    else if (document.getElementById("timestamp-checkbox").checked) filterCriteria = "timestamp";
+    else if (document.getElementById("firstname-checkbox").checked) filterCriteria = "firstname";
+    else if (document.getElementById("email-checkbox").checked) filterCriteria = "email";
+    else if (document.getElementById("phone-checkbox").checked) filterCriteria = "phone1";
+    else if (document.getElementById("ozip-checkbox").checked) filterCriteria = "ozip";
+    else if (document.getElementById("dzip-checkbox").checked) filterCriteria = "dzip";
+    else if (document.getElementById("dcity-checkbox").checked) filterCriteria = "dcity";
+    else if (document.getElementById("dstate-checkbox").checked) filterCriteria = "dstate";
+    else if (document.getElementById("movesize-checkbox").checked) filterCriteria = "movesize";
+    else if (document.getElementById("movedate-checkbox").checked) filterCriteria = "movedte";
+    else if (document.getElementById("conversion-checkbox").checked) filterCriteria = "conversion";
+    else if (document.getElementById("validation-checkbox").checked) filterCriteria = "validation";
+    else if (document.getElementById("notes-checkbox").checked) filterCriteria = "notes";
+    else if (document.getElementById("gronat-checkbox").checked) filterCriteria = "sent_to_gronat";
+    else if (document.getElementById("sheets-checkbox").checked) filterCriteria = "sent_to_sheets";
+    else if (document.getElementById("moverref-checkbox").checked) filterCriteria = "moverref";
+
+    // Redirect with the filter criteria and input as parameters
+    var url = `/local-table?filter=${filterCriteria}&filter_value=${input}`;
+    window.location.href = url;
+}
+
 
 // END TABLE SEARCH
 

@@ -243,19 +243,19 @@ $(document).ready(function() {
     <div id="pagination">
         <div class="pagination">
             {% if page > 1 %}
-                <a href="{{ url_for('local-table.show_table', page=page-1, filter=filter_by) }}" class="pagination-btn"><b>&#171;</b> Previous</a>
+                <a href="{{ url_for('table.show_table', page=page-1, filter=filter_by) }}" class="pagination-btn"><b>&#171;</b> Previous</a>
             {% endif %}
 
             <span style="font-size: small;" class="pagination-info">Page {{ page }} of {{ total_pages }}</span>
 
             {% if page < total_pages %}
-                <a href="{{ url_for('local-table.show_table', page=page+1, filter=filter_by) }}" class="pagination-btn">Next <b>&#187;</b></a>
+                <a href="{{ url_for('table.show_table', page=page+1, filter=filter_by) }}" class="pagination-btn">Next <b>&#187;</b></a>
             {% endif %}
 
             {% if end_page > 2 %}
                 {% if page < total_pages %}
                     <span class="pagination-info">. . .</span>
-                    <a href="{{ url_for('local-table.show_table', page=total_pages, filter=filter_by) }}" class="pagination-btn">Last ({{ total_pages }})</a>
+                    <a href="{{ url_for('table.show_table', page=total_pages, filter=filter_by) }}" class="pagination-btn">Last ({{ total_pages }})</a>
                 {% endif %}
             {% endif %}
             <button onclick="showAllEntries()" class="filter">Show All Entries</button>

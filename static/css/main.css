@@ -266,6 +266,9 @@ nav {
 .hide-conversion:hover{
   cursor: pointer;
 }
+.editable-cell:hover{
+cursor: pointer;
+}
   
   body {
     margin-top: 60px; /* adjust this to the height of your navigation bar */

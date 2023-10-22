@@ -1,5 +1,15 @@
 $(document).ready(function(){
     $('[data-toggle="tooltip"]').tooltip(); 
+     // Replace 1 with checkmark and 0 with x for cells with class 'validation', 'sent-to-gronat', and 'sent-to-sheets'
+     $("td.validation, td.sent-to-gronat, td.sent-to-sheets").each(function() {
+        var content = $(this).text().trim();
+        
+        if (content === "1") {
+            $(this).html("✓");
+        } else if (content === "0") {
+            $(this).html("✗");
+        }
+    });
 });
 
 // Table search

@@ -193,11 +193,11 @@ $(document).ready(function() {
                 <th>Move Size</th>
                 <th>Move Date</th>
                 <th class="header-info"  data-toggle="tooltip" title="Click to reveal all conversions">Conversion <i class="fa-solid fa-circle-question"></i></th>
-                <th class="header-info" data-toggle="tooltip" title="-1 = No Validation check. 1 = Valid. 0 = Invalid">Validation <i class="fa-solid fa-circle-question"></i></th>
                 <th>Notes</th>
-                <th class="header-info" data-toggle="tooltip" title="O = Not Sent. 1 = Sent">GRONAT <i class="fa-solid fa-circle-question"></i></th>
-                <th class="header-info" data-toggle="tooltip" title="O = Not Sent. 1 = Sent">Sheets <i class="fa-solid fa-circle-question"></i></th>
                 <th>Department</th>
+                <th class="header-info" data-toggle="tooltip" title="Indicates if phone number was valid or invalid."> Phone # <i class="fa-solid fa-circle-question"></i></th>
+                <th class="header-info" data-toggle="tooltip" title="Indicates if the lead was successfully sent to GRONAT.">GRONAT <i class="fa-solid fa-circle-question"></i></th>
+                <th class="header-info" data-toggle="tooltip" title="Indicates if the lead was successfully sent to sheet.">Sheets <i class="fa-solid fa-circle-question"></i></th>
             </tr>
         </thead>
         <tbody>
@@ -215,9 +215,10 @@ $(document).ready(function() {
                     <td>{{ row.movesize }}</td>
                     <td class="editable-cell" data-id="{{ row.id }}">{{ row.movedte }}</td>
                     <td class="hide-conversion" data-original-value="{{ row.conversion }}">{{ row.conversion }}</td>
-                    <td {% if row.validation == '0' %}style="color: rgb(216, 0, 0);"{% elif row.validation == '-1' %}style="color: rgb(150, 150, 150);"{% elif row.validation == '1' %}style="color: green;"{% endif %}>{{ row.validation }}</td>
                     <td>{{ row.notes }}</td>
-                    <td {% if row.sent_to_gronat == '0' %}style="color: rgb(216, 0, 0);"{% elif row.sent_to_gronat == '1' %}style="color: green;"{% endif %}>
+                    <td class="editable-cell" data-id="{{ row.id }}">{{ row.moverref }}</td>
+                    <td class = "validation"{% if row.validation == '0' %}style="color: rgb(216, 0, 0);"{% elif row.validation == '-1' %}style="color: rgb(150, 150, 150);"{% elif row.validation == '1' %}style="color: green;"{% endif %}>{{ row.validation }}</td>
+                    <td class="sent-to-gronat" {% if row.sent_to_gronat == '0' %}style="color: rgb(216, 0, 0);"{% elif row.sent_to_gronat == '1' %}style="color: green;"{% endif %}>
                         {{ row.sent_to_gronat }}
                         {% if row.sent_to_gronat == '0' %}
                             <form action="/send_to_gronat" method="post">
@@ -226,8 +227,7 @@ $(document).ready(function() {
                             </form>
                         {% endif %}
                     </td>
-                    <td {% if row.sent_to_sheets == '0' %}style="color: rgb(216, 0, 0);"{% elif row.sent_to_sheets == '1' %}style="color: green;"{% endif %}>{{ row.sent_to_sheets }}</td>
-                    <td class="editable-cell" data-id="{{ row.id }}">{{ row.moverref }}</td>
+                    <td class="sent-to-sheets"{% if row.sent_to_sheets == '0' %}style="color: rgb(216, 0, 0);"{% elif row.sent_to_sheets == '1' %}style="color: green;"{% endif %}>{{ row.sent_to_sheets }}</td>
                 </tr>
             {% endfor %}
         </tbody>

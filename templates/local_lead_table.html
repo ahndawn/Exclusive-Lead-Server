@@ -105,7 +105,7 @@ $(document).ready(function() {
         var leadId = btn.prev('input[name="lead_id"]').val();
 
         $.ajax({
-            url: '/send_to_gronat',
+            url: '/send_local_gronat',
             method: 'POST',
             data: {
                 lead_id: leadId

@@ -66,9 +66,9 @@ $(document).ready(function() {
         var leadId = cell.attr("data-id");
         var updateUrl;
         if (cell.index() === 10) {
-            updateUrl = '/update_movedte';
+            updateUrl = '/update_local_movedte';
         } else if (cell.index() === 16) {
-            updateUrl = '/update_moverref';
+            updateUrl = '/update_local_moverref';
         } else {
             return;  // Unsupported column, exit
         }

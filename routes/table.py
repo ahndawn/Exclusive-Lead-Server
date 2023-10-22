@@ -102,6 +102,22 @@ def update_moverref():
 
     return jsonify({"success": True})
 
+@table_bp.route('/update_local_moverref', methods=['POST'])
+def update_moverref():
+    from app import db
+    from models.locallead import LocalLead
+    lead_id = request.form['lead_id']
+    new_moverref = request.form['new_value']
+
+    lead = LocalLead.query.get(lead_id)
+    if not lead:
+        return jsonify({"success": False, "message": "Lead not found."}), 404
+
+    lead.moverref = new_moverref
+    db.session.commit()
+
+    return jsonify({"success": True})
+
 
 @table_bp.route('/table')
 @login_required
@@ -452,6 +468,19 @@ def update_movedte():
 
     return jsonify({"success": True})
 
+@table_bp.route('/update_local_movedte', methods=['POST'])
+def update_movedte():
+    from app import db
+    lead_id = request.form['lead_id']
+    new_movedte = request.form['new_value']
 
+    lead = get_local_details_from_db(lead_id)
+    if not lead:
+        return jsonify({"success": False, "message": "Lead not found."}), 404
+
+    lead.movedte = new_movedte
+    db.session.commit()
+
+    return jsonify({"success": True})
 
 

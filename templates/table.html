@@ -129,7 +129,7 @@ $(document).ready(function() {
 
 </script>
 <div class="head">
-<h1 style="text-align: center; color:white" >Local Leads</h1>
+<h1 style="text-align: center; color:white" >Exclusive Leads</h1>
 {% with messages = get_flashed_messages() %}
     {% if messages %}
       <ul class="messages">
@@ -149,7 +149,7 @@ $(document).ready(function() {
     <div class="search-bar">
         <input type="text" id="search-input" placeholder="Search..." style="height:30px; background-color: rgb(197, 197, 197); border-radius: 4px; border: none">
         <button onclick="toggleFilterOptions()" class="filter" style="background-color: rgb(48, 134, 49);" ><i class="fa-solid fa-filter"></i> Filter</button>
-        <button onclick="filterLocalTable()" class="filter"><i class="fa-solid fa-magnifying-glass"></i> Search</button>
+        <button onclick="filterTable()" class="filter"><i class="fa-solid fa-magnifying-glass"></i> Search</button>
     </div>
     <div id="filter-options" class="filter-options" style="display:none">
         <label><input type="checkbox" id="all-checkbox"> All</label>
@@ -220,7 +220,7 @@ $(document).ready(function() {
                     <td {% if row.sent_to_gronat == '0' %}style="color: rgb(216, 0, 0);"{% elif row.sent_to_gronat == '1' %}style="color: green;"{% endif %}>
                         {{ row.sent_to_gronat }}
                         {% if row.sent_to_gronat == '0' %}
-                            <form action="/send_local_gronat" method="post">
+                            <form action="/send_to_gronat" method="post">
                                 <input type="hidden" name="lead_id" value="{{ row.id }}">
                                 <button type="submit" class="send-to-gronat-btn" id="sendToGronatButton" onclick="this.innerHTML='Sending...';">Send to GRONAT</button>
                             </form>

@@ -193,11 +193,11 @@ $(document).ready(function() {
                 <th>Move Size</th>
                 <th>Move Date</th>
                 <th class="header-info"  data-toggle="tooltip" title="Click to reveal all conversions">Conversion <i class="fa-solid fa-circle-question"></i></th>
-                <th class="header-info" data-toggle="tooltip" title="-1 = No Validation check. 1 = Valid. 0 = Invalid">Validation <i class="fa-solid fa-circle-question"></i></th>
                 <th>Notes/ICID</th>
-                <th class="header-info" data-toggle="tooltip" title="O = Not Sent. 1 = Sent">GRONAT <i class="fa-solid fa-circle-question"></i></th>
-                <th class="header-info" data-toggle="tooltip" title="O = Not Sent. 1 = Sent">Sheets <i class="fa-solid fa-circle-question"></i></th>
                 <th>Department</th>
+                <th class="header-info" data-toggle="tooltip" title="Indicates if phone number was valid or invalid."> Phone # <i class="fa-solid fa-circle-question"></i></th>
+                <th class="header-info" data-toggle="tooltip" title="Indicates if the lead was successfully sent to GRONAT.">GRONAT <i class="fa-solid fa-circle-question"></i></th>
+                <th class="header-info" data-toggle="tooltip" title="Indicates if the lead was successfully sent to sheet.">Sheets <i class="fa-solid fa-circle-question"></i></th>
             </tr>
         </thead>
         <tbody>
@@ -221,7 +221,7 @@ $(document).ready(function() {
                     <td class="sent-to-gronat" {% if row.sent_to_gronat == '0' %}style="color: rgb(216, 0, 0);"{% elif row.sent_to_gronat == '1' %}style="color: green;"{% endif %}>
                         {{ row.sent_to_gronat }}
                         {% if row.sent_to_gronat == '0' %}
-                            <form action="/send_local_gronat" method="post">
+                            <form action="/send_to_gronat" method="post">
                                 <input type="hidden" name="lead_id" value="{{ row.id }}">
                                 <button type="submit" class="send-to-gronat-btn" id="sendToGronatButton" onclick="this.innerHTML='Sending...';">Send to GRONAT</button>
                             </form>

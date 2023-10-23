@@ -31,10 +31,13 @@ def get_local_details_from_db(lead_id):
     lead = LocalLead.query.get(lead_id)
     return lead
 
+
+##################### shows all leads and their moverrefs chart
 @table_bp.route('/get_moverref_data')
 def get_moverref_data():
     from app import db
-    from models.lead import Lead
+    from models.lead import Lead, Lead2
+    from models.locallead import LocalLead
     from sqlalchemy import func
 
     # Extract start_date and end_date from request arguments
@@ -45,47 +48,89 @@ def get_moverref_data():
     if start_date and end_date:
         start_date_obj = datetime.strptime(start_date, '%Y-%m-%d')
         end_date_obj = datetime.strptime(end_date, '%Y-%m-%d')
-        leads_query = Lead.query.filter(cast(Lead.timestamp, Date).between(start_date_obj, end_date_obj))
+        leads_query1 = Lead.query.filter(cast(Lead.timestamp, Date).between(start_date_obj, end_date_obj))
+        leads_query2 = Lead2.query.filter(cast(Lead2.timestamp, Date).between(start_date_obj, end_date_obj))
+        local_leads_query = LocalLead.query.filter(cast(LocalLead.timestamp, Date).between(start_date_obj, end_date_obj))
     else:
-        leads_query = Lead.query
+        leads_query1 = Lead.query
+        leads_query2 = Lead2.query
+        local_leads_query = LocalLead.query
 
-    # Aggregate data by moverref and count leads for each moverref
-    results = (leads_query.with_entities(Lead.moverref, func.count(Lead.id))
+    # Aggregate data by moverref and count leads for each moverref from db1
+    results1 = (leads_query1.with_entities(Lead.moverref, func.count(Lead.id))
                .group_by(Lead.moverref)
                .filter(Lead.moverref.isnot(None))
                .all())
 
-    # Convert results into a dictionary format for JSON
-    data = {email_to_dept(result[0]): result[1] for result in results}
+    # Aggregate data by moverref and count leads for each moverref from db2
+    results2 = (leads_query2.with_entities(Lead2.moverref, func.count(Lead2.id))
+               .group_by(Lead2.moverref)
+               .filter(Lead2.moverref.isnot(None))
+               .all())
+
+    # Aggregate data by moverref and count local leads for each moverref
+    results3 = (local_leads_query.with_entities(LocalLead.moverref, func.count(LocalLead.id))
+               .group_by(LocalLead.moverref)
+               .filter(LocalLead.moverref.isnot(None))
+               .all())
+
+    # Convert results into a dictionary format for JSON, combining results from all databases
+    data = {}
+    for result in results1 + results2 + results3:
+        key = email_to_dept(result[0])
+        data[key] = data.get(key, 0) + result[1]
 
     return jsonify(data)
 
+##########################show all leads by label(lead provider) chart
 @table_bp.route('/get_label_data')
 def get_label_data():
     from app import db
-    from models.lead import Lead
+    from models.lead import Lead, Lead2
+    from models.locallead import LocalLead  # Import the LocalLead model
     from sqlalchemy import func
 
     start_date = request.args.get('start_date')
     end_date = request.args.get('end_date')
 
+    # Initial setup for queries
+    query_base = Lead.query
+    query_base2 = Lead2.query
+    query_base3 = LocalLead.query  # Query base for LocalLead
+
     if start_date and end_date:
         start_date_obj = datetime.strptime(start_date, '%Y-%m-%d')
         end_date_obj = datetime.strptime(end_date, '%Y-%m-%d')
-        leads_query = Lead.query.filter(cast(Lead.timestamp, Date).between(start_date_obj, end_date_obj))
-    else:
-        leads_query = Lead.query
+        query_base = query_base.filter(cast(Lead.timestamp, Date).between(start_date_obj, end_date_obj))
+        query_base2 = query_base2.filter(cast(Lead2.timestamp, Date).between(start_date_obj, end_date_obj))
+        query_base3 = query_base3.filter(cast(LocalLead.timestamp, Date).between(start_date_obj, end_date_obj))  # Filter for LocalLead
 
-    results = (leads_query.with_entities(Lead.label, func.count(Lead.id))
+    # Query for Lead model
+    results1 = (query_base.with_entities(Lead.label, func.count(Lead.id))
                .group_by(Lead.label)
                .filter(Lead.label.isnot(None))
                .all())
 
-    data = {result[0]: result[1] for result in results}
+    # Query for Lead2 model
+    results2 = (query_base2.with_entities(Lead2.label, func.count(Lead2.id))
+               .group_by(Lead2.label)
+               .filter(Lead2.label.isnot(None))
+               .all())
 
-    return jsonify(data)
+    # Query for LocalLead model
+    results3 = (query_base3.with_entities(LocalLead.label, func.count(LocalLead.id))
+               .group_by(LocalLead.label)
+               .filter(LocalLead.label.isnot(None))
+               .all())  # Aggregation for LocalLead
+
+    # Merge results
+    combined_results = {}
+    for label, count in results1 + results2 + results3:  # Include results3 in the merging process
+        combined_results[label] = combined_results.get(label, 0) + count
+
+    return jsonify(combined_results)
     
-
+###############for updating moverref on leads table
 @table_bp.route('/update_moverref', methods=['POST'])
 def update_moverref():
     from app import db
@@ -102,6 +147,7 @@ def update_moverref():
 
     return jsonify({"success": True})
 
+####################for updating moverref on local leads table
 @table_bp.route('/update_local_moverref', methods=['POST'])
 def update_local_moverref():
     from app import db
@@ -118,7 +164,7 @@ def update_local_moverref():
 
     return jsonify({"success": True})
 
-
+######################## Exclusive leads table
 @table_bp.route('/table')
 @login_required
 def show_table():
@@ -242,6 +288,7 @@ def show_table():
     # Render the template with the current data and pagination information
     return render_template('table.html', **template_context, current_user=current_user)
 
+#########################Local leads table
 @table_bp.route('/local-table')
 @login_required
 def show_local():
@@ -365,6 +412,10 @@ def show_local():
     # Render the template with the current data and pagination information
     return render_template('local_lead_table.html', **template_context, current_user=current_user)
 
+
+
+
+######################for sending data to gronat from table if it was unsuccessful the first time.
 @table_bp.route('/send_to_gronat', methods=['POST'])
 def send_to_gronat_route():
     from helpers import send_to_gronat
@@ -409,11 +460,12 @@ def send_to_gronat_route():
     else:
         return jsonify(success=False, message="Failed to send lead to Gronat. Please try again.")
 
+
+######################for sending data to gronat from local leads table if it was unsuccessful the first time.
 @table_bp.route('/send_local_gronat', methods=['POST'])
 def send_to_local_route():
     from helpers import send_to_gronat
     from app import db
-    from models.domain import Domain
     lead_id = request.form['lead_id']
     
     
@@ -449,6 +501,8 @@ def send_to_local_route():
     else:
         return jsonify(success=False, message="Failed to send lead to Gronat. Please try again.")
 
+
+###################for updating move date on exclusive leads table
 @table_bp.route('/update_movedte', methods=['POST'])
 def update_movedte():
     from app import db
@@ -464,6 +518,10 @@ def update_movedte():
 
     return jsonify({"success": True})
 
+
+
+
+##########################for updating local leads move date
 @table_bp.route('/update_local_movedte', methods=['POST'])
 def update_local_movedte():
     from app import db

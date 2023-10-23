@@ -8,8 +8,10 @@ class MoverrefConfig(db.Model):
     sequence_order = db.Column(db.Integer, nullable=False)
     repeat_count = db.Column(db.Integer, nullable=False)
 
-class SecondModel(db.Model):
-    __bind_key__ = 'second_db'
+
+#################Shared lead database model
+class MoverrefConfig2(db.Model):
+    __bind_key__ = 'db2'
     __tablename__ = 'moverrefconfig'
 
     id = db.Column(db.Integer, primary_key=True)

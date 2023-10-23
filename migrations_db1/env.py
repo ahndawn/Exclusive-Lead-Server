@@ -1,5 +1,6 @@
 import logging
 from logging.config import fileConfig
+from sqlalchemy import create_engine, pool
 
 from flask import current_app
 
@@ -16,20 +17,11 @@ logger = logging.getLogger('alembic.env')
 
 
 def get_engine():
-    try:
-        # this works with Flask-SQLAlchemy<3 and Alchemical
-        return current_app.extensions['migrate'].db.get_engine()
-    except TypeError:
-        # this works with Flask-SQLAlchemy>=3
-        return current_app.extensions['migrate'].db.engine
-
+    engine = create_engine(current_app.config['SQLALCHEMY_DATABASE_URI'], poolclass=pool.NullPool)
+    return engine
 
 def get_engine_url():
-    try:
-        return get_engine().url.render_as_string(hide_password=False).replace(
-            '%', '%%')
-    except AttributeError:
-        return str(get_engine().url).replace('%', '%%')
+    return get_engine().url.render_as_string(hide_password=False).replace('%', '%%')
 
 
 # add your model's MetaData object here

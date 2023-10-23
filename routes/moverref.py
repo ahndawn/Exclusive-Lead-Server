@@ -46,7 +46,7 @@ def edit_moverref_config(config_id):
 @moverref_bp.route('/show_moverref_configs', methods=['GET'])
 @login_required
 def show_moverref_configs():
-    from models.moverref_config import MoverrefConfig
+    from models.moverref_config import MoverrefConfig, MoverrefConfig2
     
     original_configs = MoverrefConfig.query.all()
     

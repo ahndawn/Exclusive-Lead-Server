@@ -18,7 +18,7 @@ import requests
 
 
 # Access the environment variables
-# database_url2 = os.environ.get('SHARED_DATABASE_URL')
+database_url2 = os.environ.get('SHARED_DATABASE_URL')
 database_url = os.environ.get('DATABASE_URL')
 twilio_account_sid = os.environ.get('TWILIO_ACCOUNT_SID')
 twilio_auth_token = os.environ.get('TWILIO_AUTH_TOKEN')

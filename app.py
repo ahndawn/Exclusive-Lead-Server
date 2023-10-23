@@ -9,7 +9,7 @@ from routes.moverref import moverref_bp
 from routes.domains import domain_bp
 from routes.table import table_bp
 from routes.local import local_bp
-from helpers import database_url
+from helpers import database_url, database_url2
 
 # Load environment variables from .env file. Information on .env found in docs/herokuDeployment.md
 load_dotenv()
@@ -22,12 +22,12 @@ app = Flask(__name__)
 # database wasn't able to migrate with postgres url provided from heroku, so 'postgres://' needed to be changed to 'postgresql://'
 if database_url.startswith("postgres://"):
     database_url = database_url.replace("postgres://", "postgresql://", 1)
-# if database_url2.startswith("postgres://"):
-#     database_url2 = database_url2.replace("postgres://", "postgresql://", 1)
+if database_url2.startswith("postgres://"):
+    database_url2 = database_url2.replace("postgres://", "postgresql://", 1)
 app.config['SQLALCHEMY_DATABASE_URI'] = database_url
-# app.config['SQLALCHEMY_BINDS'] = {
-#     'second_db': database_url2  # another database
-# }
+app.config['SQLALCHEMY_BINDS'] = {
+    'db2': database_url2  # another database
+}
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SECRET_KEY'] = 'GdsfeG7_3f6dfwxI73_rh4'
 app.config['SENDGRID_API_KEY'] = email_key

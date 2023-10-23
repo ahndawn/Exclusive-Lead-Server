@@ -103,7 +103,7 @@ def update_moverref():
     return jsonify({"success": True})
 
 @table_bp.route('/update_local_moverref', methods=['POST'])
-def update_moverref():
+def update_local_moverref():
     from app import db
     from models.locallead import LocalLead
     lead_id = request.form['lead_id']
@@ -416,18 +416,14 @@ def send_to_local_route():
     from models.domain import Domain
     lead_id = request.form['lead_id']
     
+    
     # Fetch lead details from the database using lead_id
     lead = get_local_details_from_db(lead_id)
     if not lead:
         flash("Lead not found.", "error")
         return redirect(url_for('table.show_table'))
     
-    domain = Domain.query.filter_by(label=lead.label).first()
-    if not domain:
-        flash("Domain for the lead not found.", "error")
-        return redirect(url_for('table.show_table'))
-    
-    moverref = domain.moverref
+    moverref = 'ahni@safeshipmoving.com'
     icid = lead.notes  # Assuming ICID is stored as a note, adjust if needed
 
     # Extract other necessary details from the `lead` and `domain` objects
@@ -441,7 +437,7 @@ def send_to_local_route():
     dstate = lead.dstate
     data = {"movesize": lead.movesize}  # Add other necessary fields if needed
     movedte = lead.movedte
-    send_to_leads_api = domain.send_to_leads_api
+    send_to_leads_api = 1
     
     success = send_to_gronat(label, moverref, first_name, email, phone_number, ozip, dzip, dcity, dstate, data, movedte, send_to_leads_api, icid)
 
@@ -469,7 +465,7 @@ def update_movedte():
     return jsonify({"success": True})
 
 @table_bp.route('/update_local_movedte', methods=['POST'])
-def update_movedte():
+def update_local_movedte():
     from app import db
     lead_id = request.form['lead_id']
     new_movedte = request.form['new_value']
@@ -482,5 +478,7 @@ def update_movedte():
     db.session.commit()
 
     return jsonify({"success": True})
+
+
 
 

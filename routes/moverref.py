@@ -27,6 +27,28 @@ def add_moverref_config():
 
     return redirect(url_for('moverref.show_moverref_configs'))
 
+@moverref_bp.route('/add_moverref_config_db2', methods=['POST'])
+def add_moverref_config_db2():
+    from app import db
+    from models.moverref_config import MoverrefConfig2
+    
+    name = request.form['name']
+    repeat_count = request.form['repeat_count']
+
+    # Fetch the maximum sequence_order from the database for DB2
+    max_sequence = db.session.query(db.func.max(MoverrefConfig2.sequence_order)).scalar()
+    if max_sequence is None:
+        max_sequence = 0
+
+    # Increment by 1 for the new configuration
+    new_sequence = max_sequence + 1
+
+    new_config = MoverrefConfig2(name=name, sequence_order=new_sequence, repeat_count=repeat_count)
+    
+    db.session.add(new_config)
+    db.session.commit()
+
+    return redirect(url_for('moverref.show_moverref_configs'))
 
 @moverref_bp.route('/edit_moverref_config/<int:config_id>', methods=['POST'])
 def edit_moverref_config(config_id):
@@ -43,21 +65,38 @@ def edit_moverref_config(config_id):
 
     return redirect(url_for('moverref.show_moverref_configs'))
 
+@moverref_bp.route('/edit_moverref_config_db2/<config_id>', methods=['POST'])
+def edit_moverref_config_db2(config_id):
+    from app import db
+    from models.moverref_config import MoverrefConfig2
+    
+    config = MoverrefConfig2.query.get(config_id)
+
+    if config:
+        config.name = request.form['name']
+        config.repeat_count = request.form['repeat_count']
+        
+        db.session.commit()
+
+    return redirect(url_for('moverref.show_moverref_configs'))
+
 @moverref_bp.route('/show_moverref_configs', methods=['GET'])
 @login_required
 def show_moverref_configs():
     from models.moverref_config import MoverrefConfig, MoverrefConfig2
-    
-    original_configs = MoverrefConfig.query.all()
-    
-    # Transform the original_configs
-    transformed_configs = []
-    for config in original_configs:
-        # Assuming the email is stored in config.email, if it's a different attribute, replace accordingly.
-        config.name = email_to_dept(config.name)
-        transformed_configs.append(config)
 
-    return render_template('moverref_configs.html', configs=transformed_configs, current_user=current_user)
+    # Fetch and transform configs from both databases
+    configs_db1 = [transform_config_name(config) for config in MoverrefConfig.query.all()]
+    configs_db2 = [transform_config_name(config) for config in MoverrefConfig2.query.all()]
+
+    return render_template('moverref_configs.html',
+                           configs_db1=configs_db1,
+                           configs_db2=configs_db2,
+                           current_user=current_user)
+
+def transform_config_name(config):
+    config.name = email_to_dept(config.name)
+    return config
 
 @moverref_bp.route('/delete_moverref_config/<int:config_id>', methods=['POST'])
 def delete_moverref_config(config_id):
@@ -65,6 +104,18 @@ def delete_moverref_config(config_id):
     from models.moverref_config import MoverrefConfig
 
     config = MoverrefConfig.query.get(config_id)
+    if config:
+        db.session.delete(config)
+        db.session.commit()
+
+    return redirect(url_for('moverref.show_moverref_configs'))
+
+@moverref_bp.route('/delete_moverref_config_db2/<int:config_id>', methods=['POST'])
+def delete_moverref_config_db2(config_id):
+    from app import db
+    from models.moverref_config import MoverrefConfig2
+
+    config = MoverrefConfig2.query.get(config_id)
     if config:
         db.session.delete(config)
         db.session.commit()

@@ -50,16 +50,6 @@ migrate = Migrate(app, db)
 
 login_manager.init_app(app)
 
-####### Heroku Scheduler add-on on Heroku.com automatically uses this route to restart the dynos.
-@app.route('/restart')
-def restart():
-    try:
-        os.kill(os.getpid(), signal.SIGTERM)
-        return 'Server is restarting...', 200
-    except Exception as e:
-        return str(e), 500
-
-
 with app.app_context():
     db.create_all()
 

@@ -56,11 +56,21 @@ def edit_moverref_config(config_id):
     from models.moverref_config import MoverrefConfig
     
     config = MoverrefConfig.query.get(config_id)
+    
+    name_to_email = {
+        'TA': 'customerservice@safeshipmoving.com',
+        'TB': 'rachel.s@safeshipmoving.com',
+        'TC': 'chris@safeshipmoving.com',
+        'SL': 'leads@safeshipmoving.com',
+        'LL': 'ahni@safeshipmoving.com',
+        'EX': 'sales@safeshipmoving.com'
+    }
 
     if config:
         config.name = request.form['name']
+        config.name = name_to_email.get(config.name, config.name)
         config.repeat_count = request.form['repeat_count']
-        
+
         db.session.commit()
 
     return redirect(url_for('moverref.show_moverref_configs'))
@@ -69,13 +79,23 @@ def edit_moverref_config(config_id):
 def edit_moverref_config_db2(config_id):
     from app import db
     from models.moverref_config import MoverrefConfig2
-    
+
+    name_to_email = {
+        'TA': 'customerservice@safeshipmoving.com',
+        'TB': 'rachel.s@safeshipmoving.com',
+        'TC': 'chris@safeshipmoving.com',
+        'SL': 'leads@safeshipmoving.com',
+        'LL': 'ahni@safeshipmoving.com',
+        'EX': 'sales@safeshipmoving.com'
+    }
+
     config = MoverrefConfig2.query.get(config_id)
 
     if config:
         config.name = request.form['name']
+        config.name = name_to_email.get(config.name, config.name)
         config.repeat_count = request.form['repeat_count']
-        
+
         db.session.commit()
 
     return redirect(url_for('moverref.show_moverref_configs'))
@@ -86,12 +106,17 @@ def show_moverref_configs():
     from models.moverref_config import MoverrefConfig, MoverrefConfig2
 
     # Fetch and transform configs from both databases
-    configs_db1 = [transform_config_name(config) for config in MoverrefConfig.query.all()]
-    configs_db2 = [transform_config_name(config) for config in MoverrefConfig2.query.all()]
+    raw_configs_db1 = MoverrefConfig.query.all()
+    raw_configs_db2 = MoverrefConfig2.query.all()
+
+    configs_db1 = [transform_config_name(config) for config in raw_configs_db1]
+    configs_db2 = [transform_config_name(config) for config in raw_configs_db2]
 
     return render_template('moverref_configs.html',
                            configs_db1=configs_db1,
+                           raw_configs_db1=raw_configs_db1,
                            configs_db2=configs_db2,
+                           raw_configs_db2=raw_configs_db2,
                            current_user=current_user)
 
 def transform_config_name(config):

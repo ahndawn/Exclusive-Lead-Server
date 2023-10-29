@@ -131,11 +131,11 @@ fetch("/get_moverref_data")
             <div class="row" style="margin-bottom: -10px; margin-top: 20px;">
                 {% for config in configs_db1 %}
                 <div class="col-md-6 mb-3">
-                    <div class="config-card" data-config-name="{{ config.name }}">
+                    <div class="config-card" data-config-raw-name="{{ config.name }}">
                         <h3>Department: <b style="color: rgb(44, 44, 203);">{{ config.name }}</b></h3>
                         <p>Lead Assignments per cycle: <b style="color: rgb(44, 44, 203);">{{ config.repeat_count }}</b></p>
                         <div>
-                            <button class="filter" title="Settings" onclick="showEditForm(this, {{ config.id }}), 'db1'">
+                            <button class="filter" title="Settings" onclick="showEditForm(this, {{ config.id }}, 'db1')">
                                 <i class="fa-solid fa-gear" title="Settings" style="cursor:pointer"></i>
                             </button>
                             <form action="{{ url_for('moverref.delete_moverref_config', config_id=config.id) }}" method="post" style="display:inline;">
@@ -161,7 +161,7 @@ fetch("/get_moverref_data")
             <div class="row" style="margin-bottom: -10px; margin-top: 20px;">
                 {% for config in configs_db2 %}
                 <div class="col-md-6 mb-3">
-                    <div class="config-card" data-config-name="{{ config.name }}">
+                    <div class="config-card" data-config-raw-name="{{ config.name }}">
                         <h3>Department: <b style="color: rgb(44, 44, 203);">{{ config.name }}</b></h3>
                         <p>Lead Assignments per cycle: <b style="color: rgb(44, 44, 203);">{{ config.repeat_count }}</b></p>
                         <div>
@@ -242,48 +242,71 @@ fetch("/get_moverref_data")
     <!-- Chart for leads by department -->
     <canvas id="moverrefChart" width="200" height="80" style="background-color: white; padding-bottom: 20px;"></canvas>
 </div>
-<!-- Edit Configuration Modal -->
-<div class="modal fade" id="editModal" method="post" tabindex="-1" role="dialog" aria-labelledby="editModalLabel" aria-hidden="true">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="editModalLabel">Edit Configuration</h5>
+<!-- Edit Configuration Modal for DB1 -->
+<div class="modal fade" id="editModalDb1" tabindex="-1" role="dialog" aria-labelledby="editModalLabelDb1" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="editModalLabelDb1">Edit Configuration</h5>
+        </div>
+        <form action="" id="editFormDb1" method="post">
+          <div class="modal-body">
+            <label for="modalNameDb1">Department Name (email):</label>
+            <input type="text" id="modalNameDb1" name="name">
+            <br>
+            <label for="modalRepeatCountDb1">Lead Assignments per cycle:</label>
+            <input type="number" id="modalRepeatCountDb1" name="repeat_count">
+          </div>
+          <div class="modal-footer">
+            <input type="submit" class="filter" value="Save">
+          </div>
+        </form>
       </div>
-      <form id="modalForm" method="post">
-        <div class="modal-body">
-          <label for="modalName">Department Name (email):</label>
-          <input type="text" id="modalName" name="name">
-          <br>
-          <label for="modalRepeatCount">Lead Assignments per cycle:</label>
-          <input type="number" id="modalRepeatCount" name="repeat_count">
+    </div>
+  </div>
+  
+  <!-- Edit Configuration Modal for DB2 -->
+  <div class="modal fade" id="editModalDb2" tabindex="-1" role="dialog" aria-labelledby="editModalLabelDb2" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="editModalLabelDb2">Edit Configuration (SHARED)</h5>
         </div>
-        <div class="modal-footer">
-          <input type="submit" class="filter" value="Save">
-        </div>
-      </form>
+        <form action="" id="editFormDb2" method="post">
+          <div class="modal-body">
+            <label for="modalNameDb2">Department Name (email):</label>
+            <input type="text" id="modalNameDb2" name="name">
+            <br>
+            <label for="modalRepeatCountDb2">Lead Assignments per cycle:</label>
+            <input type="number" id="modalRepeatCountDb2" name="repeat_count">
+          </div>
+          <div class="modal-footer">
+            <input type="submit" class="filter" value="Save">
+          </div>
+        </form>
+      </div>
     </div>
   </div>
 
-<script>
-function showEditForm(buttonElement, configId, dbName) {
-    const configCardElement = buttonElement.closest('.config-card');
+  <script>
+    function showEditForm(buttonElement, configId, dbName) {
+        const configCardElement = buttonElement.closest('.config-card');
+        
+        const configName = configCardElement.getAttribute('data-config-raw-name');
+        const repeatCount = configCardElement.querySelector('p').textContent.split(': ')[1];  // Assumes format "Lead Assignments per cycle: <count>"
     
-    const configName = configCardElement.getAttribute('data-config-name');
-    const repeatCount = configCardElement.querySelector('p').textContent.split(': ')[1];  // Assumes format "Moverref Count: <count>"
-
-    document.getElementById('modalName').value = configName;  // Using configName instead of name
-    document.getElementById('modalRepeatCount').value = repeatCount;
-
-    if (dbName === "db1") {
-        document.getElementById('modalForm').action = `/edit_moverref_config/${configId}`;
-    } else if (dbName === "db2") {
-        document.getElementById('modalForm').action = `/edit_moverref_config_db2/${configId}`;
+        if (dbName === "db1") {
+            document.getElementById('modalNameDb1').value = configName;
+            document.getElementById('modalRepeatCountDb1').value = repeatCount;
+            document.getElementById('editFormDb1').action = `/edit_moverref_config/${configId}`;
+            $('#editModalDb1').modal('show');
+        } else if (dbName === "db2") {
+            document.getElementById('modalNameDb2').value = configName;
+            document.getElementById('modalRepeatCountDb2').value = repeatCount;
+            document.getElementById('editFormDb2').action = `/edit_moverref_config_db2/${configId}`;
+            $('#editModalDb2').modal('show');
+        }
     }
-    
-    $('#editModal').modal('show');
-    // alert(document.getElementById('modalForm').action);  // Debugging line to check the form action.
-    // $('#editModal').modal('show');
-}
-</script>
+    </script>
 
 {% endblock %}

@@ -11,6 +11,8 @@ from routes.table import table_bp
 from routes.local import local_bp
 from helpers import database_url, database_url2
 import os
+import signal
+import subprocess
 
 # Load environment variables from .env file. Information on .env found in docs/herokuDeployment.md
 load_dotenv()
@@ -50,7 +52,14 @@ login_manager.init_app(app)
 
 @app.route('/restart')
 def restart():
-    os._exit(0)
+    # Find Gunicorn master process ID
+    try:
+        master_pid = int(subprocess.getoutput("ps aux | grep gunicorn | grep master | awk '{ print $2 }'").strip())
+        os.kill(master_pid, signal.SIGTERM)  # Gracefully shutdown the Gunicorn master process
+    except Exception as e:
+        return str(e), 500
+    
+    return 'Server is restarting', 200
 
 
 with app.app_context():

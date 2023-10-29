@@ -50,16 +50,14 @@ migrate = Migrate(app, db)
 
 login_manager.init_app(app)
 
+####### Heroku Scheduler add-on on Heroku.com automatically uses this route to restart the dynos.
 @app.route('/restart')
 def restart():
-    # Find Gunicorn master process ID
     try:
-        master_pid = int(subprocess.getoutput("ps aux | grep gunicorn | grep master | awk '{ print $2 }'").strip())
-        os.kill(master_pid, signal.SIGTERM)  # Gracefully shutdown the Gunicorn master process
+        os.kill(os.getpid(), signal.SIGTERM)
+        return 'Server is restarting...', 200
     except Exception as e:
         return str(e), 500
-    
-    return 'Server is restarting', 200
 
 
 with app.app_context():

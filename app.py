@@ -10,6 +10,7 @@ from routes.domains import domain_bp
 from routes.table import table_bp
 from routes.local import local_bp
 from helpers import database_url, database_url2
+import os
 
 # Load environment variables from .env file. Information on .env found in docs/herokuDeployment.md
 load_dotenv()
@@ -46,6 +47,10 @@ db.init_app(app)
 migrate = Migrate(app, db)
 
 login_manager.init_app(app)
+
+@app.route('/restart')
+def restart():
+    os._exit(0)
 
 
 with app.app_context():

@@ -63,7 +63,8 @@ def edit_moverref_config(config_id):
         'TC': 'chris@safeshipmoving.com',
         'SL': 'leads@safeshipmoving.com',
         'LL': 'ahni@safeshipmoving.com',
-        'EX': 'sales@safeshipmoving.com'
+        'EX': 'sales@safeshipmoving.com',
+        'BL': 'max@safeshipmoving.com'
     }
 
     if config:

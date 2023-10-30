@@ -78,6 +78,7 @@ def email_to_dept(email):
         'chris@safeshipmoving.com': 'TC',
         'leads@safeshipmoving.com': 'SL',
         'ahni@safeshipmoving.com': 'LL',
+        'max@safeshipmoving.com': 'BL',
         'sales@safeshipmoving.com': 'EX'
     }
     return mapping.get(email, email)

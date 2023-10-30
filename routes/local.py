@@ -73,8 +73,24 @@ def add_local():
             sheet_range = domain_settings.sheet_range
 
        
-        # Check if the label is 'Crispx' and assign the moverref from domain_settings
-        moverref ='ahni@safeshipmoving.com'
+       # Convert the ozip string to an integer
+        try:
+            ozip_int = int(ozip)
+        except ValueError:
+            ozip_int = None
+
+        # Check the integer value of ozip to see if it falls within the specified ranges
+        if ozip_int:
+            if 90000 <= ozip_int <= 96699:  # California
+                moverref = 'max@safeshipmoving.com'
+            elif 32000 <= ozip_int <= 34997:  # Florida
+                moverref = 'max@safeshipmoving.com'
+            elif 60000 <= ozip_int <= 62999:  # Illinois
+                moverref = 'max@safeshipmoving.com'
+            elif 88900 <= ozip_int <= 89899:  # Nevada
+                moverref = 'max@safeshipmoving.com'
+        else:
+            moverref ='ahni@safeshipmoving.com'
         print(f'Posting key for {label} is: {moverref}')
 
         #############send to gronat function from helpers.py

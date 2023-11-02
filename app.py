@@ -10,9 +10,9 @@ from routes.domains import domain_bp
 from routes.table import table_bp
 from routes.local import local_bp
 from helpers import database_url, database_url2
-import os
-import signal
-import subprocess
+
+#########routes for Safe-Ship leads server
+from react_routes.home import react_home_bp
 
 # Load environment variables from .env file. Information on .env found in docs/herokuDeployment.md
 load_dotenv()
@@ -43,6 +43,7 @@ app.register_blueprint(auth_bp)
 app.register_blueprint(app_bp)
 app.register_blueprint(domain_bp)
 app.register_blueprint(local_bp)
+app.register_blueprint(react_home_bp)
 app.register_blueprint(table_bp)
 app.register_blueprint(moverref_bp)
 db.init_app(app)

@@ -10,6 +10,8 @@ from routes.domains import domain_bp
 from routes.table import table_bp
 from routes.local import local_bp
 from helpers import database_url, database_url2
+from flask_cors import CORS
+
 
 #########routes for Safe-Ship leads server
 from react_routes.home import react_home_bp
@@ -21,6 +23,8 @@ migrate = Migrate()
 db = SQLAlchemy()
 
 app = Flask(__name__)
+
+CORS(app)
 
 # database wasn't able to migrate with postgres url provided from heroku, so 'postgres://' needed to be changed to 'postgresql://'
 if database_url.startswith("postgres://"):

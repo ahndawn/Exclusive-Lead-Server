@@ -4,7 +4,7 @@ from flask_login import login_required, current_user
 from helpers import email_to_dept
 from googleapiclient.discovery import build
 from operator import attrgetter
-from sqlalchemy import cast, Date
+from sqlalchemy import cast, Date,Integer, cast
 from datetime import datetime
 
 table_bp = Blueprint('table', __name__)
@@ -169,100 +169,78 @@ def update_local_moverref():
 @login_required
 def show_table():
     from models.lead import Lead
-    # Retrieve the current data from the Data table
+    # Retrieve the current data from the Lead table
     all_data = Lead.query.all()
 
     # Get the filter from the query parameters
     filter_by = request.args.get('filter', default=None)
-    filtered_data = all_data
+    filter_value = request.args.get('filter_value', default="")
 
-    filter_columns = {
-        'timestamp': Lead.timestamp,
-        'label': Lead.label,
-        'firstname': Lead.firstname,
-        'email': Lead.email,
-        'phone1': Lead.phone1,
-        'ozip': Lead.ozip,
-        'dzip': Lead.dzip,
-        'dcity': Lead.dcity,
-        'dstate': Lead.dstate,
-        'movesize': Lead.movesize,
-        'movedte': Lead.movedte,
-        'conversion': Lead.conversion,
-        'validation': Lead.validation,
-        'notes': Lead.notes,
-        'sent_to_gronat': Lead.sent_to_gronat,
-        'sent_to_sheets': Lead.sent_to_sheets,
-        'moverref': Lead.moverref,
-    }
+    # Add a new parameter to handle the unsent leads button
+    show_unsent = request.args.get('show_unsent', 'false').lower() == 'true'
 
-    column_attribute = filter_columns.get(filter_by)
-    if column_attribute:
-        filter_value = request.args.get('filter_value', default="")
-    
-        if filter_by == 'moverref':
-            # Handle the special case for 'moverref'
-            filtered_data = [
-                lead for lead in all_data 
-                if lead.moverref and 
-                (lambda x: x and x.lower().startswith(filter_value.lower()))(email_to_dept(lead.moverref))
-            ]
-        elif filter_by in ['sent_to_gronat', 'sent_to_sheets']:
-            try:
+    if show_unsent:
+        # Filter for unsent leads
+        filtered_data = Lead.query.filter(cast(Lead.sent_to_gronat, Integer) == 0).all()
+    elif filter_by:
+        # Apply filter based on column
+        try:
+            if filter_by in ['sent_to_gronat', 'sent_to_sheets']:
                 filter_value = int(filter_value)
-                filtered_data = Lead.query.filter(getattr(Lead, filter_by).like(f"%{filter_value}%")).all()
-            except ValueError:
-                return flash("Invalid integer value provided for filter")
-        else:
-            filtered_data = Lead.query.filter(getattr(Lead, filter_by).like(f"%{filter_value}%")).all()
+            column = getattr(Lead, filter_by)
+            filtered_data = Lead.query.filter(column.like(f"%{filter_value}%")).all()
+        except (ValueError, AttributeError):
+            flash("Invalid filter")
+            filtered_data = all_data
     else:
+        # Default case, no filtering
         filtered_data = all_data
-    
+
+    # Sorting and Pagination Logic
     # Check if the "Show All Entries" button is clicked or a filter is applied
     show_all = request.args.get('show_all') or filter_by
     
     filtered_data = sorted(filtered_data, key=attrgetter('id'), reverse=True)
     
     page = request.args.get('page', 1, type=int)
-
     per_page = 25
     if show_all:
         data = filtered_data
     else:
-    # Pagination
+        # Pagination
         start = (page - 1) * per_page
         end = start + per_page
         data = filtered_data[start:end]
 
     leads = [
-    {
-        'id': lead.id,
-        'timestamp': lead.timestamp,
-        'label': lead.label,
-        'firstname': lead.firstname,
-        'email': lead.email,
-        'phone1': lead.phone1,
-        'ozip': lead.ozip,
-        'dzip': lead.dzip,
-        'dcity': lead.dcity,
-        'dstate': lead.dstate,
-        'movesize': lead.movesize,
-        'movedte': lead.movedte,
-        'conversion': lead.conversion,
-        'validation': lead.validation,
-        'notes': lead.notes,
-        'sent_to_gronat': lead.sent_to_gronat,
-        'sent_to_sheets': lead.sent_to_sheets,
-        'moverref': email_to_dept(lead.moverref),  # Convert moverref here
-    }
-    for lead in data
-]
+        {
+            'id': lead.id,
+            'timestamp': lead.timestamp,
+            'label': lead.label,
+            'firstname': lead.firstname,
+            'email': lead.email,
+            'phone1': lead.phone1,
+            'ozip': lead.ozip,
+            'dzip': lead.dzip,
+            'dcity': lead.dcity,
+            'dstate': lead.dstate,
+            'movesize': lead.movesize,
+            'movedte': lead.movedte,
+            'conversion': lead.conversion,
+            'validation': lead.validation,
+            'notes': lead.notes,
+            'sent_to_gronat': lead.sent_to_gronat,
+            'sent_to_sheets': lead.sent_to_sheets,
+            'moverref': lead.moverref
+        }
+        for lead in data
+    ]
 
     # Determine the total number of pages
     total_pages = len(filtered_data) // per_page + (len(filtered_data) % per_page > 0)
 
     # Calculate start_page and end_page
-    visible_pages = 5  # Number of visible page numbers excluding "..." separators
+    visible_pages = 5
     start_page = max(page - visible_pages // 2, 1)
     end_page = min(start_page + visible_pages, total_pages)
 

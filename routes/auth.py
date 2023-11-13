@@ -1,13 +1,14 @@
 #some imports are used within each required route and function in order to avoid 'circular imports'
-from flask import Blueprint, render_template, redirect, url_for, flash, current_app, request
+from flask import Blueprint, render_template, redirect, url_for, flash, current_app, request, jsonify
 from flask_login import login_user, logout_user, login_required, LoginManager
 from forms.users import RegistrationForm, ForgotPasswordForm, ResetPasswordForm, LoginForm
-from sendgrid import SendGridAPIClient
-from sendgrid.helpers.mail import Mail
 import bcrypt
 from datetime import datetime, timedelta
 import secrets
 import os
+import smtplib
+from email.mime.text import MIMEText
+from email.mime.multipart import MIMEMultipart
 
 auth_bp = Blueprint('auth', __name__)
 
@@ -23,25 +24,33 @@ def is_reset_token_expired(token_expiration):
 email_key = os.environ.get('EMAIL_KEY')
 certs = os.environ.get('REQUESTS_CA_BUNDLE')
 
+#################send_password_reset
 def send_password_reset_email(user):
     token = user.reset_token
     email = user.email
     subject = 'Password Reset Request'
-    template = 'reset_email.html'
+    from_email = '<support@safeshipmoving.com>'
 
-    message = Mail(
-        from_email='<ahni@safeshipmoving.com>',
-        to_emails=[email],
-        subject=subject,
-        html_content=render_template(template, user=user, token=token)
-    )
+    # Render the email body from the template with the user and token
+    email_body = render_template('reset_email.html', user=user, token=token)
 
+    msg = MIMEMultipart()
+    msg['From'] = from_email
+    msg['To'] = email
+    msg['Subject'] = subject
+    msg.attach(MIMEText(email_body, 'html'))  # Note: 'html' instead of 'plain'
+
+    # Send the email
     try:
-        sg = SendGridAPIClient(api_key=current_app.config['SENDGRID_API_KEY'])
-        response = sg.send(message)
-        print('Password reset email sent successfully.')
+        with smtplib.SMTP('smtp-relay.gmail.com', 587) as server:
+            server.ehlo()
+            server.starttls()
+            server.ehlo()
+            server.login('chris@safeshipmoving.com', 'xayfbkehwpiwujly')
+            server.sendmail(from_email, email.split(','), msg.as_string())
+            print("SUCCESS: Email sent")
     except Exception as e:
-        print('An error occurred while sending the password reset email:', str(e))
+        print(f"FAILED to send email: {e}")
 
 
 @login_manager.user_loader
@@ -169,3 +178,17 @@ def logout():
     logout_user()
     flash('User successfully logged out.')
     return redirect(url_for('auth.login'))
+
+
+# @auth_bp.route('/delete_all_users', methods=['GET','POST'])
+# def delete_all_users():
+#     from app import db
+#     from models.user import User
+#     try:
+#         # Delete all users
+#         db.session.query(User).delete()
+#         db.session.commit()
+#         return jsonify({'success': True, 'message': 'All users deleted successfully.'})
+#     except Exception as e:
+#         db.session.rollback()
+#         return jsonify({'success': False, 'message': 'Error occurred while deleting users.'}), 500

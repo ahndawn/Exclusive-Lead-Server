@@ -20,19 +20,19 @@
         <form method="POST" action="{{ url_for('auth.register') }}">
             {{ form.hidden_tag() }}
             
-            {{ form.username.label }} {{ form.username(size=32, style='width:85%; ') }}
+            {{ form.username.label }} {{ form.username(size=32, style='width:85%; border-radius:10px; border:none; padding;5px') }}
             <div style="padding-top:15px;">
-            {{ form.password.label(style='display:inline-block') }}
-            <div class="passwordDiv" style="display: inline-block !important; width:100%">{{ form.password(size=32, class="passwordDiv", style='width:80%;') }}<button type="button" class="passwordRevealBtn" title="Reveal Password" style="display: inline-block; width:fit-content; padding-left:5px; background-color: transparent; border: none;" onclick="showPassword()"><i class="fa-regular fa-eye"></i></button></div>
+            {{ form.password.label(style='display:inline-block;border-radius:10px; border:none; padding;5px') }}
+            <div class="passwordDiv" style="display: inline-block !important; width:100%">{{ form.password(size=32, class="passwordDiv", style='width:80%;border-radius:10px; border:none; padding;5px') }}<button type="button" class="passwordRevealBtn" title="Reveal Password" style="display: inline-block; width:fit-content; padding-left:5px; background-color: transparent; border: none;" onclick="showPassword()"><i class="fa-regular fa-eye"></i></button></div>
             </div>
             <div style="padding-top:15px;">
-            {{ form.email.label }}  {{ form.email(size=32, style='width:85%;') }}
+            {{ form.email.label }}  {{ form.email(size=32, style='width:85%; border-radius:10px; border:none; padding;5px') }}
             </div>
             <div style="padding:15px; width:fit-content; margin:auto; text-align:center">
-                {{ form.submit(style="background-color:green; border-radius: 10px; box-shadow: black 2px 2px 2px; color:white; font-weight:bolder") }}
+                {{ form.submit(class='filter') }}
             </div>
         </form>
-    <p>Already have an account? <a href="{{ url_for('auth.login') }}" style="color:rgb(103, 235, 255); text-decoration: none;">Login</a></p>
+    <p>Already have an account? <a href="{{ url_for('auth.login') }}" style="color:rgb(103, 184, 255); text-decoration: none;">Login</a></p>
 </div>
 </div>
 <script>

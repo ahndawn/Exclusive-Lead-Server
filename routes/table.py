@@ -166,6 +166,7 @@ def update_local_moverref():
 
 ######################## Exclusive leads table
 @table_bp.route('/table')
+@login_required
 def show_table():
     from models.locallead import LocalLead
     from models.lead import Lead 
@@ -271,6 +272,7 @@ def show_table():
 
 #########################Local leads table
 @table_bp.route('/local-table')
+@login_required
 def show_local():
     from models.locallead import LocalLead
     # Retrieve the current data from the Data table

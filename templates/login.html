@@ -23,18 +23,18 @@
     <form method="POST" action="{{ url_for('auth.login') }}">
       {{ form.hidden_tag() }}
       <div>
-        {{ form.username.label }} {{ form.username(size=32) }}
+        {{ form.username.label }} {{ form.username(style="border-radius:10px; padding:5px; border:none",size=32) }}
       </div>
       <div style="padding-top:15px;">
-        {{ form.password.label }} {{ form.password(size=32) }}
+        {{ form.password.label }} {{ form.password(style="border-radius:10px; padding:5px; border:none",size=32) }}
       </div>
       <div style="padding:15px; width:fit-content; margin:auto; text-align:center;">
-        {{ form.submit(style="background-color:green; border-radius: 10px; box-shadow: black 2px 2px 2px; color:white; font-weight:bolder") }}
+        {{ form.submit(class="filter") }}
       </div>
       <div>
-        <a href="{{ url_for('auth.forgot_password') }}" style="color:rgb(103, 235, 255); text-decoration: none;">Forgot Password?</a>
+        <a href="{{ url_for('auth.forgot_password') }}" style="color:rgb(103, 184, 255); text-decoration: none;">Forgot Username/Password?</a>
       </div>
-      <p style="font-size:14px; font-weight:lighter"><a href="{{ url_for('auth.register') }}" style="color:white; text-decoration:none;">Sign Up</a></p>
+      <p style="font-size:14px; font-weight:lighter"><a href="{{ url_for('auth.register') }}" style="color:rgb(255, 255, 255); text-decoration:none;"><i class="fa-solid fa-user-plus"></i> Sign Up</a></p>
   </form>
   </div>
 </div>

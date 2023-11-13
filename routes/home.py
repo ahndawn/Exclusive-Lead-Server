@@ -6,11 +6,6 @@ from helpers import client, send_message, format_phone_number, format_move_date,
 from datetime import datetime
 import random
 import pytz
-import smtplib
-import random
-from email.mime.text import MIMEText
-from email.mime.multipart import MIMEMultipart
-import pytz
 
 
 app_bp = Blueprint('app', __name__)

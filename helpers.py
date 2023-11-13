@@ -82,6 +82,18 @@ def email_to_dept(email):
         'sales@safeshipmoving.com': 'EX'
     }
     return mapping.get(email, email)
+###############convert posting key to email
+def dept_to_email(abbreviation):
+    mapping = {
+        'TA': 'customerservice@safeshipmoving.com',
+        'TB': 'rachel.s@safeshipmoving.com',
+        'TC': 'chris@safeshipmoving.com',
+        'SL': 'leads@safeshipmoving.com',
+        'LL': 'ahni@safeshipmoving.com',
+        'BL': 'max@safeshipmoving.com',
+        'EX': 'sales@safeshipmoving.com'
+    }
+    return mapping.get(abbreviation, abbreviation)
 #####################local email
 def send_local_email(label,dzip,dcity,dstate,ref_no, email, data, movedte, ozip, phone_number, first_name, icid):
     # Construct the email message

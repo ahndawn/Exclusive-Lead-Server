@@ -1,8 +1,7 @@
 #some imports are used within each required route and function in order to avoid 'circular imports'
 from flask import Blueprint, render_template, request, jsonify, render_template, url_for, flash, redirect
 from flask_login import login_required, current_user
-from helpers import email_to_dept
-from googleapiclient.discovery import build
+from helpers import email_to_dept, dept_to_email
 from operator import attrgetter
 from sqlalchemy import cast, Date,Integer, cast
 from datetime import datetime
@@ -137,6 +136,7 @@ def update_moverref():
     from models.lead import Lead
     lead_id = request.form['lead_id']
     new_moverref = request.form['new_value']
+    new_moverref = dept_to_email(new_moverref)
 
     lead = Lead.query.get(lead_id)
     if not lead:
@@ -154,6 +154,7 @@ def update_local_moverref():
     from models.locallead import LocalLead
     lead_id = request.form['lead_id']
     new_moverref = request.form['new_value']
+    new_moverref = dept_to_email(new_moverref)
 
     lead = LocalLead.query.get(lead_id)
     if not lead:

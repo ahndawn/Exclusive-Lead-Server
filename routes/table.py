@@ -168,7 +168,9 @@ def update_local_moverref():
 @table_bp.route('/table')
 @login_required
 def show_table():
-    from models.lead import Lead
+    from models.locallead import LocalLead
+    from models.lead import Lead 
+    from models.lead import Lead2
     # Retrieve the current data from the Lead table
     all_data = Lead.query.all()
 
@@ -176,12 +178,17 @@ def show_table():
     filter_by = request.args.get('filter', default=None)
     filter_value = request.args.get('filter_value', default="")
 
-    # Add a new parameter to handle the unsent leads button
+    # Add new parameters to handle the unsent leads button and show all entries
     show_unsent = request.args.get('show_unsent', 'false').lower() == 'true'
+    show_all = request.args.get('show_all', 'false').lower() == 'true'
 
     if show_unsent:
         # Filter for unsent leads
-        filtered_data = Lead.query.filter(cast(Lead.sent_to_gronat, Integer) == 0).all()
+        query1 = Lead2.query.filter(cast(Lead2.sent_to_gronat, Integer) == 0).all()
+        query2 = LocalLead.query.filter(cast(LocalLead.sent_to_gronat, Integer) == 0).all()
+        query3 = Lead.query.filter(cast(Lead.sent_to_gronat, Integer) == 0).all()
+        filtered_data = query1 + query2 + query3
+        show_all = True  # Override show_all to true if show_unsent is true
     elif filter_by:
         # Apply filter based on column
         try:
@@ -197,9 +204,6 @@ def show_table():
         filtered_data = all_data
 
     # Sorting and Pagination Logic
-    # Check if the "Show All Entries" button is clicked or a filter is applied
-    show_all = request.args.get('show_all') or filter_by
-    
     filtered_data = sorted(filtered_data, key=attrgetter('id'), reverse=True)
     
     page = request.args.get('page', 1, type=int)
@@ -390,6 +394,43 @@ def show_local():
     # Render the template with the current data and pagination information
     return render_template('local_lead_table.html', **template_context, current_user=current_user)
 
+#############
+@table_bp.route('/delete_lead/<int:lead_id>', methods=['POST'])
+@login_required
+def delete_lead(lead_id):
+    from app import db
+    from models.lead import Lead
+
+    lead = Lead.query.get(lead_id)
+    if lead:
+        db.session.delete(lead)
+        db.session.commit()
+        return jsonify(success=True)
+    else:
+        return jsonify(fail=False), 404
+
+############send all leads on table to gronat
+@table_bp.route('/send_all_local_gronat', methods=['POST'])
+def send_all_to_local_gronat():
+    from app import db 
+    from helpers import send_to_gronat
+    lead_ids = request.json.get('lead_ids', [])
+    success_count = 0
+
+    for lead_id in lead_ids:
+        lead = get_local_details_from_db(lead_id)
+        if lead and lead.sent_to_gronat == 0:
+            # Call your send_to_gronat function here
+            success = send_to_gronat(...)  # Fill in the arguments as needed
+            if success:
+                lead.sent_to_gronat = 1
+                db.session.commit()
+                success_count += 1
+
+    if success_count == len(lead_ids):
+        return jsonify(success=True, message="All leads successfully sent to GRONAT.")
+    else:
+        return jsonify(success=False, message="Some leads could not be sent. Please try again.")
 
 
 

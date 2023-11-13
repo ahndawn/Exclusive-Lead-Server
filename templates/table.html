@@ -3,6 +3,39 @@
 {% block content %}
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
+
+document.addEventListener('DOMContentLoaded', (event) => {
+document.getElementById('sendAllToGronatButton').addEventListener('click', function() {
+    var leadIds = [];
+    document.querySelectorAll('.send-to-gronat-btn').forEach(function(button) {
+        var leadId = button.getAttribute('data-lead-id');  // Ensure each button has a 'data-lead-id' attribute
+        if (leadId) {
+            leadIds.push(leadId);
+        }
+    });
+
+    if (leadIds.length > 0) {
+        // Send AJAX request to the Flask route
+        fetch('/send_all_local_gronat', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ 'lead_ids': leadIds })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                alert('All leads have been successfully sent to GRONAT.');
+                // Refresh the page or update the UI as needed
+            } else {
+                alert('Failed to send all leads. Please try again.');
+            }
+        });
+    }
+});
+});
+    
 $(document).ready(function() {
         // Initialize cells with hidden data
         $("td.hide-conversion").each(function() {
@@ -176,6 +209,36 @@ $(document).ready(function() {
     </div>
 </div>
 </div>
+<script>
+function deleteLead(leadId) {
+    if (confirm('Are you sure you want to delete this lead?')) {
+        fetch(`/delete_lead/${leadId}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            }
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.json();
+        })
+        .then(data => {
+            if (data.success) {
+                const leadRow = document.getElementById(`lead-row-${leadId}`);
+                leadRow.innerHTML = '<td colspan="100%" style="color: red;">Deleted</td>';
+            } else {
+                alert('Failed to delete lead.');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('An error occurred. Please try again later.');
+        });
+    }
+}
+</script>
 
 <div class="table-wrapper">
 <div class="table-scroll">
@@ -199,11 +262,12 @@ $(document).ready(function() {
                 <th class="header-info" data-toggle="tooltip" title="Indicates if phone number was valid or invalid."> Phone # <i class="fa-solid fa-circle-question"></i></th>
                 <th class="header-info" data-toggle="tooltip" title="Indicates if the lead was successfully sent to GRONAT.">GRONAT <i class="fa-solid fa-circle-question"></i></th>
                 <th class="header-info" data-toggle="tooltip" title="Indicates if the lead was successfully sent to sheet.">Sheets <i class="fa-solid fa-circle-question"></i></th>
+                <th style="color:black">Delete</th>
             </tr>
         </thead>
         <tbody>
             {% for row in data %}
-                <tr>
+                <tr id="lead-row-{{ row.id }}">
                     <td>{{ row.label }}</td>
                     <td>{{ row.timestamp }}</td>
                     <td>{{ row.firstname }}</td>
@@ -229,10 +293,14 @@ $(document).ready(function() {
                         {% endif %}
                     </td>
                     <td class="sent-to-sheets"{% if row.sent_to_sheets == '0' %}style="color: rgb(216, 0, 0);"{% elif row.sent_to_sheets == '1' %}style="color: green;"{% endif %}>{{ row.sent_to_sheets }}</td>
+                    <td>
+                        <button type="button" class="delete-btn" onclick="deleteLead({{ row.id }})">Delete</button>
+                    </td>
                 </tr>
             {% endfor %}
         </tbody>
     </table>
+    <button id="sendAllToGronatButton" class="filter">Send All to GRONAT</button>
 </div>
             
 

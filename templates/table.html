@@ -294,7 +294,7 @@ function deleteLead(leadId) {
                     </td>
                     <td class="sent-to-sheets"{% if row.sent_to_sheets == '0' %}style="color: rgb(216, 0, 0);"{% elif row.sent_to_sheets == '1' %}style="color: green;"{% endif %}>{{ row.sent_to_sheets }}</td>
                     <td>
-                        <button type="button" class="delete-btn" onclick="deleteLead({{ row.id }})">Delete</button>
+                        <button type="button" class="delete-btn" onclick="deleteLead({{ row.id }})"><i class="fa-solid fa-trash-can" title="Delete" style="cursor:pointer"></i></button>
                     </td>
                 </tr>
             {% endfor %}

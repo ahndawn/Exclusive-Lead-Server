@@ -3,38 +3,6 @@
 {% block content %}
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
-
-document.addEventListener('DOMContentLoaded', (event) => {
-document.getElementById('sendAllToGronatButton').addEventListener('click', function() {
-    var leadIds = [];
-    document.querySelectorAll('.send-to-gronat-btn').forEach(function(button) {
-        var leadId = button.getAttribute('data-lead-id');  // Ensure each button has a 'data-lead-id' attribute
-        if (leadId) {
-            leadIds.push(leadId);
-        }
-    });
-
-    if (leadIds.length > 0) {
-        // Send AJAX request to the Flask route
-        fetch('/send_all_local_gronat', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ 'lead_ids': leadIds })
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                alert('All leads have been successfully sent to GRONAT.');
-                // Refresh the page or update the UI as needed
-            } else {
-                alert('Failed to send all leads. Please try again.');
-            }
-        });
-    }
-});
-});
     
 $(document).ready(function() {
         // Initialize cells with hidden data

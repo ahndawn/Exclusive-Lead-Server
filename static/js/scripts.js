@@ -47,8 +47,6 @@ function showTitle(element) {
     else if (document.getElementById("phone-checkbox").checked) filterCriteria = "phone1";
     else if (document.getElementById("ozip-checkbox").checked) filterCriteria = "ozip";
     else if (document.getElementById("dzip-checkbox").checked) filterCriteria = "dzip";
-    else if (document.getElementById("dcity-checkbox").checked) filterCriteria = "dcity";
-    else if (document.getElementById("dstate-checkbox").checked) filterCriteria = "dstate";
     else if (document.getElementById("movesize-checkbox").checked) filterCriteria = "movesize";
     else if (document.getElementById("movedate-checkbox").checked) filterCriteria = "movedte";
     else if (document.getElementById("conversion-checkbox").checked) filterCriteria = "conversion";
@@ -74,8 +72,6 @@ function filterLocalTable() {
     else if (document.getElementById("phone-checkbox").checked) filterCriteria = "phone1";
     else if (document.getElementById("ozip-checkbox").checked) filterCriteria = "ozip";
     else if (document.getElementById("dzip-checkbox").checked) filterCriteria = "dzip";
-    else if (document.getElementById("dcity-checkbox").checked) filterCriteria = "dcity";
-    else if (document.getElementById("dstate-checkbox").checked) filterCriteria = "dstate";
     else if (document.getElementById("movesize-checkbox").checked) filterCriteria = "movesize";
     else if (document.getElementById("movedate-checkbox").checked) filterCriteria = "movedte";
     else if (document.getElementById("conversion-checkbox").checked) filterCriteria = "conversion";

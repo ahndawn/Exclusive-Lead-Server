@@ -196,8 +196,6 @@ $(document).ready(function() {
         <label><input type="checkbox" id="phone-checkbox"> Phone</label>
         <label><input type="checkbox" id="ozip-checkbox"> Origin ZIP</label>
         <label><input type="checkbox" id="dzip-checkbox"> Destination ZIP</label>
-        <label><input type="checkbox" id="dcity-checkbox"> Destination City</label>
-        <label><input type="checkbox" id="dstate-checkbox"> Destination State</label>
         <label><input type="checkbox" id="movesize-checkbox"> Move Size</label>
         <label><input type="checkbox" id="movedate-checkbox"> Move Date</label>
         <label><input type="checkbox" id="conversion-checkbox"> Conversion</label>
@@ -252,8 +250,6 @@ function deleteLead(leadId) {
                 <th class="header-info" data-toggle="tooltip" title="Duplicates are highlighted">Phone <i class="fa-solid fa-circle-question"></i></th>
                 <th>Origin ZIP</th>
                 <th>Destination ZIP</th>
-                <th>Destination City</th>
-                <th>Destination State</th>
                 <th>Move Size</th>
                 <th>Move Date</th>
                 <th class="header-info"  data-toggle="tooltip" title="Click to reveal all conversions">Conversion <i class="fa-solid fa-circle-question"></i></th>
@@ -275,8 +271,6 @@ function deleteLead(leadId) {
                     <td>{{ row.phone1 }}</td>
                     <td>{{ row.ozip }}</td>
                     <td>{{ row.dzip }}</td>
-                    <td>{{ row.dcity }}</td>
-                    <td>{{ row.dstate }}</td>
                     <td>{{ row.movesize }}</td>
                     <td class="editable-cell" data-id="{{ row.id }}">{{ row.movedte }}</td>
                     <td class="hide-conversion" data-original-value="{{ row.conversion }}">{{ row.conversion }}</td>

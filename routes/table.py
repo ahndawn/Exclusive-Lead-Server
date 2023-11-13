@@ -188,7 +188,10 @@ def show_table():
         query2 = LocalLead.query.filter(cast(LocalLead.sent_to_gronat, Integer) == 0).all()
         query3 = Lead.query.filter(cast(Lead.sent_to_gronat, Integer) == 0).all()
         filtered_data = query1 + query2 + query3
-        show_all = True  # Override show_all to true if show_unsent is true
+        show_all = True
+        # Check if filtered_data is empty
+        if not filtered_data:
+            flash('All leads have been successfully sent to Gronat', 'success') 
     elif filter_by:
         # Apply filter based on column
         try:

@@ -5,7 +5,6 @@ from flask_login import login_required
 domain_bp = Blueprint('domain', __name__)
 
 @domain_bp.route('/domains', methods=['GET'])
-@login_required
 def show_domains():
     from models.domain import Domain
     from forms.forms import DomainForm

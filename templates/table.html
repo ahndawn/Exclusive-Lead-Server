@@ -211,7 +211,6 @@ $(document).ready(function() {
 </div>
 <script>
 function deleteLead(leadId) {
-    if (confirm('Are you sure you want to delete this lead?')) {
         fetch(`/delete_lead/${leadId}`, {
             method: 'POST',
             headers: {
@@ -236,7 +235,6 @@ function deleteLead(leadId) {
             console.error('Error:', error);
             alert('An error occurred. Please try again later.');
         });
-    }
 }
 </script>
 

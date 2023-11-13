@@ -399,9 +399,17 @@ def show_local():
 @login_required
 def delete_lead(lead_id):
     from app import db
-    from models.lead import Lead
+    from models.lead import Lead, Lead2
+    from models.locallead import LocalLead
 
+    # Attempt to find the lead in each table
     lead = Lead.query.get(lead_id)
+    if not lead:
+        lead = LocalLead.query.get(lead_id)
+    if not lead:
+        lead = Lead2.query.get(lead_id)
+
+    # If a lead is found, delete it
     if lead:
         db.session.delete(lead)
         db.session.commit()

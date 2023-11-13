@@ -4,7 +4,7 @@ html, body{
     background-repeat: no-repeat;
     background-size: cover;
     background-attachment: fixed; */
-    background-color: #393939;
+    background: #2e2e2e;
     height: 100%; 
     margin: 0; 
     padding: 0; 
@@ -31,7 +31,7 @@ html, body{
 .head{
     background-image: url(/static/images/dark-red.jpg);
     padding: 20px;
-    margin-top: 45px;
+    margin-top: 35px;
     margin-left: -10px;
     margin-right: -40px;
     background-repeat: no-repeat;

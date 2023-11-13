@@ -238,7 +238,7 @@ def show_table():
             'notes': lead.notes,
             'sent_to_gronat': lead.sent_to_gronat,
             'sent_to_sheets': lead.sent_to_sheets,
-            'moverref': lead.moverref
+            'moverref': email_to_dept(lead.moverref), 
         }
         for lead in data
     ]

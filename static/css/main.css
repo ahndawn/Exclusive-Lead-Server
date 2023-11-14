@@ -288,6 +288,13 @@ cursor: pointer;
     border-radius: 4px;
     border: none;
   }
+  .save-btn {
+    cursor: pointer;
+    background-color: #6c6c6c;
+    color:rgb(255, 255, 255);
+    border-radius: 4px;
+    border: none;
+  }
 
   .filter:hover {
     background-color: #000000;

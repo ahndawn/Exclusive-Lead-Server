@@ -62,7 +62,7 @@ $(document).ready(function() {
             return;  // If the cell is already being edited, don't recreate the input and save button
         }
         var originalContent = $(this).text();
-        $(this).html('<input type="text" value="' + originalContent + '"><button class="save-btn">Save</button>');
+        $(this).html('<input type="text" style="border-radius:5px; border:1px solid black" value="' + originalContent + '"><button class="save-btn" style="margin-left: 10px; padding:3px">Save</button>');
         $(this).find('input').first().focus();
     });
 

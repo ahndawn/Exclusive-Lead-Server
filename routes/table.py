@@ -209,15 +209,17 @@ def show_table():
 
     # Sorting and Pagination Logic
     filtered_data = sorted(filtered_data, key=attrgetter('id'), reverse=True)
+
+    leads_per_page = request.args.get('leads_per_page', default=25, type=int)
     
     page = request.args.get('page', 1, type=int)
-    per_page = 25
+    # Update the Pagination Logic
     if show_all:
         data = filtered_data
     else:
-        # Pagination
-        start = (page - 1) * per_page
-        end = start + per_page
+    # Use leads_per_page instead of a fixed number
+        start = (page - 1) * leads_per_page
+        end = start + leads_per_page
         data = filtered_data[start:end]
 
     leads = [
@@ -245,7 +247,7 @@ def show_table():
     ]
 
     # Determine the total number of pages
-    total_pages = len(filtered_data) // per_page + (len(filtered_data) % per_page > 0)
+    total_pages = len(filtered_data) // leads_per_page + (len(filtered_data) % leads_per_page > 0)
 
     # Calculate start_page and end_page
     visible_pages = 5

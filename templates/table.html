@@ -3,6 +3,12 @@
 {% block content %}
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
+function updateLeadsDisplay() {
+  var selectedValue = document.getElementById('leadsCountSelector').value;
+  var url = new URL(window.location.href);
+  url.searchParams.set('leads_per_page', selectedValue);
+  window.location.href = url.href;
+}
     
 $(document).ready(function() {
         // Initialize cells with hidden data
@@ -151,7 +157,7 @@ $(document).ready(function() {
         <input type="text" id="search-input" placeholder="Search..." style="height:30px; background-color: rgb(255, 255, 255); border-radius: 4px; border: 1px solid rgb(209, 209, 209)">
         <button onclick="toggleFilterOptions()" class="filter" style="background-color: rgb(63, 146, 230);" ><i class="fa-solid fa-filter"></i> Filter</button>
         <button onclick="filterTable()" class="filter"><i class="fa-solid fa-magnifying-glass"></i> Search</button>
-        <button class="filter"><a href="{{ url_for('table.show_table', show_unsent='true') }}" style="color:black; text-decoration: none;">Show Unsent Leads</a></button>
+        <button class="filter"><a href="{{ url_for('table.show_table', show_unsent='true') }}" style="color:rgb(255, 255, 255); text-decoration: none;">Show Unsent Leads</a></button>
     </div>
     <div id="filter-options" class="filter-options" style="display:none">
         <label><input type="checkbox" id="all-checkbox"> All</label>
@@ -289,7 +295,17 @@ function deleteLead(leadId) {
                     <a href="{{ url_for('table.show_table', page=total_pages, filter=filter_by) }}" class="pagination-btn">Last ({{ total_pages }})</a>
                 {% endif %}
             {% endif %}
-            <button onclick="showAllEntries()" class="filter">Show All Entries</button>
+            <select id="leadsCountSelector" onchange="updateLeadsDisplay()">
+                <option value="">Show More Leads</option>
+                <hr>
+                <option value="100">100 leads</option>
+                <option value="200">200 leads</option>
+                <option value="300">300 leads</option>
+                <option value="400">400 leads</option>
+                <option value="500">500 leads</option>
+                <option value="600">600 leads</option>
+                <option value="all">All leads</option>
+              </select>
         </div>
         
     </div>

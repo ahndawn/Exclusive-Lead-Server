@@ -79,7 +79,8 @@ def email_to_dept(email):
         'leads@safeshipmoving.com': 'SL',
         'ahni@safeshipmoving.com': 'LL',
         'max@safeshipmoving.com': 'BL',
-        'sales@safeshipmoving.com': 'EX'
+        'sales@safeshipmoving.com': 'EX',
+        'stanley@safeshipmoving.com': 'SE'
     }
     return mapping.get(email, email)
 ###############convert posting key to email
@@ -91,7 +92,8 @@ def dept_to_email(abbreviation):
         'SL': 'leads@safeshipmoving.com',
         'LL': 'ahni@safeshipmoving.com',
         'BL': 'max@safeshipmoving.com',
-        'EX': 'sales@safeshipmoving.com'
+        'EX': 'sales@safeshipmoving.com',
+        'SE': 'stanley@safeshipmoving.com'
     }
     return mapping.get(abbreviation, abbreviation)
 #####################local email

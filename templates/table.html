@@ -66,9 +66,9 @@ $(document).ready(function() {
         var cell = $(this).parent();
         var leadId = cell.attr("data-id");
         var updateUrl;
-        if (cell.index() === 10) {
+        if (cell.index() === 8) {
             updateUrl = '/update_movedte';
-        } else if (cell.index() === 16) {
+        } else if (cell.index() === 14) {
             updateUrl = '/update_moverref';
         } else {
             return;  // Unsupported column, exit
@@ -80,7 +80,7 @@ $(document).ready(function() {
             method: 'POST',
             data: {
                 'lead_id': leadId,
-                'new_value': newValue  // Generic key for new value
+                'new_value': newValue
             },
             success: function(response) {
                 if (response.success) {
